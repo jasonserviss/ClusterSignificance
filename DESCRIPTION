@@ -1,0 +1,30 @@
+Package: ClusterSignificance
+Title: Investigates Significance of Clusters by Reducing the Data to
+        One Dimension to be Able to Easy Set a Score for the
+        Separation, and a p-Value is then Calculated from Permutations
+        of the Original Data
+Version: 0.99.3
+Author: Jason T. Serviss and Jesper R. Gadin
+Maintainer: Jason T Serviss <jason.serviss@ki.se>
+Description: The ClusterSignificance package provides tools to assess
+        if clusters have a separation different from random or permuted
+        data. ClusterSignificance investigates clusters of two or more
+        groups by first, projecting all points onto a one dimensional
+        line. Cluster separations are then scored and the probability
+        of the seen separation being due to chance is evaluated using a
+        permutation method.
+Depends: R (>= 3.3.0)
+Imports: methods, pracma, princurve, scatterplot3d, RColorBrewer,
+        grDevices, graphics, utils
+License: GPL-3
+LazyData: true
+Suggests: knitr, rmarkdown, testthat, BiocStyle, ggplot2, plsgenomics
+VignetteBuilder: knitr
+biocViews: Clustering, Classification, PrincipalComponent,
+        StatisticalMethod
+NeedsCompilation: no
+Collate: 'ClusterSignificance-package.R' 'All-classes.R'
+        'classifier-methods.R' 'initialize-methods.R' 'mlpMatrix.R'
+        'pcpMatrix.R' 'permutation-methods.R' 'plot-methods.R'
+        'projection-methods.R' 'show-methods.R'
+RoxygenNote: 5.0.1

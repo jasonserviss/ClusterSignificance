@@ -1,0 +1,517 @@
+---
+title: "ClusterSignificance Vignette"
+author: "Jesper Robert Gådin and Jason T. Serviss"
+date: '`r Sys.Date()`'
+output:
+    html_document:
+        theme: flatly
+        toc: yes
+vignette: >
+    %\VignetteIndexEntry{ClusterSignificance Vignette} 
+    %\VignetteEngine{knitr::rmarkdown} 
+    %\usepackage[utf8]{inputenc}
+    %\SweaveUTF8
+---
+
+<style>
+    .col2 {
+        columns: 2 200px;         /* number of columns and width in pixels*/
+        -webkit-columns: 2 200px; /* chrome, safari */
+        -moz-columns: 2 200px;    /* firefox */
+    }
+</style>
+
+```{r style, echo = FALSE, results = 'asis'}
+BiocStyle::markdown()
+library(ggplot2)
+```
+
+# Introduction
+The ClusterSignificance package provides tools to assess if clusters, in
+e.g. principal component analysis (PCA), have a separation different from
+random or permuted data. This is accomplished in a 3 step process *projection*,
+*classification*, and *permutation*. To be able to compare cluster
+separations, we have to give them a score based on this separation. First, 
+all data points in each cluster are projected onto a line (*projection*), after
+which the seperation for two groups at a time is scored (*classification*).
+Furthermore, to get a p-value for the separation we have to compare the
+separation score for our real data to the separation score for permuted data 
+(*permutation*).
+
+The package includes 2 different methods for accomplishing the 3 steps
+above, Mean line projection (**Mlp**) and Principal curve projection (**Pcp**).
+Here we will first discuss the similaraties of the 3 steps independant
+of which method is used. This is followed by an example of the Mlp and
+Pcp methods and the unique features of each. Furthermore, we provide an
+example where ClusterSignificance is used to examine the seperation between
+2 clusters downsteam of a PCA. 
+
+```{r echo=TRUE, eval=TRUE, message=FALSE}
+library(ClusterSignificance)
+```
+
+# Methods
+## Projection
+
+The input to the projection methods is a matrix, with data points (or samples)
+on the rows, and dimensions (or principal components) in the columns. For
+the method to know which rows are in the same group, the groups argument
+must be specified. The groups argument is a character vector and 
+ClusterSignificance will produce an error if the groups argument contain 
+NA's. The projection step utilizes either the Mlp or Pcp method to project 
+all data points onto a line, after which they are projected into a single 
+dimension.
+
+## Classification
+
+Now that all of the points are in one dimension, it allows us to easily
+define a perpendicular line that best separates the two groups. The score
+for each possible separation is then calculated based on this formula:
+
+#### $$score = TP + TN - (FP + FN)$$
+
+Where:
+
+* __TP__ = True positives
+* __TN__ = True negatives
+* __FP__ = False positives
+* __FN__ = False negatives
+
+All seperation scores are recorded and the max score is subsequently used
+downstream to compare to the max scores from the permutated data.
+
+## Permutation
+
+Permutation is performed by randomly sampling the input matrix and assigning
+the data points to the groups. The projection and classification steps
+are then run for the sampled matrix. The max seperation score is recorded
+and the next permutation is performed. The p-value can subsequently be
+calcluated with the following formula:
+
+####$$p.value=\frac{count\ of\ permuted\ scores >= real\ score}{iterations}$$
+
+If none of the permuted scores are greater that the real score the p.value
+is instead calculated as:
+
+#### $$p.value < 10^{-log10(iterations)}$$
+
+Ideally, the data is permuted until at least one permuted score is greater
+than the real score allowing for the calculation of an exact p-value, although,
+with very distinct seperations, this is not always realistic. Despite the
+fact that we use a low iteration number in many examples in the vignette,
+we recommend 10,000 iterations as a good starting point to examine the
+distribution of permuted scores compared to the real score.
+
+# Examples
+## Demonstration data
+
+The ClusterSignificance package includes 2 small example data matrices, 
+one used for demonstrating the Mlp method and one used for demonstrating 
+the Pcp method. The Mlp demo matrix has 2 dimensions whereas, the Pcp demo 
+matrix has 4. In addition, the groups variable has been added as the rownames 
+of each matrix, with the Mlp demo matrix having 2 groups and the Pcp demo 
+matrix having 3 groups. Finally, colnames, indicating the dimension number, 
+were also added to each matrix. Neither colnames or rownames are needed for 
+the input matrix to ClusterSignificance functions and we have only added 
+them here only for clarity.
+
+```{r, demoDataMlp}
+data(mlpMatrix)
+```
+
+```{r headMat, echo=FALSE, eval=TRUE}
+##Mlp
+printMat <- mlpMatrix
+groups <- rownames(mlpMatrix)
+dimnames(printMat) <- list(groups, paste("dim", 1:2, sep=""))
+knitr::kable(
+    printMat[1:3,], 
+    digits = 2, 
+    caption = "Head; Mlp matrix.", 
+    align=c(rep('l', 2))
+)
+
+gTable <- as.data.frame(table(groups))
+knitr::kable(
+    gTable, 
+    digits = 2, 
+    align=c(rep('l', 2)), 
+    caption = "Rownames table; Mlp matrix."
+)
+```
+
+```{r, demoDataPcp}
+data(pcpMatrix)
+```
+
+```{r headPcp, echo=FALSE}
+##Pcp
+printMat <- pcpMatrix
+groups <- rownames(pcpMatrix)
+dimnames(printMat) <- list(groups, paste("dim", 1:4, sep=""))
+knitr::kable(
+    printMat[1:3,], 
+    digits = 2, 
+    caption = "Head; Pcp matrix.", 
+    align=c(rep('l', 2))
+)
+
+gTable <- as.data.frame(table(groups))
+knitr::kable(
+    gTable, 
+    digits = 2, 
+    align=c(rep('l', 2)), 
+    caption = "Rownames table; Pcp matrix."
+)
+```
+
+## Mlp method
+### Projection
+
+The Mlp method is suitable for comparing clusters in a maximum 2 dimensions
+when the seperation between a maximum of 2 groups will be evaluated at
+a time. Breifly, Mlp functions by drawing a regression line through the
+means of the two groups and then projects all points onto that line. To
+project the points into one dimension, the points are then rotated onto
+the x-axis. A detailed description and graphical representation of the
+individual steps can be seen in the example below. It should be noted that,
+despite the fact that the Mlp method will work with as low as 2 data points
+per group, it may not be advisable to perform an analysis with such a small
+amount of data.
+
+We use the demonstration data included with the package to demonstrate 
+the Mlp function.
+
+```{r, fig.align='center', fig.width=10, fig.height=8}
+## Load demo input.
+data(mlpMatrix)
+
+## Create the group variable.
+groups <- rownames(mlpMatrix)
+
+## Run Mlp and plot.
+prj <- mlp(mlpMatrix, groups)
+plot(prj)
+```
+
+The plot above shows the 6 steps Mlp takes to project the points into one
+dimension.
+
+1. The input matrix.
+2. Finding the mean of each group.
+3. Regression line and move to origo.
+    a. The regression line drawn through the mean of each group.
+    b. Adjustment of the line and points so the line passes through origo.
+        i. Arrows show the move from the original position to new position.
+4. Orthogonal projection onto the regression line.
+5. Points shown after projection.
+6. The final projection of points into one dimension.
+
+Note that step 4 shows the orthogonal projection onto the regression line
+and appears visually to not be perpendicular to the line. This is due to
+the automatic scaling of the y-axis which is necessary when large differences
+in proportions between PC1 and PC2 would otherwise cause data to disappear
+outside of the margins.
+
+### Classification
+
+```{r classifyMlp, message=FALSE, fig.align='center', fig.width=8, fig.height=6}
+## Classify and plot.
+cl <- classify(prj)
+plot(cl)
+```
+
+The classification function works in the same manner for both the Mlp and
+Pcp methods and is previously described in the [Classification][] section.
+The perpendicular lines in the classification plot represent the separation
+scores for all possible separations. The highest scoring separation of
+the two groups is represented by the highest perpendicular line.
+
+### Permuation
+
+```{r permuteMlp, message=FALSE, fig.align='center', message = FALSE}
+## Set the seed and number of iterations.
+set.seed(3)
+iterations <- 100 
+
+## Permute and plot.
+pe <- permute(
+    mat=mlpMatrix, 
+    iterations=iterations, 
+    groups=groups, 
+    projmethod="mlp"
+)
+
+plot(pe)
+```
+
+```{r pValueMlp, echo=FALSE, eval=TRUE, message=FALSE}
+## p-value
+pvalue(pe)
+```
+
+The permutation plot shows a histogram of the max seperation scores from
+all permutations with the verrtical red line representing the max score
+from the real data. From the plot can see that when comparing the seperation
+of grp1 vs. grp2 the permuted data for 100 iterations never scores higher
+than the real data, and the separation thus has a significant p-value of
+< 0.01. The p-values can be obtained using `pvalue(pe)`.
+
+## Pcp method
+### Projection
+
+The Pcp method is suitable in situations where more than 2 dimensions need
+to be considered simultaneously and/or more than 2 group seperations should
+be analyzed. It is limited by the fact that, the Pcp method will not work
+for < 5 data points per group and must have > 5 unique values per dimension.
+The Pcp method utilizes the principal.curve method from the princurve package
+to fit a principal curve to all data points utilizing the dimensions input
+by the user. A principal curve can be described as a "smooth curve that
+passes through the middle of the data in an orthogonal sense". All data
+points are then projected onto the principal curve and transfered into
+one dimension for scoring.
+
+For this example the deomnstration data was simulated so that one cluster
+has a visable seperation from the two other clusters, whereas two of the 
+clusters are largley overlapping. Therefore, can predict that 
+ClusterSignificance will find 2 seperations to be significant where as 
+the other will be insignificant.
+
+```{r PcpProjection, fig.align='center', fig.width=10, fig.height=10}
+## Load demo input.
+data(pcpMatrix)
+
+## Create the group variable.
+groups <- rownames(pcpMatrix)
+
+## Run Pcp and plot.
+prj <- pcp(pcpMatrix, groups)
+plot(prj)
+```
+
+The following steps take place during Pcp projection:
+
+1. The input matrix.
+2. Drawing the principal curve.
+3. Projection of points to the principal curve.
+4. The points after projection onto the principal curve.
+5. Projection of points into one dimension.
+6. The final projection of points.
+
+### Scoring
+Due to the fact that the Pcp method can perform several group comparisons
+at once, when > 2 groups are used all possible seperations are automatically
+analyzed and plotted.
+
+```{r classifyPcp, message=FALSE, fig.width=10, fig.height=7}
+cl <- classify(prj)
+plot(cl)
+```
+
+### Permuation
+
+```{r permutePcp, message=FALSE, fig.width=10, fig.height=7}
+#permute matrix
+set.seed(3)
+iterations <- 100 ## Set the number of iterations.
+
+## Permute and plot.
+pe <- permute(
+    mat=pcpMatrix, 
+    iterations=iterations, 
+    groups=groups, 
+    projmethod="pcp"
+)
+
+plot(pe)
+```
+
+```{r pValuePcp, echo=TRUE, eval=TRUE, message=FALSE}
+pvalue(pe)
+```
+
+The results from the permutation indicate that ClusterSignificance performed
+as we would expect. The seperation for grp1 vs grp2 is insignificant whereas
+the seperations for both grp1 vs grp3 and grp2 vs grp3 are significant.
+
+# Principal Component Analysis
+
+One probable application for ClusterSignificance would be the analysis
+of cluster seperation post-PCA. Here we use the leukemia dataset from the
+plsgenomics package to demonstrate how this may be done. The dataset includes
+"gene expression data (3051 genes and 38 leukemia samples) from the leukemia
+microarray study of Golub et al. (1999)". The tumor samples are from both
+acute lymphoblastic leukemia (ALL) and acute myeloid leukemia (AML) patients.
+Due to the inherant differences in the transcriptome of these two cancer
+types, we hypothesize that they would form seperate culsters post-PCA and
+that we can use ClusterSignificance to examine if this seperation is 
+significant.
+
+
+```{r echo=TRUE, eval=TRUE, message=FALSE}
+## The leukemia dataset is provided as a list with 3 elements. 
+## An explaination of these can be found using the command:
+## help(leukemia)
+
+library(plsgenomics, quietly = TRUE)
+data(leukemia)
+
+## Extract the expression matrix.
+expression <- leukemia$X 
+
+## Run PCA extract the principal components.
+pca <- prcomp(expression, scale = TRUE)
+mat <- pca$x
+
+## Extract the grouping variable (coded as 1 (ALL) and 2 (AML)).
+groups <- ifelse(leukemia$Y == 1, "ALL", "AML")
+```
+
+```{r, echo = FALSE}
+gTable <- as.data.frame(table(groups))
+knitr::kable(gTable, 
+    digits = 2, 
+    align=c(rep('l', 2)), 
+    caption = "Groups argument table."
+)
+```
+
+```{r ALLprojection, fig.align='center', fig.width=10, fig.height=10}
+ob <- pcp(mat, groups, normalize=TRUE)
+plot(ob)
+```
+
+```{r ALLclassification, fig.align='center', fig.width=8, fig.height=6}
+cl <- classify(ob)
+plot(cl)
+```
+
+```{r ALLpermutation, fig.align='center', message = FALSE}
+set.seed(3)
+iterations <- 100
+pe <- permute(mat=mat, iterations=iterations, groups=groups, projmethod="pcp")
+pvalue(pe)
+```
+
+As we can see from the resulting p-value, ClusterSignificance is able to
+find a significant seperation between ALL and AML clusters, even with the
+low iteration number used in the example. 10000 iterations results in p
+= 1e-04.
+
+# Advanced usage
+## Concatenate permutation results
+When running the permutation step of the Pcp method, it is possible that
+all iterations are not sucessfully completed, as can be seen with the message
+upon permutaion completion. Due to the fact that, the p-value is calculated
+not by the number of iterations input by the user but, instead, with the
+number of iterations that sucessfully complete, this will not be an issue
+for most users. However, if it is the case that a specific number of iterations
+is required by the user it is possible to concatenate multiple permutation
+runs.  
+
+```{r concatPermuts, message=FALSE, eval=FALSE}
+set.seed(3)
+iterations <- 10
+
+pe1 <- permute(mat=mat, iterations=iterations, groups=groups, projmethod="pcp")
+pe2 <- permute(mat=mat, iterations=iterations, groups=groups, projmethod="pcp")
+pe3 <- permute(mat=mat, iterations=iterations, groups=groups, projmethod="pcp")
+pvalue(pe1)
+
+pe <- c(pe1, pe2, pe3)
+pvalue(pe)
+```
+
+## User defined permutatiton matrix
+In some cases, e.g. PCA, it may be desireable to define a permutation matrix
+rather than allowing ClusterSignificance to do this automatically. For
+example, when determining seperation of clusters related to PCA, a more
+valid approch may be to perform PCA on a sampled matrix of the origial
+values, after which this is provided to ClusterSignificance, rather than
+allowing ClusterSignificance to randomly sample the principal components.
+This can be accomplished by providing the *user.permutations* argument
+to the permute method. 
+
+```{r userDefinedPermats, eval=TRUE}
+##define permMatrix function
+.pca <- function(y, groups, uniq.groups, mat) {
+    pca <- prcomp(
+        sapply(1:ncol(mat[groups %in% uniq.groups[, y], ]), 
+            function(i)
+                mat[groups %in% uniq.groups[, y], i] <- 
+                    sample(
+                        mat[groups %in% uniq.groups[, y], i], 
+                        replace=FALSE
+                    )
+        ), scale=TRUE
+    )
+    return(pca$x)
+}
+
+permMatrix <- function(iterations, groups, mat) {
+    uniq.groups <- combn(unique(groups), 2)
+    permats <- lapply(1:ncol(uniq.groups), 
+        function(y)
+            lapply(1:iterations, 
+                function(x)
+                    .pca(y, groups, uniq.groups, mat)
+            )
+    )
+    return(permats)
+}
+
+set.seed(3)
+points.amount <- 20
+groupNames = c("grp1", "grp2", "grp3")
+PCs = 4
+
+## Create the input matrix.
+mat <- matrix(c(
+    sapply(1:PCs, function(xi)
+        c(
+            sample(seq(0.0, 1.0, 0.001), replace=FALSE, size=points.amount),
+            sample(seq(0.0, 1.0, 0.001), replace=FALSE, size=points.amount),
+            sample(seq(0.0, 1.0, 0.001), replace=FALSE, size=points.amount)
+        )
+    )), ncol=PCs
+) 
+
+## Create the group variable.
+groups <- c(
+    sapply(1:length(groupNames), function(ix, groupNames)
+        rep(groupNames[ix], nrow(mat)/length(groupNames)), 
+        groupNames = groupNames
+    )
+)
+
+iterations = 100
+permats <- permMatrix(iterations, groups, mat)
+```
+
+This results in a list with one element per comparison. Each of these elements
+holds another list with the number of elements = number of iterations and
+each element holding 1 permutation matrix. We can then provide this permutation
+matrix to ClusterSignificance in the following manner:
+
+```{r runUserDefinedMatrix, eval=FALSE}
+pe <- permute(
+    mat = mat, 
+    iterations=100, 
+    groups=groups, 
+    projmethod="pcp",
+    userPermats=permats
+)
+```
+
+# Conclusion
+
+This package can estimate a p-value for a separation projected on a line.
+Typically the package might be used post-PCA-analysis, but also clusters
+coming from other sources can be tested.
+
+# Session info
+
+```{r echo=TRUE, eval=TRUE}
+sessionInfo()
+```
+
