@@ -3,7 +3,7 @@ Title: Investigates Significance of Clusters by Reducing the Data to
         One Dimension to be Able to Easy Set a Score for the
         Separation, and a p-Value is then Calculated from Permutations
         of the Original Data
-Version: 1.0.0
+Version: 1.1.0
 Author: Jason T. Serviss and Jesper R. Gadin
 Maintainer: Jason T Serviss <jason.serviss@ki.se>
 Description: The ClusterSignificance package provides tools to assess
