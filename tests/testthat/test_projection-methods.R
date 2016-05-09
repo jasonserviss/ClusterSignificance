@@ -266,19 +266,19 @@ test_that(paste(
     # Test 1 - check that group info is preserved
     #####################
     # reduce from 3 dim
-    mat <- matrix(c( 
-        2, 1, 1,
-        1, 1, 2,
-        3, 2, 1,
-       	4, 3, 2,
-       	1, 2, 1, 
-       	1, 2, 2), nrow=6, byrow=TRUE)
-    groups <- c("grp1", "grp2", "grp1", "grp1","grp1","grp2")
-    rownames(mat) <- groups
+    #mat <- matrix(c(
+    #    2, 1, 1,
+    #    1, 1, 2,
+    #    3, 2, 1,
+    #   	4, 3, 2,
+    #   	1, 2, 1,
+    #   	1, 2, 2), nrow=6, byrow=TRUE)
+    #    groups <- c("grp1", "grp2", "grp1", "grp1","grp1","grp2")
+    #rownames(mat) <- groups
     	
     #run tests
-    res <- .reduceMultDimToOneDimAlongTheLine(mat)
-    expect_equal(groups, names(res), tolerance=1e-6)
+    #res <- .reduceMultDimToOneDimAlongTheLine(mat)
+    #expect_equal(groups, names(res), tolerance=1e-6)
     
     #####################
     # Test 2 - check that it can handle points passing through all quadrants
