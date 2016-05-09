@@ -333,20 +333,20 @@ setMethod("mlp", "matrix", function(mat, groups, ...
     #because the move to origo through the y-intercept we can use the
     #x-axis to know which the direction the euclidean distance is supposed
     #to be calculated
-    reduced <- vector()
-    group <- vector()
+    reduced <- rep(NA, nrow(mat))
+    #group <- vector()
     if(any(mat[,1]<0)){
-        reduced <- -sqrt(apply(mat[mat[,1]<0,,drop=FALSE]^2,1,sum))
-        group <- rownames(mat[mat[,1]<0,,drop=FALSE])
+        reduced[mat[,1]<=0] <- -sqrt(apply(mat[mat[,1]<=0,,drop=FALSE]^2,1,sum))
+        #group <- rownames(mat[mat[,1]<0,,drop=FALSE])
     }
     
     if(any(mat[,1]>0)){
-        reduced <- c(reduced, sqrt(apply(mat[mat[,1]>0,,drop=FALSE]^2,1,sum)))
-        group <- c(group,rownames(mat[mat[,1]>0,,drop=FALSE]))
+        reduced[mat[,1]>0] <- sqrt(apply(mat[mat[,1]>0,,drop=FALSE]^2,1,sum))
+        #group <- c(group,rownames(mat[mat[,1]>0,,drop=FALSE]))
 
     }
     #group names and order must be preserved here
-    names(reduced) <- group
+    #names(reduced) <- group
     return(reduced)
 }
 #move the points so their mean line passes through origin
