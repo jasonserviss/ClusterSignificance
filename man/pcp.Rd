@@ -12,7 +12,7 @@
 \alias{pcp,matrix-method}
 \alias{plot,Pcp,missing-method}
 \alias{show,Pcp-method}
-\title{projection of points into one dimension}
+\title{Projection of points into one dimension.}
 \usage{
 getData(x, ...)
 
@@ -61,15 +61,15 @@ with PC1 to the left.}
 The pcp function returns an object of class Pcp
 }
 \description{
-project points onto a principal curve
+Project points onto a principal curve.
 }
 \details{
 The resulting Pcp object containing results from a principal curve reduction
 to one dimension. The group and the one dimensional points will be the
 information needed to carry out a classification using the classify() 
-function. But as a help to illustrate the details of the dimension reduction
-, the information from some critical steps are stored in the object. To 
-visually explore these there is a dedicated plot method for Php objects, use
+function. As a help to illustrate the details of the dimension reduction,
+the information from some critical steps is stored in the object. To
+visually explore these there is a dedicated plot method for Pcp objects, use
 plot().
 }
 \examples{

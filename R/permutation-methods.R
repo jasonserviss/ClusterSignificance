@@ -1,7 +1,7 @@
 #'@include All-classes.R
 NULL
 
-#' permutation test
+#' Permutation test
 #' 
 #' Test how the classification performs compared to random (eg. permuted) data.
 #' 

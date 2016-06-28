@@ -11,7 +11,7 @@
 \alias{mlp,matrix-method}
 \alias{plot,Mlp,missing-method}
 \alias{show,Mlp-method}
-\title{projection of points into one dimension}
+\title{Projection of points into one dimension.}
 \usage{
 \S4method{getData}{Mlp}(x, n = NULL)
 
@@ -56,18 +56,19 @@ Ordered PCs, with PC1 to the left.}
 The mlp function returns an object of class Mlp
 }
 \description{
-project points onto the mean based line
+Project points onto the mean based line.
 }
 \details{
-projection of the points on a line separating the mean of two groups.
-mlp is the abbreviation of 'mean line projection'. The
-Function accepts at the moment only two groups and two PCs at the time.
+Projection of the points onto a line between the mean of two groups.
+Mlp is the abbreviation for 'mean line projection'. The
+function accepts, at the moment, only two groups and two PCs at a
+time.
 
-An Object containing results from a mean line projection reduction to one
+An object containing results from a mean line projection reduction to one
 dimension.
 
 The group and the one dimensional points are the most important information
-to carry out a classification using the classify() function. But as a help
+to carry out a classification using the classify() function. As a help
 to illustrate the details of the dimension reduction, the information from
 some critical steps are stored in the object. To visually explore these 
 there is a dedicated plot method for Mlp objects, use plot().

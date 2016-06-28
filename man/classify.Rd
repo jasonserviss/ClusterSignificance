@@ -12,7 +12,7 @@
 \alias{initialize,ClassifiedPoints-method}
 \alias{plot,ClassifiedPoints,missing-method}
 \alias{show,ClassifiedPoints-method}
-\title{classification of the one dimensional points in a Pcp or Mlp object}
+\title{Classification of the one dimensional points in a Pcp or Mlp object.}
 \usage{
 \S4method{getData}{ClassifiedPoints}(x, n = NULL)
 
@@ -55,14 +55,15 @@ ClassifiedPoints object}
 The classify function returns an object of class ClassifiedPoints
 }
 \description{
-classification based on ROC params (TN TP FP FN)
+Classification based on ROC params (TN TP FP FN).
 }
 \details{
 Tests all possible discrimination lines and picks the one with highest score
-based on a score which is simply calculated by formula (TP - FP) + (TN - FN)
+based on a score which is simply calculated by the formula
+(TP - FP) + (TN - FN).
 
-The plot shows the distribution of scores for different discrimination lines
-Each line is a separator that creates a score for the separation of two 
+The plot shows the distribution of scores for different discrimination lines.
+Each line is a separator that has a score for the separation of the two 
 groups, and the height of the line marks the score for this separation.
 }
 \examples{

@@ -13,7 +13,7 @@
 \alias{pvalue}
 \alias{pvalue,PermutationResults-method}
 \alias{show,PermutationResults-method}
-\title{permutation test}
+\title{Permutation test}
 \usage{
 \S4method{getData}{PermutationResults}(x, n = NULL)
 

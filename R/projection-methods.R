@@ -1,16 +1,16 @@
 #'@include All-classes.R
 NULL
 
-#' projection of points into one dimension
+#' Projection of points into one dimension.
 #'
-#' project points onto a principal curve
+#' Project points onto a principal curve.
 #'
 #' The resulting Pcp object containing results from a principal curve reduction
 #' to one dimension. The group and the one dimensional points will be the
 #' information needed to carry out a classification using the classify() 
-#' function. But as a help to illustrate the details of the dimension reduction
-#' , the information from some critical steps are stored in the object. To 
-#' visually explore these there is a dedicated plot method for Php objects, use
+#' function. As a help to illustrate the details of the dimension reduction,
+#' the information from some critical steps is stored in the object. To
+#' visually explore these there is a dedicated plot method for Pcp objects, use
 #' plot().
 #'
 #' @name pcp
@@ -157,20 +157,21 @@ setMethod("pcp", "matrix", function(mat, groups, ...
     return(list(mat, line, vec.onedim, groups, index))
 }
 
-#' projection of points into one dimension
+#' Projection of points into one dimension.
 #'
-#' project points onto the mean based line
+#' Project points onto the mean based line.
 #'
-#' projection of the points on a line separating the mean of two groups.
-#' mlp is the abbreviation of 'mean line projection'. The
-#' Function accepts at the moment only two groups and two PCs at the time.
+#' Projection of the points onto a line between the mean of two groups.
+#' Mlp is the abbreviation for 'mean line projection'. The
+#' function accepts, at the moment, only two groups and two PCs at a
+#' time.
 #'
 #'
-#' An Object containing results from a mean line projection reduction to one
+#' An object containing results from a mean line projection reduction to one
 #' dimension. 
 #'
 #' The group and the one dimensional points are the most important information
-#' to carry out a classification using the classify() function. But as a help
+#' to carry out a classification using the classify() function. As a help
 #' to illustrate the details of the dimension reduction, the information from
 #' some critical steps are stored in the object. To visually explore these 
 #' there is a dedicated plot method for Mlp objects, use plot().  

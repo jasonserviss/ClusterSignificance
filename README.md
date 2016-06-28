@@ -1,5 +1,19 @@
 
+<a href="http://www.bioconductor.org/packages/devel/bioc/html/ClusterSignificance.html#since"><img border="0" src="http://www.bioconductor.org/shields/years-in-bioc/ClusterSignificance.svg" title="How long since the package was first in a develd Bioconductor version (or is it in devel only)."></a> <a href="http://bioconductor.org/packages/stats/bioc/ClusterSignificance.html"><img border="0" src="http://www.bioconductor.org/shields/downloads/ClusterSignificance.svg" title="Percentile (top 5/20/50% or 'available') of downloads over last 6 full months. Comparison is done across all package categories (software, annotation, experiment)."></a> <a href="https://support.bioconductor.org/t/ClusterSignificance/"><img border="0" src="http://www.bioconductor.org/shields/posts/ClusterSignificance.svg" title="Support site activity, last 6 months: tagged questions/avg. answers per question/avg. comments per question/accepted answers, or 0 if no tagged posts."></a> <a href="http://www.bioconductor.org/packages/devel/bioc/html/ClusterSignificance.html#svn_source"><img border="0" src="http://www.bioconductor.org/shields/commits/bioc/ClusterSignificance.svg" title="average Subversion commits (to the devel branch) per month for the last 6 months"></a>
+
+Status: Travis CI [![Build Status](https://travis-ci.org/jasonserviss/ClusterSignificance.svg?branch=master)](https://travis-ci.org/jasonserviss/ClusterSignificance)
+
+Bioc-release <a href="http://www.bioconductor.org/packages/release/bioc/html/ClusterSignificance.html#archives"><img border="0" src="http://www.bioconductor.org/shields/availability/release/ClusterSignificance.svg" title="Whether the package is available on all platforms; click for details."></a> <a href="http://bioconductor.org/checkResults/release/bioc-LATEST/ClusterSignificance/"><img border="0" src="http://www.bioconductor.org/shields/build/release/bioc/ClusterSignificance.svg" title="build results; click for full report"></a>
+
+Bioc-devel <a href="http://www.bioconductor.org/packages/devel/bioc/html/ClusterSignificance.html#archives"><img border="0" src="http://www.bioconductor.org/shields/availability/devel/ClusterSignificance.svg" title="Whether the package is available on all platforms; click for details."></a> <a href="http://bioconductor.org/checkResults/devel/bioc-LATEST/ClusterSignificance/"><img border="0" src="http://www.bioconductor.org/shields/build/devel/bioc/ClusterSignificance.svg" title="build results; click for full report"></a>
+
 # ClusterSignificance
+
+The ClusterSignificance package is written in [R](https://cran.r-project.org) and can be found hosted at the [Bioconductor](https://www.bioconductor.org) repository via the links below.
+
+* [release](https://master.bioconductor.org/packages/release/bioc/html/ClusterSignificance.html)
+* [devel](https://bioconductor.org/packages/devel/bioc/html/ClusterSignificance.html)
+
 ## Introduction
 The ClusterSignificance package provides tools to assess if clusters, in
 e.g. principal component analysis (PCA), have a separation different from
@@ -12,99 +26,89 @@ Furthermore, to get a p-value for the separation we have to compare the
 separation score for our real data to the separation score for permuted data 
 (*permutation*).
 
-The package includes 2 different methods for accomplishing the 3 steps
-above, Mean line projection (**Mlp**) and Principal curve projection (**Pcp**).
-Here we will first discuss the similaraties of the 3 steps independant
-of which method is used. This is followed by an example of the Mlp and
-Pcp methods and the unique features of each. Furthermore, we provide an
-example where ClusterSignificance is used to examine the seperation between
-2 clusters downsteam of a PCA. 
 
 ## Installation
-
-
-## Quick Start
-While we recommend reading the vignette, the instructions that follow will allow you to quickly get a feel for how ClusterSignificance works and what it is capable of.
-
-```{r echo=TRUE, eval=TRUE, message=FALSE}
-library(ClusterSignificance)
-```
-
-First, we create an example matrix and group argument to input into the
-Mlp method. Please note that this projection method is limited to 2 groups and 2 dimensions per run. For more dimensions or groups refer to the vignette and the Pcp projection method.
-
-```{r, echo=TRUE}
-## Create example matrix.
-set.seed(3)
-points.amount <- 20 
-PCs = 2
-
-## Create the input matrix.
-mat <- matrix(c(
-    sapply(1:PCs, function(xi)
-        c(
-            sample(seq(0.3, 1.0, 0.001), replace=FALSE, size=points.amount),
-            sample(seq(0.0, 0.7, 0.001), replace=FALSE, size=points.amount)
-        )
-    )), ncol=PCs
-) 
-```
+The release version of ClusterSignificance can be installed in R from 
+[Bioconductor](https://www.bioconductor.org) as follows:
 
 ```{r}
-## Create the groups argument.
-groupNames = c("grp1", "grp2") ## Maximum of 2 groups with the Mlp method.
-
-## Create the group variable.
-groups <- c(
-    sapply(1:length(groupNames), function(ix, groupNames)
-        rep(groupNames[ix], nrow(mat)/length(groupNames)), 
-        groupNames = groupNames
-    )
-)
+source("https://bioconductor.org/biocLite.R")
+biocLite("ClusterSignificance")
 ```
-### Projection
-We start by projecting the points into one dimension using the Mlp method. We are able to visualize each step in the projection by plotting the results as shown below. 
+To install the development version use:
 
-```{r, fig.align='center', fig.width=10, fig.height=8}
-## Run Mlp and plot.
-prj <- mlp(mat, groups)
+```{r}
+install.packages("devtools")
+library(devtools)
+install_github("jasonserviss/ClusterSignificance")
+```
+
+## Quick Start
+While we recommend reading the [vignette](https://bioconductor.org/packages/release/bioc/vignettes/ClusterSignificance/inst/doc/ClusterSignificance-vignette.html), the instructions that follow will allow you 
+to quickly get a feel for how ClusterSignificance works and what it is capable of.
+
+Here we utilize the example data included in the ClusterSignificance package 
+for the Mlp method. Please note that this projection method is limited to 2 
+groups and 2 dimensions per run. For more dimensions or groups refer to the 
+vignette and the Pcp projection method.
+
+### Projection
+We start by projecting the points into one dimension using the Mlp method. We are able to visualize each step in the projection by plotting the results as shown below.
+
+```{r projection}
+library(ClusterSignificance)
+data(mlpMatrix)
+groups <- rownames(mlpMatrix)
+prj <- mlp(mlpMatrix, groups)
 plot(prj)
 ```
-
-<img src="/inst/screenShots/MlpProjection.jpeg" alt="Projection plot">
+[<img src="http://i.imgur.com/KP5CPDW.jpg" alt="Projection Plot"/>](http://i.imgur.com/KP5CPDW.jpg)
 
 ### Classification
-Now that the points are in one dimension, we can score each possible seperation and deduce the max seperation score. This is accomplished by the classsify command (again we can plot the results afterwards).
+Now that the points are in one dimension, we can score each possible seperation and deduce the max seperation score. This is accomplished by the classify command (again we can plot the results afterwards). The vertical lines in the plot represent the seperation score for each possible seperation.
 
-```{r classifyMlp, message=FALSE, fig.align='center', fig.width=8, fig.height=6}
+```{r classifyMlp}
 ## Classify and plot.
 cl <- classify(prj)
 plot(cl)
 ```
 
-<img src="/inst/screenShots/MlpClassification.jpeg" alt="Classification plot">
+[<img src="http://i.imgur.com/SP3gDrT.jpg" alt="Projection Plot"/>](http://i.imgur.com/SP3gDrT.jpg)
 
 ### Permutation
-Finally, as we have now determined the max seperation score, we can permute the data to examine how many max scores exceed that of our real max score and, thus, calculate a p-value for our seperation. Plotting the permutaion results show a histogram of the permuted max scores with the red line representing the real score.
+Finally, as we have now determined the max seperation score, we can permute the data to examine how many permuted max scores exceed that of our real max score and, thus, calculate a p-value for our seperation. Plotting the permutaion results show a histogram of the permuted max scores with the red line representing the real score.
 
-```{r permuteMlp, message=FALSE, fig.align='center', message = FALSE}
+```{r permuteMlp}
 ## Set the seed and number of iterations.
 set.seed(3)
 iterations <- 100 
 
 ## Permute and plot.
-pe <- permute(mat=mat, iterations=iterations, groups=groups, projmethod="mlp")
+pe <- permute(
+	mat=mat, 
+	iterations=iterations, 
+	groups=groups, 
+	projmethod="mlp"
+)
 plot(pe)
 ```
 
-<img src="/inst/screenShots/MlpPermutation.jpeg" alt="Permutation plot">
+[<img src="http://i.imgur.com/lzURCuo.jpg" alt="Projection Plot"/>](http://i.imgur.com/lzURCuo.jpg)
 
 
 To calculate the p-value we use the follwing command.
 
 ```{r pValueMlp, echo=FALSE, eval=TRUE, message=FALSE}
-## p-value
 pvalue(pe)
 ```
 
+## Bug Reports and Issues
+
+The Bioconductor support site for the ClusterSignificance package is located [here](https://support.bioconductor.org/t/ClusterSignificance/). Issues and contact concerning the development version can be submitted via: [ClusterSignificance development](https://github.com/jasonserviss/ClusterSignificance)
+
+## Citation
+
+There is currently no publication linked to the ClusterSignificance package. This will be updated accordingly in the future.
+
 ## License
+[GPL-3](https://www.r-project.org/Licenses/GPL-3)

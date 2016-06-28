@@ -1,12 +1,15 @@
-#' A package with purpose of giving a p-value to separations of clusters. 
-#' 
-#' It is often a common wish after clustering procedure to assess how
-#' significant a seen separation is. This package investigates clusters of two
-#' or more groups by projecting all points to a line or curve. The placement on
-#' this line is used for classification of the points and the probability of 
-#' the seen separation just being because of chance is evaluated using
-#' a permutation method.
-#' 
+#' The ClusterSignificance package provides tools to assess
+#' if clusters have a separation different from random or permuted
+#' data.
+#'
+#' The ClusterSignificance package provides tools to assess
+#' if clusters have a separation different from random or permuted
+#' data. ClusterSignificance investigates clusters of two or more
+#' groups by first, projecting all points onto a one dimensional
+#' line. Cluster separations are then scored and the probability
+#' of the seen separation being due to chance is evaluated using a
+#' permutation method.
+#'
 #' \tabular{ll}{ Package: \tab ClusterSignificance\cr Type: \tab Package\cr
 #' Version: \tab 1.0\cr Date: \tab 2016-02-28\cr License: \tab GPL-3\cr }
 #' 
