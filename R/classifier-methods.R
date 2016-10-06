@@ -75,7 +75,7 @@ setMethod("classify", "Mlp", function(x, ...
 #
 ###############################################################################
 
-.classifyWrapper <- function(x, ...){
+.classifyWrapper <- function(x,group.color=NULL, ...){
     ##import and order data
     #points <-    x["points.onedim"]
     points <-    getData(x, "points.onedim")
@@ -114,12 +114,17 @@ setMethod("classify", "Mlp", function(x, ...
     names(scores) <- sapply(1:length(scores),
         function(x) paste(allCombos[,x], collapse = " vs "))
 
+	#set color
+	if(is.null(group.color)) group.color <- getData(x,"group.color")
+	if(!is.null(group.color)) group.color
+
     #return ClassifiedPoints object
     new("ClassifiedPoints",
     scores = scores,
     scores.points=sp$x,
     scores.index=sp$ix,
-    ROC = list(TP=TP,FP=FP,FN=FN,TN=TN)
+    ROC = list(TP=TP,FP=FP,FN=FN,TN=TN),
+	group.color=group.color
     )
 
 }

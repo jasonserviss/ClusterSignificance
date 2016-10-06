@@ -9,7 +9,8 @@ NULL
     line="matrix",
     points.onedim="numeric",
     dimnames="character",
-    index="integer"
+    index="integer",
+    group.color="matrix"
 ))
 
 #' @rdname pcp
@@ -40,7 +41,8 @@ setMethod("getData", "Pcp", function(x, n=NULL)
     points.onedim="numeric",
     dimnames="character",
     #Mlp specific
-    points.origo="matrix"
+    points.origo="matrix",
+    group.color="matrix"
 ))
 
 #' @rdname mlp
@@ -60,12 +62,13 @@ setMethod("getData", "Mlp", function(x, n=NULL)
 
 #' @rdname classify
 #' @export
-.ClassifiedPoints <- setClass("ClassifiedPoints", #contains="Mhdg",
+.ClassifiedPoints <- setClass("ClassifiedPoints", 
     representation(
         scores="list",
         scores.points="vector",
         scores.index="vector",
-        ROC="list"
+        ROC="list",
+    	group.color="matrix"
 ))
 
 #' @rdname classify
@@ -88,7 +91,8 @@ setMethod("getData", "ClassifiedPoints", function(x, n=NULL)
 .PermutationResults <- setClass("PermutationResults", 
     representation(
     scores.real="list",
-    scores.vec="list"
+    scores.vec="list",
+    group.color="matrix"
     #p.value="numeric"
 ))
 

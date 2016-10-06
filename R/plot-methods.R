@@ -9,7 +9,7 @@ NULL
 #' @importFrom scatterplot3d scatterplot3d
 #'
 
-setMethod("plot",c("Pcp", "missing"), function(x, y, steps="all", ...)
+setMethod("plot",c("Pcp", "missing"), function(x, y, steps="all",group.color=NULL, ...)
 {
 
     if("all" %in% steps){
@@ -25,13 +25,16 @@ setMethod("plot",c("Pcp", "missing"), function(x, y, steps="all", ...)
     #check if colnames are present, then use them as axisnames
     #if(colnames())
     #axisnames <- col
-    if(dim==2){
-        .plotPcp2D(x, steps)
-    } else {
 
-        ##set up color scheme for all groups
-        CM <- .setColors(groups)
-        
+	#set color
+	if(is.null(group.color)) CM <- getData(x,"group.color")
+	if(!is.null(group.color)) CM <- group.color
+	#if(!is.null(group.color)) CM <- group.color
+
+    if(dim==2){
+        .plotPcp2D(x, steps, CM)
+    }else{
+
         if(1 %in% steps){
             #original plot
             plot <- .step1(x, groups, CM)
@@ -338,7 +341,7 @@ setMethod("plot",c("Pcp", "missing"), function(x, y, steps="all", ...)
 
 #' @rdname classify
 #' @export
-setMethod("plot",c("ClassifiedPoints", "missing"), function(x, y, ...)
+setMethod("plot",c("ClassifiedPoints", "missing"), function(x, y, group.color=NULL, ...)
 {
     # plot the points and create lines as separators and show above each line
     # the score obtained using that line as classifier.
@@ -347,11 +350,15 @@ setMethod("plot",c("ClassifiedPoints", "missing"), function(x, y, ...)
     s <- getData(x,"scores")
     
     ##import colors used in projection plot
-    colors <- 
-        colorRampPalette(brewer.pal(8, "Dark2"))(length(unique(names(p))))
-                    
-    CM <- col2rgb(colors, alpha = FALSE)
-    colnames(CM) <- unique(names(p))
+ #   colors <- 
+ #       colorRampPalette(brewer.pal(8, "Dark2"))(length(unique(names(p))))
+ #                   
+ #   CM <- col2rgb(colors, alpha = FALSE)
+ #   colnames(CM) <- unique(names(p))
+
+	#set color
+	if(is.null(group.color)) CM <- getData(x,"group.color")
+	if(!is.null(group.color)) CM <- group.color
     
     ##setup plot window
     steps <- length(s)
@@ -812,7 +819,7 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
 }
 
 ##plot Pcp projection with only 2 dims
-.plotPcp2D <- function(x, steps) {
+.plotPcp2D <- function(x, steps, CM){
     
     if("all" %in% steps) {
         #set mfrow 3:2
@@ -827,7 +834,7 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
     #axisnames <- col
     
     ##set up color scheme for all groups
-    CM <- .setColors(groups)
+    #CM <- .setColors(groups)
     
     if(1 %in% steps){
         #original plot

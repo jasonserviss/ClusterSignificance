@@ -67,7 +67,7 @@ setGeneric("pcp", function(mat, ...
 ){ standardGeneric("pcp")})
 
 #' @rdname pcp
-setMethod("pcp", "matrix", function(mat, groups, ...
+setMethod("pcp", "matrix", function(mat, groups, group.color=NULL, ...
 ){
 
     #input checks
@@ -100,6 +100,11 @@ setMethod("pcp", "matrix", function(mat, groups, ...
     rownames(mat) <- groups
     rownames(line) <- groups
 
+	#set color
+	if(is.null(group.color)) group.color <- .setColors(groups)
+	#if(!is.null(group.color)) group.color
+    
+
     #return Pcp-object
     new("Pcp",
         groups=groups,
@@ -107,7 +112,8 @@ setMethod("pcp", "matrix", function(mat, groups, ...
         line=line,
         points.onedim=vec.onedim,
         dimnames=dimnames,
-        index=index
+        index=index,
+		group.color=group.color
     )
 })
 
@@ -223,7 +229,7 @@ setGeneric("mlp", function(mat, ...
     ){ standardGeneric("mlp")})
 
 #' @rdname mlp
-setMethod("mlp", "matrix", function(mat, groups, ...
+setMethod("mlp", "matrix", function(mat, groups, group.color=NULL, ...
     ){ 
 
     #check that there are only two groups
@@ -271,6 +277,9 @@ setMethod("mlp", "matrix", function(mat, groups, ...
     #reduce to one dimension 
     vec.onedim <- .reduceMultDimToOneDimAlongTheLine(mat.proj)
 
+	#process color info
+	if(is.null(group.color)) group.color <- .setColors(groups)
+
     #return Mlp-object
     new("Mlp",
         groups=groups,
@@ -279,7 +288,8 @@ setMethod("mlp", "matrix", function(mat, groups, ...
         points.onedim=vec.onedim,
         dimnames=dimnames,
         #Mlp specific
-        points.origo=mat.origo
+        points.origo=mat.origo,
+		group.color=group.color
     )
 }
 )

@@ -1,3 +1,12 @@
+CHANGES IN VERSION 1.2.0
+-----------------------
+
+NEW FEATURES
+
+    o Added a slot for group colors for the classes Pcp, Mlp, ClassifiedPoints
+      and PermutationResults
+
+
 CHANGES IN VERSION 1.0.0
 -----------------------
 

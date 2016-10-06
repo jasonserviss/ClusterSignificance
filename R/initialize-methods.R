@@ -10,27 +10,31 @@ setMethod("initialize","Pcp", function(
     points.orig,
     line,
     points.onedim,
-    index
+    index,
+    group.color
     ){
     callNextMethod(.Object,...,
     groups = groups,
     points.orig = points.orig,
     line = line,
     points.onedim = points.onedim,
-    index = index)
+    index = index,
+    group.color = group.color
+	)
     }
 )
 
 #' @rdname mlp
 #' @export 
 setMethod("initialize","Mlp", function(
-    .Object, ..., groups, points.orig, line, points.onedim
+    .Object, ..., groups, points.orig, line, points.onedim, group.color
     ){
     callNextMethod(.Object, ...,
     groups = groups,
     points.orig = points.orig,
     line = line,
-    points.onedim = points.onedim)
+    points.onedim = points.onedim,
+    group.color = group.color)
     }
 )
 
@@ -42,13 +46,15 @@ setMethod("initialize","ClassifiedPoints", function(
     scores,
     scores.points=scores.points,
     scores.index=scores.index,
-    ROC
+    ROC,
+    group.color
     ){
         callNextMethod(.Object, ...,
             scores=scores,
             scores.points=scores.points,
             scores.index=scores.index,
-            ROC=ROC
+            ROC=ROC,
+			group.color=group.color
         )
     }
 )
@@ -63,6 +69,7 @@ setMethod("initialize","PermutationResults", function(
     ){
         callNextMethod(.Object, ...,
             scores.real=scores.real,
-            scores.vec=scores.vec)
+            scores.vec=scores.vec
+			)
     }
 )
