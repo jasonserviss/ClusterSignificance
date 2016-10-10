@@ -24,28 +24,23 @@ setMethod(
     )
 {
 
-    if("all" %in% steps){
-        #set mfrow 3:2
-        oldparams <- par(mfrow=c(3,2))
-        steps <- c(1,2,3,4,5,6)
-    }
-    
-    groups <- getData(x,"groups")
-
     dim <- length(getData(x,"dimnames"))
-
-    #check if colnames are present, then use them as axisnames
-    #if(colnames())
-    #axisnames <- col
 
 	#set color
 	if(is.null(group.color)) CM <- getData(x,"group.color")
 	if(!is.null(group.color)) CM <- group.color
-	#if(!is.null(group.color)) CM <- group.color
 
-    if(dim==2){
+    if(dim==2) {
         .plotPcp2D(x, steps, CM)
-    }else{
+    } else {
+
+        if("all" %in% steps){
+            #set mfrow 3:2
+            oldparams <- par(mfrow = c(3,2), mar=c(5, 4, 5, 2) + 0.1)
+            steps <- c(1,2,3,4,5,6)
+        }
+
+        groups <- getData(x,"groups")
 
         if(1 %in% steps){
             #original plot
@@ -125,10 +120,11 @@ setMethod(
         ylab=getData(x, "dimnames")[2],
         zlab=getData(x, "dimnames")[3],
         box=FALSE,
-        y.margin.add = 0.25,
-        cex.lab = 0.5,
-        cex.axis = 0.5,
-        cex.symbols = 1
+        mar=rep(3, 4)+0.1, #bottom, left, top, right
+        y.margin.add = 0.1,
+        cex.lab = cex.lab,
+        cex.axis = cex.axis,
+        cex.symbols = cex.symbols
     )
 
     invisible(
@@ -223,6 +219,7 @@ setMethod(
         ylab=getData(x, "dimnames")[2],
         zlab=getData(x, "dimnames")[3],
         box=FALSE,
+        mar=rep(3, 4)+0.1, #bottom, left, top, right
         y.margin.add = 0.25,
         cex.lab = 0.5,
         cex.axis = 0.5,
@@ -323,6 +320,7 @@ setMethod(
         y.ticklabs=c(rep("", length(x))),
         z.ticklabs=c(rep("", length(x))),
         box=FALSE,
+        mar=rep(3, 4)+0.1, #bottom, left, top, right
         y.margin.add = 0.25,
         cex.lab = 0.5,
         cex.axis = 0.5,
