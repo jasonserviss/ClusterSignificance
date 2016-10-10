@@ -20,6 +20,8 @@ NULL
 #' with PC1 to the left.
 #' @param groups vector in same order as rows in matrix
 #' @param x matrix object for the function pcp otherwise it is a Pcp object
+#' @param df degrees of freedom, passed to smooth.spline
+#' @param group.color user assigned group coloring scheme
 #' @param n data to extract from Pcp (NULL gives all)
 #' @param y default plot param, which should be set to NULL
 #' @param .Object internal object 
@@ -67,7 +69,7 @@ setGeneric("pcp", function(mat, ...
 ){ standardGeneric("pcp")})
 
 #' @rdname pcp
-setMethod("pcp", "matrix", function(mat, groups, group.color=NULL, ...
+setMethod("pcp", "matrix", function(mat, groups, df=NULL, group.color=NULL, ...
 ){
 
     #input checks
@@ -88,7 +90,8 @@ setMethod("pcp", "matrix", function(mat, groups, group.color=NULL, ...
     #rownames(mat) <- groups
 
     ##run principal.curve and order and extract output
-    prCurve <- .Curve(mat, groups)
+    if(is.null(df)) {df <- 5}
+    prCurve <- .Curve(mat, groups, df)
 
     mat <- prCurve[[1]]
     line <- prCurve[[2]]
@@ -145,10 +148,10 @@ setMethod("pcp", "matrix", function(mat, groups, group.color=NULL, ...
 }
 
 #run princurve, sort the output, and return
-.Curve <- function(mat, groups, ...){
+.Curve <- function(mat, groups, df, ...){
 
     ##use princurve principal.curve to draw the principal curve
-    prCurve <- principal.curve(mat, maxit=1000)
+    prCurve <- principal.curve(mat, maxit=1000, df=df)
 
     #use index so the output are sorted based on the curve
     index <- prCurve$tag
@@ -189,6 +192,7 @@ setMethod("pcp", "matrix", function(mat, groups, group.color=NULL, ...
 #' Ordered PCs, with PC1 to the left.
 #' @param groups vector in same order as rows in matrix
 #' @param x matrix object for the function mlp otherwise it is a Mlp object
+#' @param group.color user assigned group coloring scheme
 #' @param n data to extract from Mlp (NULL gives all)
 #' @param y default plot param, which should be set to NULL(default: NULL)
 #' @param .Object internal object 

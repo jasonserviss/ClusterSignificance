@@ -23,9 +23,10 @@ classify(x, ...)
 \S4method{classify}{Mlp}(x, ...)
 
 \S4method{initialize}{ClassifiedPoints}(.Object, ..., scores,
-  scores.points = scores.points, scores.index = scores.index, ROC)
+  scores.points = scores.points, scores.index = scores.index, ROC,
+  group.color)
 
-\S4method{plot}{ClassifiedPoints,missing}(x, y, ...)
+\S4method{plot}{ClassifiedPoints,missing}(x, y, group.color = NULL, ...)
 
 \S4method{show}{ClassifiedPoints}(object)
 }
@@ -46,6 +47,8 @@ ClassifiedPoints object}
 \item{scores.index}{index of sorted points}
 
 \item{ROC}{parameters (TN, TP, FN and FP)}
+
+\item{group.color}{user assigned group coloring scheme}
 
 \item{y}{default plot param, which should be set to NULL}
 

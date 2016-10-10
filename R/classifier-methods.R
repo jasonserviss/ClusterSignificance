@@ -18,6 +18,7 @@ NULL
 #' @aliases classify classify,Pcp-method classify,Mlp-method ClassifiedPoints 
 #' @param x Pcp or Mlp Object for the function classify otherwise it is a 
 #'  ClassifiedPoints object
+#' @param group.color user assigned group coloring scheme
 #' @param n data to extract from ClassifiedPoints (NULL gives all)
 #' @param y default plot param, which should be set to NULL
 #' @param .Object internal object 
@@ -75,7 +76,7 @@ setMethod("classify", "Mlp", function(x, ...
 #
 ###############################################################################
 
-.classifyWrapper <- function(x,group.color=NULL, ...){
+.classifyWrapper <- function(x, group.color=NULL, ...){
     ##import and order data
     #points <-    x["points.onedim"]
     points <-    getData(x, "points.onedim")

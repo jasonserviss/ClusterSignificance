@@ -16,13 +16,13 @@
 \S4method{getData}{Mlp}(x, n = NULL)
 
 \S4method{initialize}{Mlp}(.Object, ..., groups, points.orig, line,
-  points.onedim)
+  points.onedim, group.color)
 
 \S4method{plot}{Mlp,missing}(x, y, steps = "all", ...)
 
 mlp(mat, ...)
 
-\S4method{mlp}{matrix}(mat, groups, ...)
+\S4method{mlp}{matrix}(mat, groups, group.color = NULL, ...)
 
 \S4method{show}{Mlp}(object)
 }
@@ -42,6 +42,8 @@ mlp(mat, ...)
 \item{line}{multidimensional points describing a line}
 
 \item{points.onedim}{a vector of points}
+
+\item{group.color}{user assigned group coloring scheme}
 
 \item{y}{default plot param, which should be set to NULL(default: NULL)}
 

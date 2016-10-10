@@ -19,13 +19,13 @@ getData(x, ...)
 \S4method{getData}{Pcp}(x, n = NULL)
 
 \S4method{initialize}{Pcp}(.Object, ..., groups, points.orig, line,
-  points.onedim, index)
+  points.onedim, index, group.color)
 
-\S4method{plot}{Pcp,missing}(x, y, steps = "all", ...)
+\S4method{plot}{Pcp,missing}(x, y, steps = "all", group.color = NULL, ...)
 
 pcp(mat, ...)
 
-\S4method{pcp}{matrix}(mat, groups, ...)
+\S4method{pcp}{matrix}(mat, groups, df = NULL, group.color = NULL, ...)
 
 \S4method{show}{Pcp}(object)
 }
@@ -48,12 +48,16 @@ pcp(mat, ...)
 
 \item{index}{internal index from the projection}
 
+\item{group.color}{user assigned group coloring scheme}
+
 \item{y}{default plot param, which should be set to NULL}
 
 \item{steps}{1,2,3,4,5,6 or "all"}
 
 \item{mat}{matrix with samples on rows, PCs in columns. Ordered PCs, 
 with PC1 to the left.}
+
+\item{df}{degrees of freedom, passed to smooth.spline}
 
 \item{object}{Pcp object}
 }
