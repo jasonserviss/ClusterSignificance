@@ -72,6 +72,12 @@ test_that("check that the .scorePermats function returns the correct output", {
   #setup expected data
   expected <- list(c(8, 8, 8))
   
+  names(expected) <-
+    lapply(1:ncol(uniq.groups),
+        function(x) paste(uniq.groups[, x], collapse = " vs "))
+  
+  expected <- expected[order(names(expected))]
+
   ##run function
   scores.vec <- .scorePermats(permats, groups, uniq.groups, mat, projm)
   

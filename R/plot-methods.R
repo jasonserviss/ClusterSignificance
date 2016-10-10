@@ -9,7 +9,19 @@ NULL
 #' @importFrom scatterplot3d scatterplot3d
 #'
 
-setMethod("plot",c("Pcp", "missing"), function(x, y, steps="all",group.color=NULL, ...)
+setMethod(
+    "plot",
+    c(
+        "Pcp",
+        "missing"
+    ),
+    function(
+        x,
+        y,
+        steps="all",
+        group.color=NULL,
+        ...
+    )
 {
 
     if("all" %in% steps){
@@ -341,20 +353,24 @@ setMethod("plot",c("Pcp", "missing"), function(x, y, steps="all",group.color=NUL
 
 #' @rdname classify
 #' @export
-setMethod("plot",c("ClassifiedPoints", "missing"), function(x, y, group.color=NULL, ...)
+setMethod(
+    "plot",
+    c(
+        "ClassifiedPoints",
+        "missing"
+    ),
+    function(
+        x,
+        y,
+        group.color=NULL,
+        ...
+    )
 {
     # plot the points and create lines as separators and show above each line
     # the score obtained using that line as classifier.
 
     p <- getData(x,"scores.points")
     s <- getData(x,"scores")
-    
-    ##import colors used in projection plot
- #   colors <- 
- #       colorRampPalette(brewer.pal(8, "Dark2"))(length(unique(names(p))))
- #                   
- #   CM <- col2rgb(colors, alpha = FALSE)
- #   colnames(CM) <- unique(names(p))
 
 	#set color
 	if(is.null(group.color)) CM <- getData(x,"group.color")
