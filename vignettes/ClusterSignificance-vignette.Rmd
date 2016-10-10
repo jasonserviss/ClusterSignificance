@@ -237,7 +237,7 @@ iterations <- 100
 ## Permute and plot.
 pe <- permute(
     mat=mlpMatrix, 
-    iterations=iterations, 
+    iter=iterations, 
     groups=groups, 
     projmethod="mlp"
 )
@@ -318,7 +318,7 @@ iterations <- 100 ## Set the number of iterations.
 ## Permute and plot.
 pe <- permute(
     mat=pcpMatrix, 
-    iterations=iterations, 
+    iter=iterations, 
     groups=groups, 
     projmethod="pcp"
 )
@@ -389,7 +389,7 @@ plot(cl)
 ```{r ALLpermutation, fig.align='center', message = FALSE}
 set.seed(3)
 iterations <- 100
-pe <- permute(mat=mat, iterations=iterations, groups=groups, projmethod="pcp")
+pe <- permute(mat=mat, iter=iterations, groups=groups, projmethod="pcp")
 pvalue(pe)
 ```
 
@@ -415,9 +415,9 @@ groups <- rownames(mlpMatrix)
 set.seed(3)
 iterations <- 10
 
-pe1 <- permute(mat=mat, iterations=iterations, groups=groups, projmethod="pcp")
-pe2 <- permute(mat=mat, iterations=iterations, groups=groups, projmethod="pcp")
-pe3 <- permute(mat=mat, iterations=iterations, groups=groups, projmethod="pcp")
+pe1 <- permute(mat=mat, iter=iterations, groups=groups, projmethod="pcp")
+pe2 <- permute(mat=mat, iter=iterations, groups=groups, projmethod="pcp")
+pe3 <- permute(mat=mat, iter=iterations, groups=groups, projmethod="pcp")
 pvalue(pe1)
 
 pe <- c(pe1, pe2, pe3)
@@ -479,7 +479,7 @@ ClusterSignificance in the following manner:
 ```{r runUserDefinedMatrix, eval=FALSE}
 pe <- permute(
     mat = mat, 
-    iterations=100, 
+    iter=100, 
     groups=groups, 
     projmethod="pcp",
     userPermats=permats
