@@ -135,10 +135,18 @@ setMethod(
     alpha <- 200
 
     params <- list(...)
-    if("cex.lab" %in% names(params)) {cex.lab <- params[['cex.lab']]}
-    if("cex.axis" %in% names(params)) {cex.axis <- params[['cex.axis']]}
-    if("cex.symbols" %in% names(params)) {cex.symbols <- params[['cex.symbols']]}
-    if("alpha" %in% names(params)) {alpha <- params[['alpha']]}
+    if("cex.lab" %in% names(params)) {
+        cex.lab <- params[['cex.lab']]
+    }
+    if("cex.axis" %in% names(params)) {
+        cex.axis <- params[['cex.axis']]
+    }
+    if("cex.symbols" %in% names(params)) {
+        cex.symbols <- params[['cex.symbols']]
+    }
+    if("alpha" %in% names(params)) {
+        alpha <- params[['alpha']]
+    }
 
     plot <- scatterplot3d(sx[[1]], sy[[1]], sz[[1]],
         color=rgb(
@@ -237,10 +245,18 @@ setMethod(
     alpha <- 200
     
     params <- list(...)
-    if("cex.lab" %in% names(params)) {cex.lab <- params[['cex.lab']]}
-    if("cex.axis" %in% names(params)) {cex.axis <- params[['cex.axis']]}
-    if("cex.symbols" %in% names(params)) {cex.symbols <- params[['cex.symbols']]}
-    if("alpha" %in% names(params)) {alpha <- params[['alpha']]}
+    if("cex.lab" %in% names(params)) {
+        cex.lab <- params[['cex.lab']]
+    }
+    if("cex.axis" %in% names(params)) {
+        cex.axis <- params[['cex.axis']]
+    }
+    if("cex.symbols" %in% names(params)) {
+        cex.symbols <- params[['cex.symbols']]
+    }
+    if("alpha" %in% names(params)) {
+        alpha <- params[['alpha']]
+    }
 
     plot <- scatterplot3d(sx[[1]], sy[[1]], sz[[1]],
         color=rgb(
@@ -356,10 +372,18 @@ setMethod(
     alpha <- 200
     
     params <- list(...)
-    if("cex.lab" %in% names(params)) {cex.lab <- params[['cex.lab']]}
-    if("cex.axis" %in% names(params)) {cex.axis <- params[['cex.axis']]}
-    if("cex.symbols" %in% names(params)) {cex.symbols <- params[['cex.symbols']]}
-    if("alpha" %in% names(params)) {alpha <- params[['alpha']]}
+    if("cex.lab" %in% names(params)) {
+        cex.lab <- params[['cex.lab']]
+    }
+    if("cex.axis" %in% names(params)) {
+        cex.axis <- params[['cex.axis']]
+    }
+    if("cex.symbols" %in% names(params)) {
+        cex.symbols <- params[['cex.symbols']]
+    }
+    if("alpha" %in% names(params)) {
+        alpha <- params[['alpha']]
+    }
 
     #plot points in one dimension
     plot <- scatterplot3d(s[[1]][[1]], 0, 0,
@@ -465,7 +489,7 @@ setMethod(
             ylim=yrange,
             bty='n',
             pch='',
-            ylab='',
+            ylab='score',
             xlab='',
             main=name
         )
@@ -541,7 +565,7 @@ setMethod("plot",c("PermutationResults", "missing"), function(x, y, ...)
         score <- score.reals[yy]
         name <- names(score)
         range <- range(score, scores.vec[yy])
-        hist(c(scores.vec[[yy]]), xlim=range, main=name, xlab="scores")
+        hist(c(scores.vec[[yy]]), xlim=range, main=name, xlab="max scores")
         #add line for the "real" data score
         abline(v=score.reals[[yy]], col="red")
     }
