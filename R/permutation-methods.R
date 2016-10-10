@@ -107,6 +107,7 @@ setMethod("permute", "matrix",
     if(any(is.na(groups))) groups[is.na(groups)] <- "NA"
 
     uniq.groups <- combn(unique(groups), 2)
+    uniq.groups <- apply(uniq.groups, 2, sort)
 
     if(!is.null(user.permutations)){
         .user.permutationsCheck(user.permutations, uniq.groups, iter)
@@ -170,6 +171,9 @@ setMethod("permute", "matrix",
     names(scores.real) <-
         lapply(1:ncol(uniq.groups),
             function(x) paste(uniq.groups[, x], collapse = " vs "))
+
+    scores.real <- scores.real[order(names(scores.real))]
+
     return(scores.real)
 }
 
@@ -194,6 +198,13 @@ setMethod("permute", "matrix",
     perm.scores <- lapply(1:length(perm.scores),
         function(x)
             perm.scores[[x]][is.na(perm.scores[[x]]) == FALSE])
+    
+    names(perm.scores) <-
+        lapply(1:ncol(uniq.groups),
+            function(x) paste(uniq.groups[, x], collapse = " vs "))
+
+    perm.scores <- perm.scores[order(names(perm.scores))]
+
     return(perm.scores)
 }
 

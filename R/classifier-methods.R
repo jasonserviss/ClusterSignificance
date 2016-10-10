@@ -86,6 +86,7 @@ setMethod("classify", "Mlp", function(x, ...
 
     #find all group comparisons to be made
     allCombos <- combn(unique(order),2)
+    allCombos <- apply(allCombos, 2, sort)
 
     ##make a list holding matrixes of all group positions coded as 0 or 1
     codedMat <- .codedMatrix(allCombos, order)
@@ -114,6 +115,8 @@ setMethod("classify", "Mlp", function(x, ...
     ##name the scores variable
     names(scores) <- sapply(1:length(scores),
         function(x) paste(allCombos[,x], collapse = " vs "))
+
+    scores <- scores[order(names(scores))]
 
 	#set color
 	if(is.null(group.color)) group.color <- getData(x,"group.color")
