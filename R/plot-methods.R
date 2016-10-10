@@ -7,6 +7,7 @@ NULL
 #'
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom scatterplot3d scatterplot3d
+#' @importFrom graphics legend
 #'
 
 setMethod(
@@ -44,33 +45,57 @@ setMethod(
 
         if(1 %in% steps){
             #original plot
-            plot <- .step1(x, groups, CM)
+            plot <- .step1(x, groups, CM, ...)
         }
         
         if(2 %in% steps){
             #plot with normalized data and line
-            .step2(x, groups, CM)
+            .step2(x, groups, CM, ...)
         }
         
         if(3 %in% steps){
             #show the change from old points to new points on the line
-            .step3(x, groups, CM)
+            .step3(x, groups, CM, ...)
         }
         
         if(4 %in% steps){
             #show the projected points in 3 dimensions
-            .step4(x, groups, CM)
+            .step4(x, groups, CM, ...)
         }
         
         if(5 %in% steps){
             ##show projection into one dimension
-            .step5(x, groups, CM)
+            .step5(x, groups, CM, ...)
         }
         
         if(6 %in% steps){
             #show the move to origin.
-            .step6(x, groups, CM)
+            .step6(x, groups, CM, ...)
         }
+        
+        #add legend
+        par(oldparams)
+        oldparams <- par(usr=c(0,1,0,100), xpd=NA)
+        
+        alpha <- 255
+        params <- list(...)
+        if("alpha" %in% names(params)) {alpha <- params[['alpha']]}
+
+        legend(
+            "top",
+            legend=sort(colnames(CM)),
+            horiz=TRUE,
+            col=rgb(
+                t(CM[ ,sort(colnames(CM))]),
+                maxColorValue=255,
+                alpha=alpha
+            ),
+            bty='n',
+            border='white',
+            pch=16,
+            pt.cex=2,
+            inset=-0.15
+        )
         
         #reset mfrow
         if("all" %in% steps){
@@ -96,7 +121,7 @@ setMethod(
 }
 
 #original plot
-.step1 <- function(x, groups, CM) {
+.step1 <- function(x, groups, CM, ...) {
     
     p <- getData(x, "points.orig")
     splt <- apply(p, 2, function(x) split(x, groups))
@@ -104,12 +129,23 @@ setMethod(
     sy <- splt[[2]]
     sz <- splt[[3]]
 
+    cex.lab <- 0.5
+    cex.axis <- 0.5
+    cex.symbols <- 1
+    alpha <- 200
+
+    params <- list(...)
+    if("cex.lab" %in% names(params)) {cex.lab <- params[['cex.lab']]}
+    if("cex.axis" %in% names(params)) {cex.axis <- params[['cex.axis']]}
+    if("cex.symbols" %in% names(params)) {cex.symbols <- params[['cex.symbols']]}
+    if("alpha" %in% names(params)) {alpha <- params[['alpha']]}
+
     plot <- scatterplot3d(sx[[1]], sy[[1]], sz[[1]],
         color=rgb(
             CM["red",   names(sx[1])],
             CM["green", names(sx[1])],
             CM["blue",  names(sx[1])],
-            200,
+            alpha,
             maxColorValue=255
         ),
         pch=16,
@@ -135,10 +171,11 @@ setMethod(
                     CM["red",   names(sx[x])],
                     CM["green", names(sx[x])],
                     CM["blue",  names(sx[x])],
-                    200,
+                    alpha,
                     maxColorValue=255
                 ),
-                pch=16
+                pch=16,
+                cex = cex.symbols
             )
         )
     )
@@ -146,9 +183,9 @@ setMethod(
 }
 
 #plot with normalized data and line
-.step2 <- function(x, groups, CM) {
+.step2 <- function(x, groups, CM, ...) {
     
-    plot <- .step1(x, groups, CM)
+    plot <- .step1(x, groups, CM, ...)
 
     #draw line
     l <- getData(x,"line")
@@ -158,10 +195,10 @@ setMethod(
 }
 
 #show the change from old points to new points on the line by dashing
-.step3 <- function(x, groups, CM) {
+.step3 <- function(x, groups, CM, ...) {
     
     p <- getData(x, "points.orig")
-    plot <- .step2(x, groups, CM)
+    plot <- .step2(x, groups, CM, ...)
 
     ##draw dashes
     p2 <- getData(x,"line")
@@ -182,7 +219,7 @@ setMethod(
 }
 
 #show the projected points in 3 dimensions
-.step4 <- function(x, groups, CM) {
+.step4 <- function(x, groups, CM, ...) {
     
     p <- getData(x,"line")
     splt <- apply(p, 2, function(x) split(x, rownames(p)))
@@ -193,13 +230,24 @@ setMethod(
     od <- getData(x,"points.onedim")
     names(od) <- groups
     s <- split(od, names(od))
+
+    cex.lab <- 0.5
+    cex.axis <- 0.5
+    cex.symbols <- 1
+    alpha <- 200
     
+    params <- list(...)
+    if("cex.lab" %in% names(params)) {cex.lab <- params[['cex.lab']]}
+    if("cex.axis" %in% names(params)) {cex.axis <- params[['cex.axis']]}
+    if("cex.symbols" %in% names(params)) {cex.symbols <- params[['cex.symbols']]}
+    if("alpha" %in% names(params)) {alpha <- params[['alpha']]}
+
     plot <- scatterplot3d(sx[[1]], sy[[1]], sz[[1]],
         color=rgb(
             CM["red",   names(sx[1])],
             CM["green", names(sx[1])],
             CM["blue",  names(sx[1])],
-            200,
+            alpha,
             maxColorValue=255
         ),
         pch=16,
@@ -221,9 +269,9 @@ setMethod(
         box=FALSE,
         mar=rep(3, 4)+0.1, #bottom, left, top, right
         y.margin.add = 0.25,
-        cex.lab = 0.5,
-        cex.axis = 0.5,
-        cex.symbols = 1
+        cex.lab = cex.lab,
+        cex.axis = cex.axis,
+        cex.symbols = cex.symbols
     )
 
     invisible(
@@ -234,10 +282,11 @@ setMethod(
                     CM["red",   names(sx[j])],
                     CM["green", names(sx[j])],
                     CM["blue",  names(sx[j])],
-                    200,
+                    alpha,
                     maxColorValue=255
                 ),
-                pch=16
+                pch=16,
+                cex = cex.symbols
             )
         )
     )
@@ -245,9 +294,9 @@ setMethod(
 }
 
 ##show projection into one dimension
-.step5 <- function(x, groups, CM) {
+.step5 <- function(x, groups, CM, ...) {
     
-    plot <- .step4(x, groups, CM)
+    plot <- .step4(x, groups, CM, ...)
     
     od <- getData(x,"points.onedim")
     names(od) <- groups
@@ -295,11 +344,22 @@ setMethod(
 }
 
 #show the move to origin.
-.step6 <- function(x, groups, CM) {
+.step6 <- function(x, groups, CM, ...) {
     
     od <- getData(x,"points.onedim")
     names(od) <- groups
     s <- split(od, names(od))
+
+    cex.lab <- 0.5
+    cex.axis <- 0.5
+    cex.symbols <- 1
+    alpha <- 200
+    
+    params <- list(...)
+    if("cex.lab" %in% names(params)) {cex.lab <- params[['cex.lab']]}
+    if("cex.axis" %in% names(params)) {cex.axis <- params[['cex.axis']]}
+    if("cex.symbols" %in% names(params)) {cex.symbols <- params[['cex.symbols']]}
+    if("alpha" %in% names(params)) {alpha <- params[['alpha']]}
 
     #plot points in one dimension
     plot <- scatterplot3d(s[[1]][[1]], 0, 0,
@@ -322,9 +382,9 @@ setMethod(
         box=FALSE,
         mar=rep(3, 4)+0.1, #bottom, left, top, right
         y.margin.add = 0.25,
-        cex.lab = 0.5,
-        cex.axis = 0.5,
-        cex.symbols = 1,
+        cex.lab = cex.lab,
+        cex.axis = cex.axis,
+        cex.symbols = cex.symbols,
         type="h"
     )
 
@@ -337,11 +397,12 @@ setMethod(
                         CM["red",   names(s[yz])],
                         CM["green", names(s[yz])],
                         CM["blue",  names(s[yz])],
-                        150,
+                        alpha,
                         maxColorValue=255
                     ),
                     pch=16,
-                    type = "h"
+                    type = "h",
+                    cex = cex.symbols
                 )
             )
         )
@@ -379,6 +440,15 @@ setMethod(
     setup <- n2mfrow(steps)
     oldparams <- par(mfrow=setup)
     
+    cex.points <- 1
+    lwd <- 1
+    alpha <- 150
+    
+    params <- list(...)
+    if("cex.points" %in% names(params)) {cex.points <- params[['cex.points']]}
+    if("lwd" %in% names(params)) {lwd <- params[['lwd']]}
+    if("alpha" %in% names(params)) {alpha <- params[['alpha']]}
+
     ##plot
     for( ii in 1:steps ){
         score <- s[ii]
@@ -408,11 +478,12 @@ setMethod(
                 CM["red", grp1],
                 CM["green", grp1],
                 CM["blue", grp1],
-                150,
+                alpha,
                 maxColorValue=255
             ),
             pch=16,
-            type="p"
+            type="p",
+            cex=cex.points
         )
     
         lines(
@@ -422,11 +493,12 @@ setMethod(
                 CM["red", grp2],
                 CM["green", grp2],
                 CM["blue", grp2],
-                150,
+                alpha,
                 maxColorValue=255
             ),
             pch=16,
-            type="p"
+            type="p",
+            cex=cex.points
         )
 
         # find points where to draw lines.
@@ -443,7 +515,8 @@ setMethod(
                 c(p.middle.points[i],p.middle.points[i]),
                 c(yrange[1], score[[1]][i]),
                 col="gray",
-                type="l"
+                type="l",
+                lwd=lwd
             )
         }
 
@@ -477,6 +550,7 @@ setMethod("plot",c("PermutationResults", "missing"), function(x, y, ...)
 
 #' @rdname mlp
 #' @importFrom RColorBrewer brewer.pal
+#' @importFrom graphics legend
 #' @export
 
 setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
