@@ -118,6 +118,53 @@ setMethod(
     CM <- col2rgb(colors, alpha = FALSE)
     colnames(CM) <- unique(groups)
     return(CM)
+
+#add legend
+.legend <- function(CM, oldparams, ellipsis, ...) {
+    
+    if(!is.null(oldparams)) {
+        par(oldparams)
+        par(usr=c(0,1,0,100), xpd=NA)
+        inset <- -0.15
+    } else {
+        par(usr=c(0,1,0,100), xpd=NA)
+        inset <- -0.05
+    }
+    
+    
+    alpha <- 1
+    cex.legend <- 1
+    pt.cex.legend <- 2
+    if("alpha" %in% names(ellipsis)) {alpha <- ellipsis[['alpha']]}
+    if("cex.legend" %in% names(ellipsis)) {cex.legend <- ellipsis[['cex.legend']]}
+    if("pt.cex.legend" %in% names(ellipsis)) {pt.cex.legend <- ellipsis[['pt.cex.legend']]}
+
+    if(ncol(CM) > 5) {
+        horiz = FALSE
+        ncol=5
+    } else {
+        horiz = TRUE
+        ncol=1
+    }
+    
+    legend(
+        "top",
+        legend=sort(colnames(CM)),
+        horiz=horiz,
+        col=rgb(
+            t(CM[ ,sort(colnames(CM))]),
+            maxColorValue=255,
+            alpha=alpha*255
+        ),
+        bty='n',
+        border='white',
+        pch=16,
+        pt.cex=pt.cex.legend,
+        inset=inset,
+        cex=cex.legend,
+        ncol=ncol
+    )
+    par(oldparams)
 }
 
 #original plot
