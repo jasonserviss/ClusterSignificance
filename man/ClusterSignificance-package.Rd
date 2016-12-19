@@ -2,8 +2,8 @@
 % Please edit documentation in R/ClusterSignificance-package.R
 \docType{package}
 \name{ClusterSignificance-package}
-\alias{ClusterSignificance}
 \alias{ClusterSignificance-package}
+\alias{ClusterSignificance}
 \title{The ClusterSignificance package provides tools to assess
 if clusters have a separation different from random or permuted
 data.}
@@ -20,11 +20,11 @@ permutation method.
 \tabular{ll}{ Package: \tab ClusterSignificance\cr Type: \tab Package\cr
 Version: \tab 1.0\cr Date: \tab 2016-02-28\cr License: \tab GPL-3\cr }
 }
-\author{
-Author: Jason T. Serviss, Jesper R. Gadin
-}
 \references{
 Reference to published application note (work in progress)
+}
+\author{
+Author: Jason T. Serviss, Jesper R. Gadin
 }
 \keyword{package}
 

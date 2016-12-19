@@ -35,6 +35,7 @@ test_that("check that the .codedMatrix function returns the correct output", {
   #setup expected data
   cMat <- matrix(c(rep(c(rep(0,4), rep(1,4)), 8)), ncol=8)
   expected <- list(cMat, cMat, cMat, cMat, cMat, cMat)
+  names(expected) <- c("grp1 vs grp2", "grp1 vs grp3", "grp1 vs grp4", "grp2 vs grp3", "grp2 vs grp4", "grp3 vs grp4")
   
   ##run function
   codedMat <- .codedMatrix(allCombos, order)

@@ -27,15 +27,15 @@ test_that("check that the .scoreReal function returns the correct output", {
   projm <- pcp
   
   #setup expected data
-  a <- 8
-  b <- 8
-  c <- 8
+  a <- 1
+  b <- 1
+  c <- 1
   
   expected <- list(a, b, c)
   names(expected) <- c("grp1 vs grp2", "grp1 vs grp3", "grp2 vs grp3")
   
   ##run function
-  scores.real <- .scoreReal(mat, groups, uniq.groups, projm, df=5)
+  scores.real <- .scoreReal(mat, groups, projm, df=5)
   
   ##test
   expect_true(all.equal(expected, scores.real))
@@ -67,10 +67,11 @@ test_that("check that the .scorePermats function returns the correct output", {
   iterations <- 3
   
   permats <- list(list(mat, mat, mat))
+  names(permats) <- "grp1 vs grp2"
   projm <- pcp
   
   #setup expected data
-  expected <- list(c(8, 8, 8))
+  expected <- list(c(1, 1, 1))
   
   names(expected) <-
     lapply(1:ncol(uniq.groups),

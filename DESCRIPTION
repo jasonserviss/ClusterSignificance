@@ -47,4 +47,4 @@ Collate:
     'plot-methods.R'
     'projection-methods.R'
     'show-methods.R'
-RoxygenNote: 5.0.1
+RoxygenNote: 5.0.1.9000
