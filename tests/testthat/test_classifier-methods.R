@@ -152,31 +152,22 @@ test_that("check that the .TpFpFnTn function returns the correct output", {
 
 
 ##run test
-test_that("check that the .Scores function returns the correct output", {
+test_that("check that the .specificity function returns the correct output", {
   
   ####TEST1####
   ##prepare normal input data
-  a <- c(0, 0, 0, 0, 1, 2, 3)
-  b <- c(1, 2, 3, 4, 4, 4, 4)
-  c <- c(4, 4, 4, 4, 3, 2, 1)
-  d <- c(3, 2, 1, 0, 0, 0, 0)
+  FP1 <- seq(9, 1, -1)
+  TN1 <- seq(1, 9, 1)
   
-  truth <- list(list(a,a,a,a,a,a), 
-				list(b,b,b,b,b,b), 
-				list(c,c,c,c,c,c), 
-				list(d,d,d,d,d,d))
-  
-  TP <- truth[[1]]
-  FP <- truth[[2]]
-  FN <- truth[[3]]
-  TN <- truth[[4]]
+  FP <- list(FP1,FP1,FP1)
+  TN <- list(TN1, TN1, TN1)
   
   #setup expected data
-  vec <- c(-2, -4, -6, -8, -6, -4, -2)
-  expected <- list(vec, vec, vec, vec, vec, vec)
+  vec <- seq(0.1, 0.9, 0.1)
+  expected <- list(vec, vec, vec)
   
   ##run function
-  scores <- .Scores(TP = TP, FP = FP, FN = FN, TN = TN)
+  scores <- .specificity(TN, FP)
   
   ##test
   expect_equal(expected, scores)
@@ -184,22 +175,77 @@ test_that("check that the .Scores function returns the correct output", {
 })
 
 ##run test
-test_that("check that the .Bscores function returns the correct output", {
+test_that("check that the .sensitivity function returns the correct output", {
   
   ####TEST1####
   ##prepare normal input data
-  vec <- c(-2, -4, -6, -8, -6, -4, -2)
-  scores.test <- list(vec, vec, vec, vec, vec, vec)
+  TP1 <- seq(9, 1, -1)
+  FN1 <- seq(1, 9, 1)
+  
+  TP <- list(TP1,TP1,TP1)
+  FN <- list(FN1, FN1, FN1)
   
   #setup expected data
-  vec <- c(2, 4, 6, 8, 6, 4, 2)
-  expected <- list(vec, vec, vec, vec, vec, vec)
+  vec <- seq(0.9, 0.1, -0.1)
+  expected <- list(vec, vec, vec)
   
   ##run function
-  scores <- .Bscore(scores.test)
+  scores <- .sensitivity(TP, FN)
   
   ##test
   expect_equal(expected, scores)
   
+})
+
+##run test
+test_that("check that the .ROCdistance function returns the correct output", {
+    
+  ####TEST1####
+  ##prepare normal input data
+  
+  sensitivity <- list(
+    c(0,1),
+    c(1,0)
+  )
+  specificity <- list(
+    c(0,1),
+    c(1,0)
+  )
+  #setup expected data
+  vec <- c(sqrt(2), 0)
+  expected <- list(vec, rev(vec))
+    
+  ##run function
+  scores <- .ROCdistance(sensitivity,specificity)
+    
+  ##test
+  expect_equal(expected, scores)
+    
+})
+
+##run test
+test_that("check that the .newScores function returns the correct output", {
+    
+ ####TEST1####
+ ##prepare normal input data
+ FP1 <- seq(9, 1, -1)
+ TN1 <- seq(1, 9, 1)
+ TP1 <- seq(9, 1, -1)
+ FN1 <- seq(1, 9, 1)
+
+ FP <- list(FP1,FP1,FP1)
+ TN <- list(TN1, TN1, TN1)
+ TP <- list(TP1,TP1,TP1)
+ FN <- list(FN1, FN1, FN1)
+
+ #setup expected data
+ expected <- 5
+    
+ ##run function
+ scores <- .newScores(TP,TN, FP, FN)
+    
+ ##test
+ expect_equal(expected, which(scores[[1]] == max(scores[[1]])))
+    
 })
 
