@@ -76,7 +76,11 @@ setMethod("classify", "Mlp", function(x, ...
 #
 ###############################################################################
 
-.classifyWrapper <- function(x, group.color=NULL, ...){
+.classifyWrapper <- function(
+    x,
+    group.color=NULL,
+    ...
+){
     ##import and order data
     #points <-    x["points.onedim"]
     points <-    getData(x, "points.onedim")
@@ -116,23 +120,26 @@ setMethod("classify", "Mlp", function(x, ...
     ##order the scores variable
     scores <- scores[order(names(scores))]
 
-	#set color
-	if(is.null(group.color)) group.color <- getData(x,"group.color")
-	if(!is.null(group.color)) group.color
+    #set color
+    if(is.null(group.color)) group.color <- getData(x,"group.color")
+    if(!is.null(group.color)) group.color
 
     #return ClassifiedPoints object
     new("ClassifiedPoints",
-    scores = scores,
-    scores.points=sp$x,
-    scores.index=sp$ix,
-    ROC = list(TP=TP,FP=FP,FN=FN,TN=TN),
-	group.color=group.color
+        scores = scores,
+        scores.points=sp$x,
+        scores.index=sp$ix,
+        ROC = list(TP=TP,FP=FP,FN=FN,TN=TN),
+        group.color=group.color
     )
 
 }
 
 ##make a list holding matrixes of all group positions coded as 0 or 1
-.codedMatrix <- function(allCombos, order) {
+.codedMatrix <- function(
+    allCombos,
+    order
+){
 
     ##Outputs a list with one element per group seperation to be scored.
     ##Each list element contains a character vector.
@@ -169,7 +176,9 @@ setMethod("classify", "Mlp", function(x, ...
 
 ##select the upper triangle and assign 2 to values not to be included in the
 ##score calculation
-.upperTriangle <- function(mat) {
+.upperTriangle <- function(
+    mat
+){
     tfmat <- lapply(1:length(mat),
         function(ee, mat) upper.tri(mat[[ee]]), mat=mat)
     grp1.mat <- mat
@@ -204,7 +213,10 @@ setMethod("classify", "Mlp", function(x, ...
 ##outputs a list with 4 elements (TP, FP, FN, TN) where each element includes
 #one list for each group comparison
 
-.TpFpFnTn <- function(grp1.mat, grp2.mat){
+.TpFpFnTn <- function(
+    grp1.mat,
+    grp2.mat
+){
     TP <- lapply(1:length(grp1.mat),
         function(x, y) apply(y[[x]][,-1] == 1,2,sum), y=grp1.mat
     )
@@ -228,35 +240,13 @@ setMethod("classify", "Mlp", function(x, ...
 }
 
 #calculate score for each group and classification
-#scores <- (TP-FP) + (TN-FN)
-.Scores <- function(TP, FP, FN, TN) {
-    scores <- lapply(1:length(TP),
-        function(xx)
-            sapply(1:length(TP[[xx]]),
-                function(y, TP, FP, FN, TN)
-                    {
-                        (TP[[xx]][[y]] - FP[[xx]][[y]]) +
-                        (TN[[xx]][[y]] - FN[[xx]][[y]])
-                    }, TP=TP, FP=FP, FN=FN, TN=TN
-            )
-    )
-    names(scores) <- names(TP)
-    return(scores)
-}
-
-##better score
-.Bscore <- function(scores){
-    Bscores <- lapply(1:length(scores),
-        function(oo, scores)
-            ifelse(scores[[oo]] < -scores[[oo]],
-                -scores[[oo]],
-                scores[[oo]]),
-                scores=scores)
-    names(Bscores) <- names(scores)
-    return(Bscores)
-}
-
-.newScores <- function(TP, TN, FP, FN) {
+#scores <- 1-sqrt((1-sensitivity)^2 - (1-specificity)^2)
+.newScores <- function(
+    TP,
+    TN,
+    FP,
+    FN
+){
     
     specificity1 <- .specificity(TN, FP)
     sensitivity1 <- .sensitivity(TP, FN)
@@ -279,21 +269,33 @@ setMethod("classify", "Mlp", function(x, ...
     return(pick)
 }
 
-.specificity <- function(TN, FP) {
+#calculates the specificity
+.specificity <- function(
+    TN,
+    FP
+){
     specificity <- lapply(1:length(TN), function(xx)
         TN[[xx]] / (TN[[xx]] + FP[[xx]])
     )
     return(specificity)
 }
 
-.sensitivity <- function(TP, FN) {
+#calculates the specificity
+.sensitivity <- function(
+    TP,
+    FN
+){
     sensitivity <- lapply(1:length(TP), function(xx)
         TP[[xx]] / (TP[[xx]] + FN[[xx]])
     )
     return(sensitivity)
 }
 
-.ROCdistance <- function(sensitivity, specificity) {
+#calculates the distance from sensivity = 1 and specificity = 1
+.ROCdistance <- function(
+    sensitivity,
+    specificity
+){
     distances <- lapply(1:length(sensitivity), function(x)
         sapply(1:length(sensitivity[[x]]), function(y)
             sqrt(((1-sensitivity[[x]][y])^2) + ((1-specificity[[x]][y])^2))
@@ -302,3 +304,31 @@ setMethod("classify", "Mlp", function(x, ...
     return(distances)
 }
 
+#calculate score for each group and classification
+#scores <- (TP-FP) + (TN-FN)
+#.Scores <- function(TP, FP, FN, TN) {
+#    scores <- lapply(1:length(TP),
+#        function(xx)
+#            sapply(1:length(TP[[xx]]),
+#                function(y, TP, FP, FN, TN)
+#                    {
+#                        (TP[[xx]][[y]] - FP[[xx]][[y]]) +
+#                        (TN[[xx]][[y]] - FN[[xx]][[y]])
+#                    }, TP=TP, FP=FP, FN=FN, TN=TN
+#            )
+#    )
+#    names(scores) <- names(TP)
+#    return(scores)
+#}
+
+##better score
+#.Bscore <- function(scores){
+#    Bscores <- lapply(1:length(scores),
+#        function(oo, scores)
+#            ifelse(scores[[oo]] < -scores[[oo]],
+#                -scores[[oo]],
+#                scores[[oo]]),
+#                scores=scores)
+#    names(Bscores) <- names(scores)
+#    return(Bscores)
+#}

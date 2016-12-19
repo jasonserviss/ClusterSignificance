@@ -101,6 +101,10 @@ setMethod("permute", "matrix",
 
     if(verbose) message("initializing permutation analysis\n")
     
+    if(iter == 0) {
+        stop("The number of iterations must be > 0.")
+    }
+    
     #check which projectionmethod to use
     if(projmethod=="pcp") {
         projm <- pcp
@@ -157,7 +161,12 @@ setMethod("permute", "matrix",
 ###############################################################################
 
 ##build permutation matrix
-.permMatrix <- function(iterations, groups, uniq.groups, mat) {
+.permMatrix <- function(
+    iterations,
+    groups,
+    uniq.groups,
+    mat
+){
     permats <- lapply(1:ncol(uniq.groups), function(y)
         lapply(1:iterations, function(x)
             sapply(1:ncol(mat[groups %in% uniq.groups[, y], ]), function(i)
@@ -175,7 +184,12 @@ setMethod("permute", "matrix",
 }
 
 ##score real ones
-.scoreReal <- function(mat, groups, projm, df) {
+.scoreReal <- function(
+    mat,
+    groups,
+    projm,
+    df
+){
     ob <- projm(mat, groups, df=df)
     cl <- classify(ob)
     scores.real <- lapply(
@@ -192,7 +206,14 @@ setMethod("permute", "matrix",
 }
 
 ##score permats
-.scorePermats <- function(permats, groups, uniq.groups, mat, projm, df) {
+.scorePermats <- function(
+    permats,
+    groups,
+    uniq.groups,
+    mat,
+    projm,
+    df
+){
     perm.scores <- lapply(1:length(permats), function(x, permats)
         as.numeric(
             lapply(1:length(permats[[1]]), function(y)
@@ -222,7 +243,16 @@ setMethod("permute", "matrix",
 }
 
 ##current iteration max score; used by .scorePermats
-.combinedFunction <- function(y, x, groups, uniq.groups, permats, mat, projm, df) {
+.combinedFunction <- function(
+    y,
+    x,
+    groups,
+    uniq.groups,
+    permats,
+    mat,
+    projm,
+    df
+){
     if( y%%500 == 0){message("iteration ", y, " for comparison ", x, "\n")}
 
     PcpOut <- tryCatch({projm(permats[[x]][[y]],
@@ -240,7 +270,11 @@ setMethod("permute", "matrix",
 }
 
 ##check user.permutations
-.user.permutationsCheck <- function(user.permutations, uniq.groups, iter) {
+.user.permutationsCheck <- function(
+    user.permutations,
+    uniq.groups,
+    iter
+){
     
     if(!is.list(user.permutations) | !is.list(user.permutations[[1]])) {
         message("The permutation matrix you input is not a list.")
@@ -266,7 +300,11 @@ setMethod("permute", "matrix",
 }
 
 ##plots
-.plots <- function(pdf, scores.real, steps = c(1:6)) {
+.plots <- function(
+    pdf,
+    scores.real,
+    steps = c(1:6)
+){
     if(!is.null(pdf)){
         plot(scores.real, steps)
     }

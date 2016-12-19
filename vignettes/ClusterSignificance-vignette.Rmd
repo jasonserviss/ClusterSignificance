@@ -41,8 +41,8 @@ separation score for our real data to the separation score for permuted data
 The package includes 2 different methods for accomplishing the 3 steps
 above, Mean line projection (**Mlp**) and Principal curve projection (**Pcp**).
 Here we will first discuss the similarities of the 3 steps independent
-of which projection method is used. This is followed by an example of the Mlp and
-Pcp methods and the unique features of each. Furthermore, we provide an
+of which projection method is used. This is followed by an example of the Mlp 
+and Pcp methods and the unique features of each. Furthermore, we provide an
 example where ClusterSignificance is used to examine the separation between
 2 clusters downsteam of a PCA. 
 
@@ -116,9 +116,7 @@ data(mlpMatrix)
 
 ```{r headMat, echo=FALSE, eval=TRUE}
 ##Mlp
-#printMat <- mlpMatrix
 groups <- rownames(mlpMatrix)
-#dimnames(printMat) <- list(groups, paste("dim", 1:2, sep=""))
 knitr::kable(
     mlpMatrix[1:3,], 
     digits = 2, 
@@ -141,9 +139,7 @@ data(pcpMatrix)
 
 ```{r headPcp, echo=FALSE}
 ##Pcp
-#printMat <- pcpMatrix
 groups <- rownames(pcpMatrix)
-#dimnames(printMat) <- list(groups, paste("dim", 1:3, sep=""))
 knitr::kable(
     pcpMatrix[1:3,], 
     digits = 2, 

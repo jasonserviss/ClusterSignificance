@@ -27,9 +27,9 @@ setMethod(
 
     dim <- length(getData(x,"dimnames"))
 
-	#set color
-	if(is.null(group.color)) CM <- getData(x,"group.color")
-	if(!is.null(group.color)) CM <- group.color
+    #set color
+    if(is.null(group.color)) CM <- getData(x,"group.color")
+    if(!is.null(group.color)) CM <- group.color
 
     if(dim==2) {
         .plotPcp2D(x, steps, CM)
@@ -120,7 +120,12 @@ setMethod(
     return(CM)
 
 #add legend
-.legend <- function(CM, oldparams, ellipsis, ...) {
+.legend <- function(
+    CM,
+    oldparams,
+    ellipsis,
+    ...
+){
     
     if(!is.null(oldparams)) {
         par(oldparams)
@@ -135,9 +140,15 @@ setMethod(
     alpha <- 1
     cex.legend <- 1
     pt.cex.legend <- 2
-    if("alpha" %in% names(ellipsis)) {alpha <- ellipsis[['alpha']]}
-    if("cex.legend" %in% names(ellipsis)) {cex.legend <- ellipsis[['cex.legend']]}
-    if("pt.cex.legend" %in% names(ellipsis)) {pt.cex.legend <- ellipsis[['pt.cex.legend']]}
+    if("alpha" %in% names(ellipsis)) {
+        alpha <- ellipsis[['alpha']]
+    }
+    if("cex.legend" %in% names(ellipsis)) {
+        cex.legend <- ellipsis[['cex.legend']]
+    }
+    if("pt.cex.legend" %in% names(ellipsis)) {
+        pt.cex.legend <- ellipsis[['pt.cex.legend']]
+    }
 
     if(ncol(CM) > 5) {
         horiz = FALSE
@@ -168,7 +179,13 @@ setMethod(
 }
 
 #original plot
-.step1 <- function(x, groups, CM, ...) {
+.step1 <- function(
+    x,
+    groups,
+    CM,
+    ellipsis,
+    ...
+){
     
     p <- getData(x, "points.orig")
     splt <- apply(p, 2, function(x) split(x, groups))
@@ -238,7 +255,13 @@ setMethod(
 }
 
 #plot with normalized data and line
-.step2 <- function(x, groups, CM, ...) {
+.step2 <- function(
+    x,
+    groups,
+    CM,
+    ellipsis,
+    ...
+){
     
     plot <- .step1(x, groups, CM, ...)
 
@@ -250,7 +273,13 @@ setMethod(
 }
 
 #show the change from old points to new points on the line by dashing
-.step3 <- function(x, groups, CM, ...) {
+.step3 <- function(
+    x,
+    groups,
+    CM,
+    ellipsis,
+    ...
+){
     
     p <- getData(x, "points.orig")
     plot <- .step2(x, groups, CM, ...)
@@ -274,7 +303,13 @@ setMethod(
 }
 
 #show the projected points in 3 dimensions
-.step4 <- function(x, groups, CM, ...) {
+.step4 <- function(
+    x,
+    groups,
+    CM,
+    ellipsis,
+    ...
+){
     
     p <- getData(x,"line")
     splt <- apply(p, 2, function(x) split(x, rownames(p)))
@@ -357,7 +392,13 @@ setMethod(
 }
 
 ##show projection into one dimension
-.step5 <- function(x, groups, CM, ...) {
+.step5 <- function(
+    x,
+    groups,
+    CM,
+    ellipsis,
+    ...
+){
     
     plot <- .step4(x, groups, CM, ...)
     
@@ -407,7 +448,13 @@ setMethod(
 }
 
 #show the move to origin.
-.step6 <- function(x, groups, CM, ...) {
+.step6 <- function(
+    x,
+    groups,
+    CM,
+    ellipsis,
+    ...
+){
     
     od <- getData(x,"points.onedim")
     names(od) <- groups
@@ -482,8 +529,11 @@ setMethod(
 
 
 #' @rdname classify
-#' @param comparison Specify a comparison ("grp1 vs grp2") and plot only that comparison.
+#' @param comparison Specify a comparison i.e.
+#' ("grp1 vs grp2") and plot only that comparison.
 #' @export
+#' @importFrom graphics title
+
 setMethod(
     "plot",
     c(
@@ -515,9 +565,9 @@ setMethod(
         }
     }
     
-	#set color
-	if(is.null(group.color)) CM <- getData(x,"group.color")
-	if(!is.null(group.color)) CM <- group.color
+    #set color
+    if(is.null(group.color)) CM <- getData(x,"group.color")
+    if(!is.null(group.color)) CM <- group.color
     
     ##setup plot window
     steps <- length(names(s))
@@ -539,12 +589,24 @@ setMethod(
     cex.main <- 1
     
     ellipsis <- list(...)
-    if("cex.points" %in% names(ellipsis)) {cex.points <- ellipsis[['cex.points']]}
-    if("lwd" %in% names(ellipsis)) {lwd <- ellipsis[['lwd']]}
-    if("alpha" %in% names(ellipsis)) {alpha <- ellipsis[['alpha']]}
-    if("cex.lab" %in% names(ellipsis)) {cex.lab <- ellipsis[['cex.lab']]}
-    if("cex.axis" %in% names(ellipsis)) {cex.axis <- ellipsis[['cex.axis']]}
-    if("cex.main" %in% names(ellipsis)) {cex.main <- ellipsis[['cex.main']]}
+    if("cex.points" %in% names(ellipsis)) {
+        cex.points <- ellipsis[['cex.points']]
+    }
+    if("lwd" %in% names(ellipsis)) {
+        lwd <- ellipsis[['lwd']]
+    }
+    if("alpha" %in% names(ellipsis)) {
+        alpha <- ellipsis[['alpha']]
+    }
+    if("cex.lab" %in% names(ellipsis)) {
+        cex.lab <- ellipsis[['cex.lab']]
+    }
+    if("cex.axis" %in% names(ellipsis)) {
+        cex.axis <- ellipsis[['cex.axis']]
+    }
+    if("cex.main" %in% names(ellipsis)) {
+        cex.main <- ellipsis[['cex.main']]
+    }
 
     ##plot
     for( ii in 1:steps ){
@@ -625,8 +687,11 @@ setMethod(
 )
 
 #' @rdname permute
-#' @param comparison Specify a comparison ("grp1 vs grp2") and plot only that comparison.
+#' @param comparison Specify a comparison i.e.
+#' ("grp1 vs grp2") and plot only that comparison.
 #' @export
+#' @importFrom graphics title
+
 setMethod(
     "plot",
     c(
@@ -670,12 +735,24 @@ setMethod(
     abline.lwd <- 1
     
     ellipsis <- list(...)
-    if("cex.main" %in% names(ellipsis)) {cex.main <- ellipsis[['cex.main']]}
-    if("cex.axis" %in% names(ellipsis)) {cex.axis <- ellipsis[['cex.axis']]}
-    if("cex.lab" %in% names(ellipsis)) {cex.lab <- ellipsis[['cex.lab']]}
-    if("lwd" %in% names(ellipsis)) {lwd <- ellipsis[['lwd']]}
-    if("cex.hist" %in% names(ellipsis)) {cex.hist <- ellipsis[['cex.hist']]}
-    if("abline.lwd" %in% names(ellipsis)) {abline.lwd <- ellipsis[['abline.lwd']]}
+    if("cex.main" %in% names(ellipsis)) {
+        cex.main <- ellipsis[['cex.main']]
+    }
+    if("cex.axis" %in% names(ellipsis)) {
+        cex.axis <- ellipsis[['cex.axis']]
+    }
+    if("cex.lab" %in% names(ellipsis)) {
+        cex.lab <- ellipsis[['cex.lab']]
+    }
+    if("lwd" %in% names(ellipsis)) {
+        lwd <- ellipsis[['lwd']]
+    }
+    if("cex.hist" %in% names(ellipsis)) {
+        cex.hist <- ellipsis[['cex.hist']]
+    }
+    if("abline.lwd" %in% names(ellipsis)) {
+        abline.lwd <- ellipsis[['abline.lwd']]
+    }
 
     #plot histogram of score distribution
     for( yy in 1:steps) {
@@ -768,8 +845,9 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
 ###############################################################################
 
 #set color scheme
-.setColors <- function(groups) {
-    
+.setColors <- function(
+    groups
+){
     colors <- colorRampPalette(brewer.pal(8, "Dark2"))(length(unique(groups)))
     CM <- col2rgb(colors, alpha = FALSE)
     colnames(CM) <- unique(groups)
@@ -777,7 +855,13 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
 }
 
 #original plot
-.MlpPlotStep1 <- function(x, groups, CM) {
+.MlpPlotStep1 <- function(
+    x,
+    groups,
+    CM,
+    ellipsis,
+    ...
+){
     
     p <- getData(x, "points.orig")
     splt <- apply(p, 2, function(x) split(x, groups))
@@ -815,7 +899,13 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
 }
 
 #show how every point connects to the mean points
-.MlpPlotStep2 <- function(x, groups, CM) {
+.MlpPlotStep2 <- function(
+    x,
+    groups,
+    CM,
+    ellipsis,
+    ...
+){
     
     #same points as in step1
     .MlpPlotStep1(x, groups, CM)
@@ -858,7 +948,13 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
 }
 
 #show move to point where the mean line goes through origo
-.MlpPlotStep3 <- function(x, groups, CM) {
+.MlpPlotStep3 <- function(
+    x,
+    groups,
+    CM,
+    ellipsis,
+    ...
+){
     
     #the first set of points
     p <- getData(x,"points.orig")
@@ -925,7 +1021,13 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
 
 
 #show the move to one dimension (on the line)
-.MlpPlotStep4 <- function(x, groups, CM){
+.MlpPlotStep4 <- function(
+    x,
+    groups,
+    CM,
+    ellipsis,
+    ...
+){
     
     po <- getData(x, "points.origo")
     splt <- apply(po, 2, function(x) split(x, groups))
@@ -985,7 +1087,13 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
 }
 
 #show the result of the projection onto the line
-.MlpPlotStep5 <- function(x, groups, CM) {
+.MlpPlotStep5 <- function(
+    x,
+    groups,
+    CM,
+    ellipsis,
+    ...
+){
     
     p <- getData(x,"line")
     splt <- apply(p, 2, function(x) split(x, groups))
@@ -1023,7 +1131,13 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
 }
 
 #show how the points behave when there is only one dimension in play
-.MlpPlotStep6 <- function(x, groups, CM) {
+.MlpPlotStep6 <- function(
+    x,
+    groups,
+    CM,
+    ellipsis,
+    ...
+){
     
     p <- getData(x,"points.onedim")
     sx <- split(p, groups)
@@ -1060,7 +1174,13 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
 }
 
 ##plot Pcp projection with only 2 dims
-.plotPcp2D <- function(x, steps, CM){
+.plotPcp2D <- function(
+    x,
+    steps,
+    CM,
+    ellipsis,
+    ...
+){
     
     if("all" %in% steps) {
         #set mfrow 3:2
@@ -1118,7 +1238,13 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
 # helpers as units
 #
 ###############################################################################
-.Pcp2DPlotStep1 <- function(x, groups, CM) {
+.Pcp2DPlotStep1 <- function(
+    x,
+    groups,
+    CM,
+    ellipsis,
+    ...
+){
     
     p <- getData(x, "points.orig")
     splt <- apply(p, 2, function(x) split(x, groups))
@@ -1150,7 +1276,13 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
 }
 
 #add line to points
-.Pcp2DPlotStep2 <- function(x, groups, CM) {
+.Pcp2DPlotStep2 <- function(
+    x,
+    groups,
+    CM,
+    ellipsis,
+    ...
+){
     
     #same points as in step1
     .Pcp2DPlotStep1(x, groups, CM)
@@ -1164,7 +1296,13 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
     }
 }
 
-.Pcp2DPlotStep3 <- function(x, groups, CM) {
+.Pcp2DPlotStep3 <- function(
+    x,
+    groups,
+    CM,
+    ellipsis,
+    ...
+){
     
     #same points as in step1
     .Pcp2DPlotStep2(x, groups, CM)
@@ -1180,7 +1318,13 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
 }
 
 #show the result of the projection onto the line
-.Pcp2DPlotStep4 <- function(x, groups, CM) {
+.Pcp2DPlotStep4 <- function(
+    x,
+    groups,
+    CM,
+    ellipsis,
+    ...
+){
     
     p <- getData(x,"line")
     splt <- apply(p, 2, function(x) split(x, groups))
@@ -1212,7 +1356,14 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
 
 
 #show the result of the projection onto the line
-.Pcp2DPlotStep5 <- function(x, groups, CM) {
+.Pcp2DPlotStep5 <- function(
+    x,
+    groups,
+    CM,
+    ellipsis,
+    ...
+){
+
     p <- getData(x,"line")
     splt <- apply(p, 2, function(x) split(x, groups))
     sx <- splt[[1]]
@@ -1259,7 +1410,14 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
 }
 
 #show how the points behave when there is only one dimension in play
-.Pcp2DPlotStep6 <- function(x, groups, CM) {
+.Pcp2DPlotStep6 <- function(
+    x,
+    groups,
+    CM,
+    ellipsis,
+    ...
+){
+
     p <- getData(x,"points.onedim")
     p <- matrix(c(p,rep(0,length(p))),ncol=2, dimnames=list(groups,NULL))
     splt <- apply(p, 2, function(x) split(x, groups))

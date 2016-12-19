@@ -68,7 +68,7 @@ setMethod("getData", "Mlp", function(x, n=NULL)
         scores.points="vector",
         scores.index="vector",
         ROC="list",
-    	group.color="matrix"
+        group.color="matrix"
 ))
 
 #' @rdname classify
