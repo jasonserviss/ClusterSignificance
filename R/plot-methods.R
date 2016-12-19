@@ -445,6 +445,7 @@ setMethod(
     function(
         x,
         y,
+        comparison="all",
         group.color=NULL,
         ...
     )
@@ -454,14 +455,25 @@ setMethod(
 
     p <- getData(x,"scores.points")
     s <- getData(x,"scores")
-
+    
+    #subset comparison
+    if(comparison != "all") {
+        if(!is.null(s[[comparison]])) {
+            s <- s[comparison]
+        } else {
+            stop(
+                "The specified comparison could not be found"
+            )
+        }
+    }
+    
 	#set color
 	if(is.null(group.color)) CM <- getData(x,"group.color")
 	if(!is.null(group.color)) CM <- group.color
     
     ##setup plot window
-    steps <- length(s)
-    setup <- n2mfrow(steps)
+    steps <- length(names(s))
+    setup <- n2mfrow(length(steps))
     oldparams <- par(mfrow=setup)
     
     cex.points <- 1
@@ -550,11 +562,36 @@ setMethod(
 
 #' @rdname permute
 #' @export
-setMethod("plot",c("PermutationResults", "missing"), function(x, y, ...)
+setMethod(
+    "plot",
+    c(
+        "PermutationResults",
+        "missing"
+    ),
+    function(
+        x,
+        y,
+        comparison="all",
+        ...
+    )
 {
     scores.vec <- getData(x,"scores.vec")
     score.reals <- getData(x,"scores.real")
-    
+
+    if(comparison != "all") {
+        if(
+            !is.null(scores.vec[[comparison]]) &
+            !is.null(score.reals[[comparison]])
+        ) {
+            scores.vec <- scores.vec[comparison]
+            score.reals <- score.reals[comparison]
+        } else {
+            stop(
+            "The specified comparison could not be found"
+            )
+        }
+    }
+
     ##setup plot window
     steps <- length(scores.vec)
     setup <- n2mfrow(steps)
