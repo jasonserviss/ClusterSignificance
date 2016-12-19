@@ -435,6 +435,7 @@ setMethod(
 
 
 #' @rdname classify
+#' @param comparison Specify a comparison ("grp1 vs grp2") and plot only that comparison.
 #' @export
 setMethod(
     "plot",
@@ -561,6 +562,7 @@ setMethod(
 )
 
 #' @rdname permute
+#' @param comparison Specify a comparison ("grp1 vs grp2") and plot only that comparison.
 #' @export
 setMethod(
     "plot",

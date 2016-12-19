@@ -28,9 +28,9 @@ pvalue(x, ...)
 permute(mat, ...)
 
 \S4method{permute}{matrix}(mat, groups, projmethod = "pcp", iter = 100,
-  user.permutations = NULL, seed = 3, verbose = TRUE, ...)
+  user.permutations = NULL, seed = 3, df = 5, verbose = TRUE, ...)
 
-\S4method{plot}{PermutationResults,missing}(x, y, ...)
+\S4method{plot}{PermutationResults,missing}(x, y, comparison = "all", ...)
 
 \S4method{show}{PermutationResults}(object)
 }
@@ -63,9 +63,13 @@ Ordered PCs, with PC1 to the left.}
 
 \item{seed}{random seed to be used by the internal permutation}
 
+\item{df}{degrees of freedom, passed to smooth.spline}
+
 \item{verbose}{makes function more talkative}
 
 \item{y}{default plot param, which should be set to NULL}
+
+\item{comparison}{Specify a comparison ("grp1 vs grp2") and plot only that comparison.}
 
 \item{object}{ClassifiedPoints Object}
 }

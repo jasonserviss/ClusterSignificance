@@ -18,6 +18,7 @@ NULL
 #' Ordered PCs, with PC1 to the left.
 #' @param iter integer number of iterations to be performed.
 #' @param groups vector in same order as rows in matrix
+#' @param df degrees of freedom, passed to smooth.spline
 #' @param verbose makes function more talkative
 #' @param projmethod 'pcp' or 'mlp'
 #' @param user.permutations user defined permutation matrix
@@ -93,6 +94,7 @@ setMethod("permute", "matrix",
         iter=100,
         user.permutations=NULL,
         seed=3,
+        df=5,
         verbose=TRUE,
         ...
     ){
@@ -118,10 +120,10 @@ setMethod("permute", "matrix",
     }
 
     #score first the real one
-    scores.real <- .scoreReal(mat, groups, uniq.groups, projm)
+    scores.real <- .scoreReal(mat, groups, uniq.groups, projm, df)
 
     ##score permats
-    scores.vec <- .scorePermats(permats, groups, uniq.groups, mat, projm)
+    scores.vec <- .scorePermats(permats, groups, uniq.groups, mat, projm, df)
 
     invisible(lapply(1:length(scores.vec), function(x, scores.real)
         message(
@@ -161,8 +163,8 @@ setMethod("permute", "matrix",
 }
 
 ##score real ones
-.scoreReal <- function(mat, groups, uniq.groups, projm) {
-    ob <- projm(mat, groups)
+.scoreReal <- function(mat, groups, uniq.groups, projm, df) {
+    ob <- projm(mat, groups, df=df)
     cl <- classify(ob)
     scores.real <-
         lapply(1:length(getData(cl, "scores")),
@@ -178,7 +180,7 @@ setMethod("permute", "matrix",
 }
 
 ##score permats
-.scorePermats <- function(permats, groups, uniq.groups, mat, projm) {
+.scorePermats <- function(permats, groups, uniq.groups, mat, projm, df) {
     perm.scores <- lapply(1:length(permats), function(x, permats)
         as.numeric(
             lapply(1:length(permats[[1]]), function(y)
@@ -189,7 +191,8 @@ setMethod("permute", "matrix",
                     uniq.groups,
                     permats,
                     mat,
-                    projm
+                    projm,
+                    df
                 )
             )
         ), permats=permats
@@ -209,11 +212,11 @@ setMethod("permute", "matrix",
 }
 
 ##current iteration max score; used by .scorePermats
-.combinedFunction <- function(y, x, groups, uniq.groups, permats, mat, projm) {
+.combinedFunction <- function(y, x, groups, uniq.groups, permats, mat, projm, df) {
     if( y%%500 == 0){message("iteration ", y, " for comparison ", x, "\n")}
 
     PcpOut <- tryCatch({projm(permats[[x]][[y]],
-        groups=groups[groups %in% uniq.groups[, x]])},
+        groups=groups[groups %in% uniq.groups[, x]], df=df)},
         warning=function(w) {return(NA)},
         error=function(w) {return(NA)}
     )

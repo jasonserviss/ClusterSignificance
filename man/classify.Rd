@@ -26,7 +26,8 @@ classify(x, ...)
   scores.points = scores.points, scores.index = scores.index, ROC,
   group.color)
 
-\S4method{plot}{ClassifiedPoints,missing}(x, y, group.color = NULL, ...)
+\S4method{plot}{ClassifiedPoints,missing}(x, y, comparison = "all",
+  group.color = NULL, ...)
 
 \S4method{show}{ClassifiedPoints}(object)
 }
@@ -51,6 +52,8 @@ ClassifiedPoints object}
 \item{group.color}{user assigned group coloring scheme}
 
 \item{y}{default plot param, which should be set to NULL}
+
+\item{comparison}{Specify a comparison ("grp1 vs grp2") and plot only that comparison.}
 
 \item{object}{ClassifiedPoints Object}
 }

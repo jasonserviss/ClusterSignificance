@@ -35,7 +35,7 @@ test_that("check that the .scoreReal function returns the correct output", {
   names(expected) <- c("grp1 vs grp2", "grp1 vs grp3", "grp2 vs grp3")
   
   ##run function
-  scores.real <- .scoreReal(mat, groups, uniq.groups, projm)
+  scores.real <- .scoreReal(mat, groups, uniq.groups, projm, df=5)
   
   ##test
   expect_true(all.equal(expected, scores.real))
@@ -79,13 +79,14 @@ test_that("check that the .scorePermats function returns the correct output", {
   expected <- expected[order(names(expected))]
 
   ##run function
-  scores.vec <- .scorePermats(permats, groups, uniq.groups, mat, projm)
+  scores.vec <- .scorePermats(permats, groups, uniq.groups, mat, projm, df=5)
   
   ##test
   expect_true(all.equal(expected, scores.vec))
   expect_true(
 	all.equal(
-		max(classify(pcp(mat, groups))@scores[[1]]), scores.vec[[1]][[1]]))
+		max(classify(pcp(mat, groups))@scores[[1]]), scores.vec[[1]][[1]]
+    ))
 })
 
 
