@@ -12,31 +12,40 @@ setMethod("initialize","Pcp", function(
     points.onedim,
     index,
     group.color
-    ){
-    callNextMethod(.Object,...,
-    groups = groups,
-    points.orig = points.orig,
-    line = line,
-    points.onedim = points.onedim,
-    index = index,
-    group.color = group.color
+){
+    callNextMethod(
+        .Object,
+        ...,
+        groups = groups,
+        points.orig = points.orig,
+        line = line,
+        points.onedim = points.onedim,
+        index = index,
+        group.color = group.color
 	)
-    }
-)
+})
 
 #' @rdname mlp
 #' @export 
 setMethod("initialize","Mlp", function(
-    .Object, ..., groups, points.orig, line, points.onedim, group.color
-    ){
-    callNextMethod(.Object, ...,
-    groups = groups,
-    points.orig = points.orig,
-    line = line,
-    points.onedim = points.onedim,
-    group.color = group.color)
-    }
-)
+    .Object,
+    ...,
+    groups,
+    points.orig,
+    line,
+    points.onedim,
+    group.color
+){
+    callNextMethod(
+        .Object,
+        ...,
+        groups = groups,
+        points.orig = points.orig,
+        line = line,
+        points.onedim = points.onedim,
+        group.color = group.color
+    )
+})
 
 #' @rdname classify
 #' @export 
@@ -48,16 +57,17 @@ setMethod("initialize","ClassifiedPoints", function(
     scores.index=scores.index,
     ROC,
     group.color
-    ){
-        callNextMethod(.Object, ...,
-            scores=scores,
-            scores.points=scores.points,
-            scores.index=scores.index,
-            ROC=ROC,
-			group.color=group.color
-        )
-    }
-)
+){
+    callNextMethod(
+        .Object,
+        ...,
+        scores=scores,
+        scores.points=scores.points,
+        scores.index=scores.index,
+        ROC=ROC,
+        group.color=group.color
+    )
+})
 
 #' @rdname permute
 #' @export 
@@ -66,10 +76,11 @@ setMethod("initialize","PermutationResults", function(
     ...,
     scores.real,
     scores.vec
-    ){
-        callNextMethod(.Object, ...,
-            scores.real=scores.real,
-            scores.vec=scores.vec
-			)
-    }
-)
+){
+    callNextMethod(
+        .Object,
+        ...,
+        scores.real=scores.real,
+        scores.vec=scores.vec
+    )
+})
