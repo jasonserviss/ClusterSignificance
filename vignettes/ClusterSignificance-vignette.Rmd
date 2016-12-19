@@ -41,7 +41,7 @@ separation score for our real data to the separation score for permuted data
 The package includes 2 different methods for accomplishing the 3 steps
 above, Mean line projection (**Mlp**) and Principal curve projection (**Pcp**).
 Here we will first discuss the similarities of the 3 steps independent
-of which method is used. This is followed by an example of the Mlp and
+of which projection method is used. This is followed by an example of the Mlp and
 Pcp methods and the unique features of each. Furthermore, we provide an
 example where ClusterSignificance is used to examine the separation between
 2 clusters downsteam of a PCA. 
@@ -65,17 +65,12 @@ dimension.
 ## Classification
 
 Now that all of the points are in one dimension, it allows us to easily
-define a perpendicular line that best separates the two groups. The score
-for each possible separation is then calculated based on this formula:
+define a perpendicular line that best separates the two groups. Using the 
+user-defined groups variable, the sensitivity and specificity are calculated
+at each possible seperation along the projected points. Each seperation score
+is then calculated based on this formula:
 
-#### $$score = TP + TN - (FP + FN)$$
-
-Where:
-
-* __TP__ = True positives
-* __TN__ = True negatives
-* __FP__ = False positives
-* __FN__ = False negatives
+#### $$score = 1 - sqrt((1-specificity)^2 - (1-sensitivity)^2)$$
 
 All separation scores are recorded and the max score is subsequently used
 downstream to compare to the max scores from the permutated data.
@@ -108,7 +103,7 @@ distribution of permuted scores compared to the real score.
 The ClusterSignificance package includes 2 small example data matrices, 
 one used for demonstrating the Mlp method and one used for demonstrating 
 the Pcp method. The Mlp demo matrix has 2 dimensions whereas, the Pcp demo 
-matrix has 4. In addition, the groups variable has been added as the rownames 
+matrix has 3. In addition, the groups variable has been added as the rownames 
 of each matrix, with the Mlp demo matrix having 2 groups and the Pcp demo 
 matrix having 3 groups. Finally, colnames, indicating the dimension number, 
 were also added to each matrix. Neither colnames or rownames are needed for 
@@ -121,11 +116,11 @@ data(mlpMatrix)
 
 ```{r headMat, echo=FALSE, eval=TRUE}
 ##Mlp
-printMat <- mlpMatrix
+#printMat <- mlpMatrix
 groups <- rownames(mlpMatrix)
-dimnames(printMat) <- list(groups, paste("dim", 1:2, sep=""))
+#dimnames(printMat) <- list(groups, paste("dim", 1:2, sep=""))
 knitr::kable(
-    printMat[1:3,], 
+    mlpMatrix[1:3,], 
     digits = 2, 
     caption = "Head; Mlp matrix.", 
     align=c(rep('l', 2))
@@ -146,11 +141,11 @@ data(pcpMatrix)
 
 ```{r headPcp, echo=FALSE}
 ##Pcp
-printMat <- pcpMatrix
+#printMat <- pcpMatrix
 groups <- rownames(pcpMatrix)
-dimnames(printMat) <- list(groups, paste("dim", 1:4, sep=""))
+#dimnames(printMat) <- list(groups, paste("dim", 1:3, sep=""))
 knitr::kable(
-    printMat[1:3,], 
+    pcpMatrix[1:3,], 
     digits = 2, 
     caption = "Head; Pcp matrix.", 
     align=c(rep('l', 2))
@@ -175,7 +170,7 @@ means of the two groups and then projects all points onto that line. To
 project the points into one dimension, the points are then rotated onto
 the x-axis. A detailed description and graphical representation of the
 individual steps can be seen in the example below. It should be noted that,
-despite the fact that the Mlp method will work with as low as 2 data points
+despite the fact that the Mlp method will work with as few as 2 data points
 per group, it may not be advisable to perform an analysis with such a small
 amount of data.
 
@@ -253,7 +248,7 @@ pvalue(pe)
 The permutation plot shows a histogram of the max separation scores from
 all permutations with the vertical red line representing the max score
 from the real data. From the plot can see that when comparing the seperation
-of grp1 vs. grp2 the permuted data, using 100 iterations, never scores higher
+of grp1 vs. grp2, using 100 iterations, the permuted data never scores higher
 than the real data. Thus, the separation thus has a significant p-value of
 < 0.01. The p-values can be obtained using `pvalue(pe)`.
 
@@ -268,8 +263,9 @@ The Pcp method utilizes the principal.curve method from the princurve package
 to fit a principal curve to the data points utilizing all the dimensions input
 by the user. A principal curve can be described as a "smooth curve that
 passes through the middle of the data in an orthogonal sense". All data
-points are then projected onto the principal curve and transferred into
-one dimension for scoring.
+points are then projected onto the principal curve and the distance between the
+points is calculated. This completes the points transfer into one dimension and
+the group seperations are now ready for scoring.
 
 For this example the demonstration data was simulated so that one cluster
 has a visible separation from the two other clusters, whereas two of the 
