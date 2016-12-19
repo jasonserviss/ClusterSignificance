@@ -102,9 +102,12 @@ setMethod("permute", "matrix",
     if(verbose) message("initializing permutation analysis\n")
     
     #check which projectionmethod to use
-    if(projmethod=="pcp") projm <- pcp
-    else if(projmethod=="mlp") projm <- mlp
-    
+    if(projmethod=="pcp") {
+        projm <- pcp
+    } else if(projmethod=="mlp") {
+        projm <- mlp
+    }
+
     ##check for NA groups
     if(any(is.na(groups))) groups[is.na(groups)] <- "NA"
 
@@ -112,7 +115,11 @@ setMethod("permute", "matrix",
     uniq.groups <- apply(uniq.groups, 2, sort)
 
     if(!is.null(user.permutations)){
-        .user.permutationsCheck(user.permutations, uniq.groups, iter)
+        user.permutations <- .user.permutationsCheck(
+            user.permutations,
+            uniq.groups,
+            iter
+        )
         permats <- user.permutations
     }else{
         set.seed(seed)
@@ -234,6 +241,7 @@ setMethod("permute", "matrix",
 
 ##check user.permutations
 .user.permutationsCheck <- function(user.permutations, uniq.groups, iter) {
+    
     if(!is.list(user.permutations) | !is.list(user.permutations[[1]])) {
         message("The permutation matrix you input is not a list.")
         stop(paste("Check the vignette for details concerning the ",
@@ -249,6 +257,12 @@ setMethod("permute", "matrix",
             "match the iterations in your permutation matrix.", sep=""))
     warning("You may have made a mistake when producing the permutation")
     }
+    if(is.null(names(user.permutations))) {
+        names(user.permutations) <- lapply(1:ncol(uniq.groups), function(x)
+            paste(uniq.groups[, x], collapse = " vs ")
+        )
+    }
+    return(user.permutations)
 }
 
 ##plots
