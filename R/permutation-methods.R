@@ -94,7 +94,7 @@ setMethod("permute", "matrix",
         iter=100,
         user.permutations=NULL,
         seed=3,
-        df=5,
+        df=NULL,
         verbose=TRUE,
         ...
     ){
