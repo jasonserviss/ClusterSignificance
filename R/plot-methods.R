@@ -521,7 +521,7 @@ setMethod(
     
     ##setup plot window
     steps <- length(names(s))
-    setup <- n2mfrow(length(steps))
+    setup <- n2mfrow(steps)
     oldparams <- par(mfrow=setup)
     
     cex.points <- 1
