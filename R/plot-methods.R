@@ -25,6 +25,7 @@ setMethod(
     )
 {
 
+    ellipsis <- list(...)
     dim <- length(getData(x,"dimnames"))
 
     #set color
@@ -32,73 +33,57 @@ setMethod(
     if(!is.null(group.color)) CM <- group.color
 
     if(dim==2) {
-        .plotPcp2D(x, steps, CM)
+        .plotPcp2D(x, steps, CM, ellipsis)
     } else {
 
+        groups <- getData(x,"groups")
+        oldparams <- par(no.readonly = TRUE)
+
         if("all" %in% steps){
-            #set mfrow 3:2
-            oldparams <- par(mfrow = c(3,2), mar=c(5, 4, 5, 2) + 0.1)
+            par(mfrow = c(3,2), mar=c(5, 4, 5, 2) + 0.1)
             steps <- c(1,2,3,4,5,6)
         }
 
-        groups <- getData(x,"groups")
 
         if(1 %in% steps){
             #original plot
-            plot <- .step1(x, groups, CM, ...)
+            plot <- .step1(x, groups, CM, ellipsis)
+            if(length(steps) == 1) {.legend(CM, oldparams=NULL, ellipsis)}
         }
         
         if(2 %in% steps){
             #plot with normalized data and line
-            .step2(x, groups, CM, ...)
+            .step2(x, groups, CM, ellipsis)
+            if(length(steps) == 1) {.legend(CM, oldparams=NULL, ellipsis)}
         }
         
         if(3 %in% steps){
             #show the change from old points to new points on the line
-            .step3(x, groups, CM, ...)
+            .step3(x, groups, CM, ellipsis)
+            if(length(steps) == 1) {.legend(CM, oldparams=NULL, ellipsis)}
         }
         
         if(4 %in% steps){
             #show the projected points in 3 dimensions
-            .step4(x, groups, CM, ...)
+            .step4(x, groups, CM, ellipsis)
+            if(length(steps) == 1) {.legend(CM, oldparams=NULL, ellipsis)}
         }
         
         if(5 %in% steps){
             ##show projection into one dimension
-            .step5(x, groups, CM, ...)
+            .step5(x, groups, CM, ellipsis)
+            if(length(steps) == 1) {.legend(CM, oldparams=NULL, ellipsis)}
         }
         
         if(6 %in% steps){
             #show the move to origin.
-            .step6(x, groups, CM, ...)
+            .step6(x, groups, CM, ellipsis)
+            if(length(steps) == 1) {.legend(CM, oldparams=NULL, ellipsis)}
         }
-        
-        #add legend
-        par(oldparams)
-        oldparams <- par(usr=c(0,1,0,100), xpd=NA)
-        
-        alpha <- 255
-        params <- list(...)
-        if("alpha" %in% names(params)) {alpha <- params[['alpha']]}
 
-        legend(
-            "top",
-            legend=sort(colnames(CM)),
-            horiz=TRUE,
-            col=rgb(
-                t(CM[ ,sort(colnames(CM))]),
-                maxColorValue=255,
-                alpha=alpha
-            ),
-            bty='n',
-            border='white',
-            pch=16,
-            pt.cex=2,
-            inset=-0.15
-        )
-        
         #reset mfrow
-        if("all" %in% steps){
+        if(length(steps) == 6){
+            .legend(CM, oldparams, ellipsis)
             par(oldparams)
         }
     }
@@ -110,14 +95,6 @@ setMethod(
 # helpers as units
 #
 ###############################################################################
-
-#set color scheme
-.setColors <- function(groups) {
-    
-    colors <- colorRampPalette(brewer.pal(8, "Dark2"))(length(unique(groups)))
-    CM <- col2rgb(colors, alpha = FALSE)
-    colnames(CM) <- unique(groups)
-    return(CM)
 
 #add legend
 .legend <- function(
@@ -196,20 +173,19 @@ setMethod(
     cex.lab <- 0.5
     cex.axis <- 0.5
     cex.symbols <- 1
-    alpha <- 200
+    alpha <- 0.75
 
-    params <- list(...)
-    if("cex.lab" %in% names(params)) {
-        cex.lab <- params[['cex.lab']]
+    if("cex.lab" %in% names(ellipsis)) {
+        cex.lab <- ellipsis[['cex.lab']]
     }
-    if("cex.axis" %in% names(params)) {
-        cex.axis <- params[['cex.axis']]
+    if("cex.axis" %in% names(ellipsis)) {
+        cex.axis <- ellipsis[['cex.axis']]
     }
-    if("cex.symbols" %in% names(params)) {
-        cex.symbols <- params[['cex.symbols']]
+    if("cex.symbols" %in% names(ellipsis)) {
+        cex.symbols <- ellipsis[['cex.symbols']]
     }
-    if("alpha" %in% names(params)) {
-        alpha <- params[['alpha']]
+    if("alpha" %in% names(ellipsis)) {
+        alpha <- ellipsis[['alpha']]
     }
 
     plot <- scatterplot3d(sx[[1]], sy[[1]], sz[[1]],
@@ -217,7 +193,7 @@ setMethod(
             CM["red",   names(sx[1])],
             CM["green", names(sx[1])],
             CM["blue",  names(sx[1])],
-            alpha,
+            alpha*255,
             maxColorValue=255
         ),
         pch=16,
@@ -243,7 +219,7 @@ setMethod(
                     CM["red",   names(sx[x])],
                     CM["green", names(sx[x])],
                     CM["blue",  names(sx[x])],
-                    alpha,
+                    alpha*255,
                     maxColorValue=255
                 ),
                 pch=16,
@@ -263,7 +239,7 @@ setMethod(
     ...
 ){
     
-    plot <- .step1(x, groups, CM, ...)
+    plot <- .step1(x, groups, CM, ellipsis, ...)
 
     #draw line
     l <- getData(x,"line")
@@ -282,7 +258,7 @@ setMethod(
 ){
     
     p <- getData(x, "points.orig")
-    plot <- .step2(x, groups, CM, ...)
+    plot <- .step2(x, groups, CM, ellipsis, ...)
 
     ##draw dashes
     p2 <- getData(x,"line")
@@ -324,20 +300,19 @@ setMethod(
     cex.lab <- 0.5
     cex.axis <- 0.5
     cex.symbols <- 1
-    alpha <- 200
+    alpha <- 0.75
     
-    params <- list(...)
-    if("cex.lab" %in% names(params)) {
-        cex.lab <- params[['cex.lab']]
+    if("cex.lab" %in% names(ellipsis)) {
+        cex.lab <- ellipsis[['cex.lab']]
     }
-    if("cex.axis" %in% names(params)) {
-        cex.axis <- params[['cex.axis']]
+    if("cex.axis" %in% names(ellipsis)) {
+        cex.axis <- ellipsis[['cex.axis']]
     }
-    if("cex.symbols" %in% names(params)) {
-        cex.symbols <- params[['cex.symbols']]
+    if("cex.symbols" %in% names(ellipsis)) {
+        cex.symbols <- ellipsis[['cex.symbols']]
     }
-    if("alpha" %in% names(params)) {
-        alpha <- params[['alpha']]
+    if("alpha" %in% names(ellipsis)) {
+        alpha <- ellipsis[['alpha']]
     }
 
     plot <- scatterplot3d(sx[[1]], sy[[1]], sz[[1]],
@@ -345,7 +320,7 @@ setMethod(
             CM["red",   names(sx[1])],
             CM["green", names(sx[1])],
             CM["blue",  names(sx[1])],
-            alpha,
+            alpha*255,
             maxColorValue=255
         ),
         pch=16,
@@ -380,7 +355,7 @@ setMethod(
                     CM["red",   names(sx[j])],
                     CM["green", names(sx[j])],
                     CM["blue",  names(sx[j])],
-                    alpha,
+                    alpha*255,
                     maxColorValue=255
                 ),
                 pch=16,
@@ -400,12 +375,20 @@ setMethod(
     ...
 ){
     
-    plot <- .step4(x, groups, CM, ...)
+    plot <- .step4(x, groups, CM, ellipsis, ...)
     
     od <- getData(x,"points.onedim")
     names(od) <- groups
     s <- split(od, names(od))
     
+    alpha <- 0.75
+    cex.symbols <- 1
+    if("alpha" %in% names(ellipsis)) {
+        alpha <- ellipsis[['alpha']]
+    }
+    if("cex.symbols" %in% names(ellipsis)) {
+        cex.symbols <- ellipsis[['cex.symbols']]
+    }
     #plot points in one dimension
     invisible(
         sapply(1:length(s), function(yz)
@@ -416,10 +399,11 @@ setMethod(
                         CM["red",names(s[yz])],
                         CM["green",names(s[yz])],
                         CM["blue",names(s[yz])],
-                        150,
+                        alpha*255,
                         maxColorValue=255
                     ),
                     pch=16,
+                    cex = cex.symbols
                     #type = "h"
                 )
             )
@@ -463,20 +447,19 @@ setMethod(
     cex.lab <- 0.5
     cex.axis <- 0.5
     cex.symbols <- 1
-    alpha <- 200
+    alpha <- 0.75
     
-    params <- list(...)
-    if("cex.lab" %in% names(params)) {
-        cex.lab <- params[['cex.lab']]
+    if("cex.lab" %in% names(ellipsis)) {
+        cex.lab <- ellipsis[['cex.lab']]
     }
-    if("cex.axis" %in% names(params)) {
-        cex.axis <- params[['cex.axis']]
+    if("cex.axis" %in% names(ellipsis)) {
+        cex.axis <- ellipsis[['cex.axis']]
     }
-    if("cex.symbols" %in% names(params)) {
-        cex.symbols <- params[['cex.symbols']]
+    if("cex.symbols" %in% names(ellipsis)) {
+        cex.symbols <- ellipsis[['cex.symbols']]
     }
-    if("alpha" %in% names(params)) {
-        alpha <- params[['alpha']]
+    if("alpha" %in% names(ellipsis)) {
+        alpha <- ellipsis[['alpha']]
     }
 
     #plot points in one dimension
@@ -515,7 +498,7 @@ setMethod(
                         CM["red",   names(s[yz])],
                         CM["green", names(s[yz])],
                         CM["blue",  names(s[yz])],
-                        alpha,
+                        alpha*255,
                         maxColorValue=255
                     ),
                     pch=16,
@@ -576,13 +559,6 @@ setMethod(
     
     cex.points <- 1
     lwd <- 1
-    alpha <- 150
-    
-    params <- list(...)
-    if("cex.points" %in% names(params)) {cex.points <- params[['cex.points']]}
-    if("lwd" %in% names(params)) {lwd <- params[['lwd']]}
-    if("alpha" %in% names(params)) {alpha <- params[['alpha']]}
-
     alpha <- 0.75
     cex.lab <- 1
     cex.axis <- 1
@@ -640,7 +616,7 @@ setMethod(
                 CM["red", grp1],
                 CM["green", grp1],
                 CM["blue", grp1],
-                alpha,
+                alpha*255,
                 maxColorValue=255
             ),
             pch=16,
@@ -655,7 +631,7 @@ setMethod(
                 CM["red", grp2],
                 CM["green", grp2],
                 CM["blue", grp2],
-                alpha,
+                alpha*255,
                 maxColorValue=255
             ),
             pch=16,
@@ -786,53 +762,58 @@ setMethod(
 setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
 {
 
+    ellipsis <- list(...)
+    oldparams <- par(no.readonly = TRUE)
+
     if("all" %in% steps){
-        #set mfrow 3:2
-        oldparams <- par(mfrow=c(3,2))
+        par(mfrow=c(3,2))
         steps <- c(1,2,3,4,5,6)
     }
     
     groups <- getData(x, "groups")
-
-    #check if colnames are present, then use them as axisnames
-    #if(colnames())
-    #axisnames <- col
     
     ##set up color scheme for all groups
     CM <- .setColors(groups)
     
     if(1 %in% steps){
         #original plot
-        plot <- .MlpPlotStep1(x, groups, CM)
+        plot <- .MlpPlotStep1(x, groups, CM, ellipsis)
+        if(length(steps) == 1) {.legend(CM, oldparams=NULL, ellipsis)}
     }
     
     if(2 %in% steps){
         #plot with normalized data and line
-        .MlpPlotStep2(x, groups, CM)
+        .MlpPlotStep2(x, groups, CM, ellipsis)
+        if(length(steps) == 1) {.legend(CM, oldparams=NULL, ellipsis)}
     }
     
     if(3 %in% steps){
         #show the change from old points to new points on the line by dashing
-        .MlpPlotStep3(x, groups, CM)
+        .MlpPlotStep3(x, groups, CM, ellipsis)
+        if(length(steps) == 1) {.legend(CM, oldparams=NULL, ellipsis)}
     }
     
     if(4 %in% steps){
         #show the projected points in 3 dimensions
-        .MlpPlotStep4(x, groups, CM)
+        .MlpPlotStep4(x, groups, CM, ellipsis)
+        if(length(steps) == 1) {.legend(CM, oldparams=NULL, ellipsis)}
     }
     
     if(5 %in% steps){
         ##show projection into one dimension
-        .MlpPlotStep5(x, groups, CM)
+        .MlpPlotStep5(x, groups, CM, ellipsis)
+        if(length(steps) == 1) {.legend(CM, oldparams=NULL, ellipsis)}
     }
     
     if(6 %in% steps){
         #show the move to origin.
-        .MlpPlotStep6(x, groups, CM)
+        .MlpPlotStep6(x, groups, CM, ellipsis)
+        if(length(steps) == 1) {.legend(CM, oldparams=NULL, ellipsis)}
     }
     
     #reset mfrow
-    if("all" %in% steps){
+    if(length(steps) == 6){
+        .legend(CM, oldparams, ellipsis)
         par(oldparams)
     }
 }
@@ -868,11 +849,20 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
     sx <- splt[[1]]
     sy <- splt[[2]]
 
+    alpha <- 0.75
+    cex <- 1
+    if("alpha" %in% names(ellipsis)) {
+        alpha <- ellipsis[['alpha']]
+    }
+    if("cex" %in% names(ellipsis)) {
+        cex <- ellipsis[['cex']]
+    }
+
     col1=rgb(
         CM["red",1],
         CM["green",1],
         CM["blue",1],
-        200,
+        alpha*255,
         maxColorValue=255
     )
     
@@ -880,7 +870,7 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
         CM["red",2],
         CM["green",2],
         CM["blue",2],
-        200,
+        alpha*255,
         maxColorValue=255
     )
 
@@ -894,8 +884,8 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
         xlab=''
     )
     
-    lines(sx[[1]], sy[[1]], col=col1, pch=16, type="p")
-    lines(sx[[2]], sy[[2]], col=col2, pch=16, type="p")
+    lines(sx[[1]], sy[[1]], col=col1, pch=16, type="p", cex=cex)
+    lines(sx[[2]], sy[[2]], col=col2, pch=16, type="p", cex=cex)
 }
 
 #show how every point connects to the mean points
@@ -908,7 +898,7 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
 ){
     
     #same points as in step1
-    .MlpPlotStep1(x, groups, CM)
+    .MlpPlotStep1(x, groups, CM, ellipsis)
     
     #add mean Values
     p <- getData(x,"points.orig")
@@ -921,8 +911,13 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
     x1.mean <- mean(sx[[1]])
     x2.mean <- mean(sx[[2]])
 
-    lines(x1.mean, y1.mean, col="black", pch=16, type="p")
-    lines(x2.mean, y2.mean, col="black", pch=16, type="p")
+    cex <- 1
+    if("cex" %in% names(ellipsis)) {
+        cex <- ellipsis[['cex']]
+    }
+
+    lines(x1.mean, y1.mean, col="black", pch=16, type="p", cex=cex)
+    lines(x2.mean, y2.mean, col="black", pch=16, type="p", cex=cex)
     
     #draw the lines grp1
     for(i in 1:length(sy[[1]])){
@@ -989,17 +984,26 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
                 lwd=1)
             )
     }
-    
-    #the second set of points 
+
+    #the second set of points
     splt <- apply(po, 2, function(x) split(x, groups))
     sx <- splt[[1]]
     sy <- splt[[2]]
+
+    alpha <- 0.75
+    cex <- 1
+    if("alpha" %in% names(ellipsis)) {
+        alpha <- ellipsis[['alpha']]
+    }
+    if("cex" %in% names(ellipsis)) {
+        cex <- ellipsis[['cex']]
+    }
 
     col1=rgb(
         CM["red",1],
         CM["green",1],
         CM["blue",1],
-        200,
+        alpha*255,
         maxColorValue=255
     )
     
@@ -1007,12 +1011,12 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
         CM["red",2],
         CM["green",2],
         CM["blue",2],
-        200,
+        alpha*255,
         maxColorValue=255
     )
 
-    lines(sx[[1]], sy[[1]], col=col1, pch=16, type="p")
-    lines(sx[[2]], sy[[2]], col=col2, pch=16, type="p")
+    lines(sx[[1]], sy[[1]], col=col1, pch=16, type="p", cex=cex)
+    lines(sx[[2]], sy[[2]], col=col2, pch=16, type="p", cex=cex)
 
     #draw the mean line
     l <- getData(x, "line")
@@ -1034,6 +1038,15 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
     sx <- splt[[1]]
     sy <- splt[[2]]
 
+    alpha <- 0.75
+    cex <- 1
+    if("alpha" %in% names(ellipsis)) {
+        alpha <- ellipsis[['alpha']]
+    }
+    if("cex" %in% names(ellipsis)) {
+        cex <- ellipsis[['cex']]
+    }
+
     plot(
         0,
         xlim=c(min(po),max(po)),
@@ -1043,17 +1056,12 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
         ylab='',
         xlab=''
     )
-    
-    #the s
-    splt <- apply(po, 2, function(x) split(x, groups))
-    sx <- splt[[1]]
-    sy <- splt[[2]]
 
     col1=rgb(
         CM["red",1],
         CM["green",1],
         CM["blue",1],
-        200,
+        alpha*255,
         maxColorValue=255
     )
     
@@ -1061,12 +1069,12 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
         CM["red",2],
         CM["green",2],
         CM["blue",2],
-        200,
+        alpha*255,
         maxColorValue=255
     )
 
-    lines(sx[[1]], sy[[1]], col=col1, pch=16, type="p")
-    lines(sx[[2]], sy[[2]], col=col2, pch=16, type="p")
+    lines(sx[[1]], sy[[1]], col=col1, pch=16, type="p", cex=cex)
+    lines(sx[[2]], sy[[2]], col=col2, pch=16, type="p", cex=cex)
 
     #draw the mean line
     l <- getData(x, "line")
@@ -1100,11 +1108,20 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
     sx <- splt[[1]]
     sy <- splt[[2]]
 
+    alpha <- 0.75
+    cex <- 1
+    if("alpha" %in% names(ellipsis)) {
+        alpha <- ellipsis[['alpha']]
+    }
+    if("cex" %in% names(ellipsis)) {
+        cex <- ellipsis[['cex']]
+    }
+
     col1=rgb(
         CM["red",1],
         CM["green",1],
         CM["blue",1],
-        200,
+        alpha*255,
         maxColorValue=255
     )
     
@@ -1112,7 +1129,7 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
         CM["red",2],
         CM["green",2],
         CM["blue",2],
-        200,
+        alpha*255,
         maxColorValue=255
     )
 
@@ -1126,8 +1143,8 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
         xlab=''
     )
     
-    lines(sx[[1]], sy[[1]], col=col1, pch=16, type="p")
-    lines(sx[[2]], sy[[2]], col=col2, pch=16, type="p")
+    lines(sx[[1]], sy[[1]], col=col1, pch=16, type="p", cex=cex)
+    lines(sx[[2]], sy[[2]], col=col2, pch=16, type="p", cex=cex)
 }
 
 #show how the points behave when there is only one dimension in play
@@ -1142,11 +1159,20 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
     p <- getData(x,"points.onedim")
     sx <- split(p, groups)
 
+    alpha <- 0.75
+    cex <- 1
+    if("alpha" %in% names(ellipsis)) {
+        alpha <- ellipsis[['alpha']]
+    }
+    if("cex" %in% names(ellipsis)) {
+        cex <- ellipsis[['cex']]
+    }
+
     col1=rgb(
         CM["red",1],
         CM["green",1],
         CM["blue",1],
-        200,
+        alpha*255,
         maxColorValue=255
     )
     
@@ -1154,7 +1180,7 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
         CM["red",2],
         CM["green",2],
         CM["blue",2],
-        200,
+        alpha*255,
         maxColorValue=255
     )
 
@@ -1169,8 +1195,8 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
         yaxt='n'
     )
     
-    lines(sx[[1]], rep(0,length(sx[[1]])), col=col1, pch=16, type="p")
-    lines(sx[[2]], rep(0,length(sx[[2]])), col=col2, pch=16, type="p")
+    lines(sx[[1]], rep(0,length(sx[[1]])), col=col1, pch=16, type="p", cex=cex)
+    lines(sx[[2]], rep(0,length(sx[[2]])), col=col2, pch=16, type="p", cex=cex)
 }
 
 ##plot Pcp projection with only 2 dims
@@ -1182,53 +1208,53 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
     ...
 ){
     
+    groups <- getData(x, "groups")
+    oldparams <- par(no.readonly = TRUE)
+
     if("all" %in% steps) {
-        #set mfrow 3:2
-        oldparams <- par(mfrow=c(3,2))
+        par(mfrow=c(3,2))
         steps <- c(1,2,3,4,5,6)
     }
-    
-    groups <- getData(x, "groups")
 
-    #check if colnames are present, then use them as axisnames
-    #if(colnames())
-    #axisnames <- col
-    
-    ##set up color scheme for all groups
-    #CM <- .setColors(groups)
-    
     if(1 %in% steps){
         #original plot
-        plot <- .Pcp2DPlotStep1(x, groups, CM)
+        plot <- .Pcp2DPlotStep1(x, groups, CM, ellipsis)
+        if(length(steps) == 1) {.legend(CM, oldparams=NULL, ellipsis)}
     }
     
     if(2 %in% steps){
         #plot.. line
-        .Pcp2DPlotStep2(x, groups, CM)
+        .Pcp2DPlotStep2(x, groups, CM, ellipsis)
+        if(length(steps) == 1) {.legend(CM, oldparams=NULL, ellipsis)}
     }
     
     if(3 %in% steps){
         #show the change from old points to new points on the line by dashing
-        .Pcp2DPlotStep3(x, groups, CM)
+        .Pcp2DPlotStep3(x, groups, CM, ellipsis)
+        if(length(steps) == 1) {.legend(CM, oldparams=NULL, ellipsis)}
     }
     
     if(4 %in% steps){
         #show the projected points in 3 dimensions
-        .Pcp2DPlotStep4(x, groups, CM)
+        .Pcp2DPlotStep4(x, groups, CM, ellipsis)
+        if(length(steps) == 1) {.legend(CM, oldparams=NULL, ellipsis)}
     }
     
     if(5 %in% steps){
         ##show projection into one dimension
-        .Pcp2DPlotStep5(x, groups, CM)
+        .Pcp2DPlotStep5(x, groups, CM, ellipsis)
+        if(length(steps) == 1) {.legend(CM, oldparams=NULL, ellipsis)}
     }
     
     if(6 %in% steps){
         #show the move to origin.
-        .Pcp2DPlotStep6(x, groups, CM)
+        .Pcp2DPlotStep6(x, groups, CM, ellipsis)
+        if(length(steps) == 1) {.legend(CM, oldparams=NULL, ellipsis)}
     }
     
     #reset mfrow
-    if("all" %in% steps){
+    if(length(steps) == 6){
+        .legend(CM, oldparams, ellipsis)
         par(oldparams)
     }
 }
@@ -1262,16 +1288,25 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
         xlab=''
     )
     
+    alpha <- 0.75
+    cex <- 1
+    if("alpha" %in% names(ellipsis)) {
+        alpha <- ellipsis[['alpha']]
+    }
+    if("cex" %in% names(ellipsis)) {
+        cex <- ellipsis[['cex']]
+    }
+
     for(i in 1:length(sx)) {
         lines(sx[[i]], sy[[i]],
             col=rgb(
                 CM["red",i],
                 CM["green",i],
                 CM["blue",i],
-                200,
+                alpha*255,
                 maxColorValue=255
             ),
-            pch=16, type="p")
+            pch=16, type="p", cex=cex)
     }
 }
 
@@ -1285,7 +1320,7 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
 ){
     
     #same points as in step1
-    .Pcp2DPlotStep1(x, groups, CM)
+    .Pcp2DPlotStep1(x, groups, CM, ellipsis)
     
     #add mean Values
     l <- getData(x,"line")
@@ -1305,7 +1340,7 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
 ){
     
     #same points as in step1
-    .Pcp2DPlotStep2(x, groups, CM)
+    .Pcp2DPlotStep2(x, groups, CM, ellipsis)
     
     #add mean Values
     p <- getData(x,"points.orig")
@@ -1340,17 +1375,26 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
         ylab='',
         xlab=''
     )
-    
+
+    alpha <- 0.75
+    cex <- 1
+    if("alpha" %in% names(ellipsis)) {
+        alpha <- ellipsis[['alpha']]
+    }
+    if("cex" %in% names(ellipsis)) {
+        cex <- ellipsis[['cex']]
+    }
+
     for(i in 1:length(sx)){
         lines(sx[[i]], sy[[i]],
             col=rgb(
                 CM["red",i],
                 CM["green",i],
                 CM["blue",i],
-                200,
+                alpha*255,
                 maxColorValue=255
             ),
-            pch=16, type="p")
+            pch=16, type="p", cex=cex)
     }
 }
 
@@ -1363,7 +1407,6 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
     ellipsis,
     ...
 ){
-
     p <- getData(x,"line")
     splt <- apply(p, 2, function(x) split(x, groups))
     sx <- splt[[1]]
@@ -1384,7 +1427,16 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
         ylab='',
         xlab=''
     )
-    
+
+    alpha <- 0.75
+    cex <- 1
+    if("alpha" %in% names(ellipsis)) {
+        alpha <- ellipsis[['alpha']]
+    }
+    if("cex" %in% names(ellipsis)) {
+        cex <- ellipsis[['cex']]
+    }
+
     #all points
     for(i in 1:length(sx)){
         lines(c(sx[[i]], sx2[[i]]), c(sy[[i]], sy2[[i]]),
@@ -1392,11 +1444,12 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
                 CM["red",i],
                 CM["green",i],
                 CM["blue",i],
-                200,
+                alpha*255,
                 maxColorValue=255
             ),
             pch=16,
-            type="p"
+            type="p",
+            cex=cex
         )
     }
     
@@ -1417,7 +1470,6 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
     ellipsis,
     ...
 ){
-
     p <- getData(x,"points.onedim")
     p <- matrix(c(p,rep(0,length(p))),ncol=2, dimnames=list(groups,NULL))
     splt <- apply(p, 2, function(x) split(x, groups))
@@ -1434,18 +1486,28 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
         xlab='',
         yaxt='n'
     )
-    
+
+    alpha <- 0.75
+    cex <- 1
+    if("alpha" %in% names(ellipsis)) {
+        alpha <- ellipsis[['alpha']]
+    }
+    if("cex" %in% names(ellipsis)) {
+        cex <- ellipsis[['cex']]
+    }
+
     for(i in 1:length(sx)){
         lines(sx[[i]], sy[[i]],
             col=rgb(
                 CM["red",i],
                 CM["green",i],
                 CM["blue",i],
-                200,
+                alpha*255,
                 maxColorValue=255
             ),
             pch=16,
-            type="p"
+            type="p",
+            cex=cex
         )
     }
 }
