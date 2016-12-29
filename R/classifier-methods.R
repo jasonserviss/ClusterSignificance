@@ -303,32 +303,3 @@ setMethod("classify", "Mlp", function(x, ...
     )
     return(distances)
 }
-
-#calculate score for each group and classification
-#scores <- (TP-FP) + (TN-FN)
-#.Scores <- function(TP, FP, FN, TN) {
-#    scores <- lapply(1:length(TP),
-#        function(xx)
-#            sapply(1:length(TP[[xx]]),
-#                function(y, TP, FP, FN, TN)
-#                    {
-#                        (TP[[xx]][[y]] - FP[[xx]][[y]]) +
-#                        (TN[[xx]][[y]] - FN[[xx]][[y]])
-#                    }, TP=TP, FP=FP, FN=FN, TN=TN
-#            )
-#    )
-#    names(scores) <- names(TP)
-#    return(scores)
-#}
-
-##better score
-#.Bscore <- function(scores){
-#    Bscores <- lapply(1:length(scores),
-#        function(oo, scores)
-#            ifelse(scores[[oo]] < -scores[[oo]],
-#                -scores[[oo]],
-#                scores[[oo]]),
-#                scores=scores)
-#    names(Bscores) <- names(scores)
-#    return(Bscores)
-#}

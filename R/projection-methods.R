@@ -87,12 +87,18 @@ setMethod("pcp", "matrix", function(mat, groups, df=NULL, group.color=NULL, ...
         groups[is.na(groups)] <- "NA"
     }
 
-    #rownames(mat) <- groups
+    ##run principal.curve, order and extract output
+    if(is.null(df)) {
+        df <- 5
+    } else {
+        dfmessage <- c("\n\t\tYou changed the df argument from default.
+        You MUST provide the same df argument to the permute
+        function or your results will NOT be valid!\n")
+        
+        message(dfmessage)
+    }
 
-    ##run principal.curve and order and extract output
-    if(is.null(df)) {df <- 5}
     prCurve <- .Curve(mat, groups, df)
-
     mat <- prCurve[[1]]
     line <- prCurve[[2]]
     vec.onedim <- prCurve[[3]]

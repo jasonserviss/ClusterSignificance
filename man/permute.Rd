@@ -72,7 +72,8 @@ Ordered PCs, with PC1 to the left.}
 
 \item{y}{default plot param, which should be set to NULL}
 
-\item{comparison}{Specify a comparison ("grp1 vs grp2") and plot only that comparison.}
+\item{comparison}{Specify a comparison i.e.
+("grp1 vs grp2") and plot only that comparison.}
 
 \item{object}{ClassifiedPoints Object}
 }
