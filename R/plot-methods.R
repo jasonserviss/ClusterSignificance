@@ -508,7 +508,8 @@ setMethod(
 	if(!is.null(group.color)) CM <- group.color
     
     ##setup plot window
-    steps <- length(s)
+
+    steps <- length(names(s))
     setup <- n2mfrow(steps)
     oldparams <- par(mfrow=setup)
     
