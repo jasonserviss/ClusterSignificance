@@ -120,7 +120,7 @@ setMethod("permute", "matrix",
     }
 
     #score first the real one
-    scores.real <- .scoreReal(mat, groups, uniq.groups, projm, df)
+    scores.real <- .scoreReal(mat, groups, projm, df)
 
     ##score permats
     scores.vec <- .scorePermats(permats, groups, uniq.groups, mat, projm, df)
@@ -158,23 +158,28 @@ setMethod("permute", "matrix",
                 sample(mat[groups %in% uniq.groups[, y], i], replace=FALSE)
             )
         )
-        )
+    )
+
+    names(permats) <- lapply(1:ncol(uniq.groups), function(x)
+        paste(uniq.groups[, x], collapse = " vs ")
+    )
+
     return(permats)
 }
 
 ##score real ones
-.scoreReal <- function(mat, groups, uniq.groups, projm, df) {
+.scoreReal <- function(mat, groups, projm, df) {
     ob <- projm(mat, groups, df=df)
     cl <- classify(ob)
-    scores.real <-
-        lapply(1:length(getData(cl, "scores")),
-            function(x, y) max(y[[x]]), y=getData(cl, "scores"))
-            
-    names(scores.real) <-
-        lapply(1:ncol(uniq.groups),
-            function(x) paste(uniq.groups[, x], collapse = " vs "))
+    scores.real <- lapply(
+        getData(cl, "scores"),
+        function(y)
+            max(y)
+    )
 
-    scores.real <- scores.real[order(names(scores.real))]
+    scores.real <- scores.real[
+        order(names(scores.real))
+    ]
 
     return(scores.real)
 }
@@ -202,9 +207,7 @@ setMethod("permute", "matrix",
         function(x)
             perm.scores[[x]][is.na(perm.scores[[x]]) == FALSE])
     
-    names(perm.scores) <-
-        lapply(1:ncol(uniq.groups),
-            function(x) paste(uniq.groups[, x], collapse = " vs "))
+    names(perm.scores) <- names(permats)
 
     perm.scores <- perm.scores[order(names(perm.scores))]
 
