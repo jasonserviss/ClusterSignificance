@@ -522,6 +522,19 @@ setMethod(
     if("lwd" %in% names(params)) {lwd <- params[['lwd']]}
     if("alpha" %in% names(params)) {alpha <- params[['alpha']]}
 
+    alpha <- 0.75
+    cex.lab <- 1
+    cex.axis <- 1
+    cex.main <- 1
+    
+    ellipsis <- list(...)
+    if("cex.points" %in% names(ellipsis)) {cex.points <- ellipsis[['cex.points']]}
+    if("lwd" %in% names(ellipsis)) {lwd <- ellipsis[['lwd']]}
+    if("alpha" %in% names(ellipsis)) {alpha <- ellipsis[['alpha']]}
+    if("cex.lab" %in% names(ellipsis)) {cex.lab <- ellipsis[['cex.lab']]}
+    if("cex.axis" %in% names(ellipsis)) {cex.axis <- ellipsis[['cex.axis']]}
+    if("cex.main" %in% names(ellipsis)) {cex.main <- ellipsis[['cex.main']]}
+
     ##plot
     for( ii in 1:steps ){
         score <- s[ii]
@@ -540,8 +553,11 @@ setMethod(
             pch='',
             ylab='score',
             xlab='',
-            main=name
+            cex.lab=cex.lab,
+            cex.axis=cex.axis
         )
+        
+        title(main=name, cex.main=cex.main)
 
         y1 <- rep(yrange[1], length(p[names(p)==grp1]))
         y2 <- rep(yrange[1], length(p[names(p)==grp2]))
@@ -610,14 +626,41 @@ setMethod("plot",c("PermutationResults", "missing"), function(x, y, ...)
     setup <- n2mfrow(steps)
     oldparams <- par(mfrow=setup)
 
+    cex.main <- 1
+    cex.axis <- 1
+    cex.lab <- 1
+    lwd <- 1
+    cex.hist <- 1
+    abline.lwd <- 1
+    
+    ellipsis <- list(...)
+    if("cex.main" %in% names(ellipsis)) {cex.main <- ellipsis[['cex.main']]}
+    if("cex.axis" %in% names(ellipsis)) {cex.axis <- ellipsis[['cex.axis']]}
+    if("cex.lab" %in% names(ellipsis)) {cex.lab <- ellipsis[['cex.lab']]}
+    if("lwd" %in% names(ellipsis)) {lwd <- ellipsis[['lwd']]}
+    if("cex.hist" %in% names(ellipsis)) {cex.hist <- ellipsis[['cex.hist']]}
+    if("abline.lwd" %in% names(ellipsis)) {abline.lwd <- ellipsis[['abline.lwd']]}
+
     #plot histogram of score distribution
     for( yy in 1:steps) {
         score <- score.reals[yy]
         name <- names(score)
         range <- range(score, scores.vec[yy])
-        hist(c(scores.vec[[yy]]), xlim=range, main=name, xlab="max scores")
+        if(cex.hist != 1) {opar <- par(lwd=cex.hist)}
+        hist(
+            c(scores.vec[[yy]]),
+            xlim=range,
+            main='',
+            xlab="scores",
+            cex.axis=cex.axis,
+            cex.lab=cex.lab,
+            lwd=lwd
+        )
+        if(cex.hist != 1) {par(opar)}
+        title(main=name, cex.main=cex.main)
+        
         #add line for the "real" data score
-        abline(v=score.reals[[yy]], col="red")
+        abline(v=score.reals[[yy]], col="red", lwd=abline.lwd)
     }
 }
 )
