@@ -526,13 +526,13 @@ setMethod(
     function(
         x,
         y,
+        comparison="all",
         group.color=NULL,
         ...
     )
 {
     # plot the points and create lines as separators and show above each line
     # the score obtained using that line as classifier.
-
     p <- getData(x,"scores.points")
     s <- getData(x,"scores")
 
@@ -546,15 +546,14 @@ setMethod(
             )
         }
     }
-
-    #set color
-    if(is.null(group.color)) CM <- getData(x,"group.color")
-    if(!is.null(group.color)) CM <- group.color
+    
+	#set color
+	if(is.null(group.color)) CM <- getData(x,"group.color")
+	if(!is.null(group.color)) CM <- group.color
     
     ##setup plot window
-
     steps <- length(names(s))
-    setup <- n2mfrow(steps)
+    setup <- n2mfrow(length(steps))
     oldparams <- par(mfrow=setup)
     
     cex.points <- 1
@@ -667,10 +666,13 @@ setMethod(
 #' ("grp1 vs grp2") and plot only that comparison.
 #' @export
 <<<<<<< HEAD
+<<<<<<< HEAD
 setMethod("plot",c("PermutationResults", "missing"), function(x, y, ...)
 =======
 #' @importFrom graphics title
 
+=======
+>>>>>>> 0ebaa5e... added plotting of individual comparisons in classification and permutation plots
 setMethod(
     "plot",
     c(
@@ -683,11 +685,28 @@ setMethod(
         comparison="all",
         ...
     )
+<<<<<<< HEAD
 >>>>>>> c36c261... conflicts
+=======
+>>>>>>> 0ebaa5e... added plotting of individual comparisons in classification and permutation plots
 {
     scores.vec <- getData(x,"scores.vec")
     score.reals <- getData(x,"scores.real")
-    
+
+    if(comparison != "all") {
+        if(
+            !is.null(scores.vec[[comparison]]) &
+            !is.null(score.reals[[comparison]])
+        ) {
+            scores.vec <- scores.vec[comparison]
+            score.reals <- score.reals[comparison]
+        } else {
+            stop(
+            "The specified comparison could not be found"
+            )
+        }
+    }
+
     ##setup plot window
     steps <- length(scores.vec)
     setup <- n2mfrow(steps)
