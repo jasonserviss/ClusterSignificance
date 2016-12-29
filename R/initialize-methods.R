@@ -22,7 +22,7 @@ setMethod("initialize","Pcp", function(
         points.onedim = points.onedim,
         index = index,
         group.color = group.color
-	)
+    )
 })
 
 #' @rdname mlp

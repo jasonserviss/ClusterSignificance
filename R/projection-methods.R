@@ -103,9 +103,9 @@ setMethod("pcp", "matrix", function(mat, groups, df=NULL, group.color=NULL, ...
     rownames(mat) <- groups
     rownames(line) <- groups
 
-	#set color
-	if(is.null(group.color)) group.color <- .setColors(groups)
-	#if(!is.null(group.color)) group.color
+    #set color
+    if(is.null(group.color)) group.color <- .setColors(groups)
+    #if(!is.null(group.color)) group.color
     
 
     #return Pcp-object
@@ -116,7 +116,7 @@ setMethod("pcp", "matrix", function(mat, groups, df=NULL, group.color=NULL, ...
         points.onedim=vec.onedim,
         dimnames=dimnames,
         index=index,
-		group.color=group.color
+        group.color=group.color
     )
 })
 
@@ -128,7 +128,10 @@ setMethod("pcp", "matrix", function(mat, groups, df=NULL, group.color=NULL, ...
 #############################################################################
 
 ##input checks
-.inputChecks <- function(mat, groups) {
+.inputChecks <- function(
+    mat,
+    groups
+){
     checkList = list(FALSE, FALSE, FALSE)
     checkList[[1]] <- is.matrix(mat)
     checkList[[2]] <- is.character(groups)
@@ -143,12 +146,19 @@ setMethod("pcp", "matrix", function(mat, groups, df=NULL, group.color=NULL, ...
 }
 
 #normalize points (intervall 0 to 1) and return matrix with normalized values
-.normalizeMatrix <- function(mat){
+.normalizeMatrix <- function(
+    mat
+){
     (mat-min(mat))/(max(mat)-min(mat))
 }
 
 #run princurve, sort the output, and return
-.Curve <- function(mat, groups, df, ...){
+.Curve <- function(
+    mat,
+    groups,
+    df,
+    ...
+){
 
     ##use princurve principal.curve to draw the principal curve
     prCurve <- principal.curve(mat, maxit=1000, df=df)
@@ -281,8 +291,8 @@ setMethod("mlp", "matrix", function(mat, groups, group.color=NULL, ...
     #reduce to one dimension 
     vec.onedim <- .reduceMultDimToOneDimAlongTheLine(mat.proj)
 
-	#process color info
-	if(is.null(group.color)) group.color <- .setColors(groups)
+    #process color info
+    if(is.null(group.color)) group.color <- .setColors(groups)
 
     #return Mlp-object
     new("Mlp",
@@ -293,7 +303,7 @@ setMethod("mlp", "matrix", function(mat, groups, group.color=NULL, ...
         dimnames=dimnames,
         #Mlp specific
         points.origo=mat.origo,
-		group.color=group.color
+        group.color=group.color
     )
 }
 )
@@ -306,14 +316,19 @@ setMethod("mlp", "matrix", function(mat, groups, group.color=NULL, ...
 
 #normalize points (intervall 0 to 1)
 #returns matrix with normalized values
-.normalizeMatrix <- function(mat){
+.normalizeMatrix <- function(
+    mat
+){
     
     (mat-min(mat))/(max(mat)-min(mat))
 }
 
 #calculate group and dimensional means
 #returns matrix with groups on rows and dimensions on cols
-.groupAndDimensionMean <- function(mat, groups){
+.groupAndDimensionMean <- function(
+    mat,
+    groups
+){
     
     matrix(
         unlist(
@@ -328,13 +343,18 @@ setMethod("mlp", "matrix", function(mat, groups, group.color=NULL, ...
 
 #calculate the line based on group means (now limited to solve only two groups)
 #return the vector for the line from mean of group 2 to mean of group 1
-.regressionVectorFromGroupMeans <- function(mat){
+.regressionVectorFromGroupMeans <- function(
+    mat
+){
     
     mat[1,] - mat[2,]
 }
 
 #project points on to a line passing through origin
-.projectMultidimensionalPointsOnMultidimensionalLine <- function(mat, vec){
+.projectMultidimensionalPointsOnMultidimensionalLine <- function(
+    mat,
+    vec
+){
     
     a <- mat%*%vec #matrix product operator
     b <- drop(vec%*%vec)
@@ -343,7 +363,9 @@ setMethod("mlp", "matrix", function(mat, groups, group.color=NULL, ...
 
 #calculate the euclidean distance which will be the reduction to one dimension
 #returns a vector with the euclidean distance
-.reduceMultDimToOneDimAlongTheLine <- function(mat){
+.reduceMultDimToOneDimAlongTheLine <- function(
+    mat
+){
     
     #because the move to origo through the y-intercept we can use the
     #x-axis to know which the direction the euclidean distance is supposed
@@ -366,7 +388,10 @@ setMethod("mlp", "matrix", function(mat, groups, group.color=NULL, ...
 }
 #move the points so their mean line passes through origin
 #returns a matrix, with changed y-values
-.movePointsSoMeanLineGoesThroughOrigo2D <- function(points, meanMat){
+.movePointsSoMeanLineGoesThroughOrigo2D <- function(
+    points,
+    meanMat
+){
     
     ycept <- .axisIntercept2D(meanMat)[2]
     points[,2] <- points[,2] - ycept
@@ -375,7 +400,9 @@ setMethod("mlp", "matrix", function(mat, groups, group.color=NULL, ...
 }
 #calculates whre the x and y intercepts are.
 #returns a vector of length two
-.axisIntercept2D <- function(meanMat){
+.axisIntercept2D <- function(
+    meanMat
+){
     
     meanMat <- t(meanMat)
     yp2.mean <- meanMat[2,2]
@@ -417,7 +444,10 @@ setMethod("mlp", "matrix", function(mat, groups, group.color=NULL, ...
 
 #calculates the vector perpendicular to a 2D line
 #returns a matrix for the left and right side of the line vectors direction
-.vectorMatrixOrthogonalToMeanPointLine2D <- function(origoLineVec, dist){
+.vectorMatrixOrthogonalToMeanPointLine2D <- function(
+    origoLineVec,
+    dist
+){
     
     v <- origoLineVec
     h <- dist
@@ -432,7 +462,10 @@ setMethod("mlp", "matrix", function(mat, groups, group.color=NULL, ...
 
 #calculates the distance from a line to a point (in this case origo)
 #returns a scalar for the distance
-.distMeanPointsToLineLineTo2D3D <- function(origoLineVec, means){
+.distMeanPointsToLineLineTo2D3D <- function(
+    origoLineVec,
+    means
+){
     
     means <- t(means)
     #library(pracma)
