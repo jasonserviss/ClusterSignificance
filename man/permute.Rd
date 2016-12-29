@@ -31,7 +31,7 @@ pvalue(x, ...)
 permute(mat, ...)
 
 \S4method{permute}{matrix}(mat, groups, projmethod = "pcp", iter = 100,
-  user.permutations = NULL, seed = 3, df = 5, verbose = TRUE, ...)
+  user.permutations = NULL, seed = 3, df = NULL, verbose = TRUE, ...)
 
 \S4method{plot}{PermutationResults,missing}(x, y, comparison = "all", ...)
 

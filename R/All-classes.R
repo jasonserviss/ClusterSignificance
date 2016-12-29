@@ -117,31 +117,34 @@ setMethod("c", "PermutationResults", function(x, ..., recursive=FALSE)
     {
 
         #check that scores real are the same in all objects
-        scores.real=unlist(lapply(list(x, ...),
-            function(x){unlist(getData(x, "scores.real"))}))
-            #print(scores.real)
-            #print(scores.real == getData(x,"scores.real"))
-            if(any(!(scores.real == getData(x,"scores.real"))))
-            stop("scores.real must be same to merge objects")
-            #until we remake things to arrays, this will do in the meantime
-            cnames <- names(getData(x, "scores.real"))
-            clen <- length(getData(x, "scores.real"))
-            lst <- lapply(list(x, ...),
-                function(x){
-                    as.data.frame(
-                        getData(x, "scores.vec"),
-                        col.names=1:clen
-                    )
-                })
-                df <- do.call("rbind",lst)
-                scores.lst <- lapply(1:ncol(df),function(x){df[[x]]})
-                names(scores.lst) <- cnames
-    
-        new("PermutationResults",
-            #p.value=0.11,
-            scores.real=getData(x,"scores.real"),
-            scores.vec=scores.lst
+        scores.real=unlist(
+            lapply(
+                list(x, ...),
+                    function(x)
+                        unlist(getData(x, "scores.real"))
             )
+        )
+        if(any(!(scores.real == getData(x,"scores.real"))))
+        stop("scores.real must be same to merge objects")
+
+        #until we remake things to arrays, this will do in the meantime
+        cnames <- names(getData(x, "scores.real"))
+        s.vec <- vector("list", length(getData(x, "scores.vec")))
+
+        for(y in list(x, ...)){
+            s.vec <- lapply(
+                1:length(getData(y, "scores.vec")),
+                function(z)
+                    c(s.vec[[z]], getData(y, "scores.vec")[[z]])
+            )
+        }
+        names(s.vec) <- cnames
+        new(
+            "PermutationResults",
+            scores.real=getData(x,"scores.real"),
+            scores.vec=s.vec,
+            group.color=getData(x, "group.color")
+        )
     }
 )
 
