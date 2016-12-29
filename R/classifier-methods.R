@@ -107,15 +107,13 @@ setMethod("classify", "Mlp", function(x, ...
     TN <- truth[[4]]
 
     ##score each seperation
-    scores <- .Scores(TP = TP, FP = FP, FN = FN, TN = TN)
-
+    #scores <- .Scores(TP = TP, FP = FP, FN = FN, TN = TN)
     #check if we get better score by changing the predicted class
-    scores <- .Bscore(scores)
-
-    ##name the scores variable
-    names(scores) <- sapply(1:length(scores),
-        function(x) paste(allCombos[,x], collapse = " vs "))
-
+    #scores <- .Bscore(scores)
+    
+    scores <- .newScores(TP, TN, FP, FN)
+    
+    ##order the scores variable
     scores <- scores[order(names(scores))]
 
 	#set color
@@ -161,10 +159,15 @@ setMethod("classify", "Mlp", function(x, ...
             matrix(codedList[[oo]],
                 ncol=length(codedList[[oo]]),
                 nrow=length(codedList[[oo]])))
+                
+    #add names
+    names(mat) <- sapply(1:length(mat),
+        function(x) paste(allCombos[,x], collapse = " vs "))
+        
     return(mat)
 }
 
-##select the upper triangle adn assign 2 to values not to be included in the
+##select the upper triangle and assign 2 to values not to be included in the
 ##score calculation
 .upperTriangle <- function(mat) {
     tfmat <- lapply(1:length(mat),
@@ -172,7 +175,6 @@ setMethod("classify", "Mlp", function(x, ...
     grp1.mat <- mat
     grp2.mat <- mat
 
-    ##how to do this without altering a global variable
     grp1.mat <- lapply(1:length(grp1.mat),
         function(x, grp1.mat){
             grp1.mat[[x]][!tfmat[[x]]] <- 2
@@ -186,7 +188,10 @@ setMethod("classify", "Mlp", function(x, ...
             grp2.mat[[x]]
         }, grp2.mat=grp2.mat
     )
-
+    
+    names(grp1.mat) <- names(mat)
+    names(grp2.mat) <- names(mat)
+    
     l <- list(grp1.mat, grp2.mat)
     return(l)
 }
@@ -212,6 +217,12 @@ setMethod("classify", "Mlp", function(x, ...
     TN <- lapply(1:length(grp2.mat),
         function(x, y) apply(y[[x]][,-1] == 0,2,sum), y=grp2.mat
     )
+    
+    names(TP) <- names(grp1.mat)
+    names(FP) <- names(grp1.mat)
+    names(FN) <- names(grp1.mat)
+    names(TN) <- names(grp1.mat)
+
     l <- list(TP, FP, FN, TN)
     return(l)
 }
@@ -229,17 +240,65 @@ setMethod("classify", "Mlp", function(x, ...
                     }, TP=TP, FP=FP, FN=FN, TN=TN
             )
     )
+    names(scores) <- names(TP)
     return(scores)
 }
 
 ##better score
 .Bscore <- function(scores){
-    scores <- lapply(1:length(scores),
+    Bscores <- lapply(1:length(scores),
         function(oo, scores)
             ifelse(scores[[oo]] < -scores[[oo]],
                 -scores[[oo]],
                 scores[[oo]]),
                 scores=scores)
-    return(scores)
+    names(Bscores) <- names(scores)
+    return(Bscores)
+}
+
+.newScores <- function(TP, TN, FP, FN) {
+    
+    specificity1 <- .specificity(TN, FP)
+    sensitivity1 <- .sensitivity(TP, FN)
+    
+    specificity2 <- .specificity(FN, TP)
+    sensitivity2 <- .sensitivity(FP, TN)
+    
+    tDistances <- .ROCdistance(sensitivity1, specificity1)
+    fDistances <- .ROCdistance(sensitivity2, specificity2)
+    
+    pick <- lapply(1:length(tDistances), function(o)
+        if(sum(tDistances[[o]]) < sum(fDistances[[o]])) {
+            1-tDistances[[o]]
+        } else {
+            1-fDistances[[o]]
+        }
+    )
+    
+    names(pick) <- names(TP)
+    return(pick)
+}
+
+.specificity <- function(TN, FP) {
+    specificity <- lapply(1:length(TN), function(xx)
+        TN[[xx]] / (TN[[xx]] + FP[[xx]])
+    )
+    return(specificity)
+}
+
+.sensitivity <- function(TP, FN) {
+    sensitivity <- lapply(1:length(TP), function(xx)
+        TP[[xx]] / (TP[[xx]] + FN[[xx]])
+    )
+    return(sensitivity)
+}
+
+.ROCdistance <- function(sensitivity, specificity) {
+    distances <- lapply(1:length(sensitivity), function(x)
+        sapply(1:length(sensitivity[[x]]), function(y)
+            sqrt(((1-sensitivity[[x]][y])^2) + ((1-specificity[[x]][y])^2))
+        )
+    )
+    return(distances)
 }
 
