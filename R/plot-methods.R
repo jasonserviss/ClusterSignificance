@@ -665,14 +665,7 @@ setMethod(
 #' @param comparison Specify a comparison i.e.
 #' ("grp1 vs grp2") and plot only that comparison.
 #' @export
-<<<<<<< HEAD
-<<<<<<< HEAD
-setMethod("plot",c("PermutationResults", "missing"), function(x, y, ...)
-=======
 #' @importFrom graphics title
-
-=======
->>>>>>> 0ebaa5e... added plotting of individual comparisons in classification and permutation plots
 setMethod(
     "plot",
     c(
@@ -685,10 +678,6 @@ setMethod(
         comparison="all",
         ...
     )
-<<<<<<< HEAD
->>>>>>> c36c261... conflicts
-=======
->>>>>>> 0ebaa5e... added plotting of individual comparisons in classification and permutation plots
 {
     scores.vec <- getData(x,"scores.vec")
     score.reals <- getData(x,"scores.real")
