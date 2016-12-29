@@ -2,7 +2,7 @@ Package: ClusterSignificance
 Title: The ClusterSignificance package provides tools to assess
     if clusters have a separation different from random or permuted
     data
-Version: 1.2.0
+Version: 1.2.1
 Author: Jason T. Serviss and Jesper R. Gadin
 Maintainer: Jason T Serviss <jason.serviss@ki.se>
 Description: The ClusterSignificance package provides tools to assess
