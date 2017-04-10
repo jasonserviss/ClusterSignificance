@@ -47,9 +47,6 @@ test_that("check that the .codedMatrix function returns the correct output", {
 			   nrow(codedMat[[1]]), ncol(codedMat[[1]]))
 })
 
-
-
-
 ##run test
 test_that("check that the .upperTriangle function returns the correct output",{
   
@@ -249,3 +246,35 @@ test_that("check that the .newScores function returns the correct output", {
     
 })
 
+##run test
+test_that("check that the .AUC function returns the correct output", {
+    
+    ####TEST1####
+    ##prepare normal input data
+    x <- c(1:10, 100:110)
+    groups <- c(rep("1", 10), rep("2", 10))
+    
+    #setup expected data
+    auc <- 0.9
+    
+    ##run function
+    AUC <- .AUC(x, groups)
+    
+    ##test
+    expect_true(AUC > auc)
+    
+    ####TEST2####
+    ##prepare normal input data
+    x <- 1:20
+    groups <- rep(c("1", "2"), 10)
+    
+    #setup expected data
+    auc <- 0.6
+    
+    ##run function
+    AUC <- .AUC(x, groups)
+    
+    ##test
+    expect_true(AUC < auc)
+
+})
