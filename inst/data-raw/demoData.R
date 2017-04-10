@@ -33,7 +33,7 @@ mlpMatrix <- matrix(
     ), ncol=PCs
 )
 
-groupNames <- c("grp1", "grp2")
+groupNames <- c("class1", "class2")
 
 ## Create the group variable.
 groups <- c(
@@ -55,8 +55,8 @@ save(mlpMatrix, file = "data/mlpMatrix.rda")
 ## pcp matrix
 set.seed(3)
 points.amount <- 20
-PCs <- 4
-groupNames <- c("grp1", "grp2", "grp3")
+PCs <- 3
+groupNames <- c("class1", "class2", "class3")
 
 pcpMatrix <- matrix(
     c(
@@ -107,5 +107,5 @@ groups <- c(
 )
 
 rownames(pcpMatrix) <- groups
-colnames(pcpMatrix) <- paste("dim", 1:4, sep="")
+colnames(pcpMatrix) <- paste("dim", 1:PCs, sep="")
 save(pcpMatrix, file = "data/pcpMatrix.rda")
