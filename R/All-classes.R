@@ -4,13 +4,13 @@ NULL
 #' @rdname pcp
 #' @export
 .Pcp <- setClass("Pcp", representation(
-    groups="character",
+    classes="character",
     points.orig="matrix",
     line="matrix",
     points.onedim="numeric",
     dimnames="character",
     index="integer",
-    group.color="matrix"
+    class.color="matrix"
 ))
 
 #' @rdname pcp
@@ -19,8 +19,10 @@ setGeneric("getData", function(x, ...
 
 #' @rdname pcp
 #' @export
-setMethod("getData", "Pcp", function(x, n=NULL)
-    {
+setMethod("getData", "Pcp", function(
+    x,
+    n=NULL
+){
         if(is.null(n)){
                 l <- lapply(slotNames(x),function(y,o){slot(o, y)},o=x)
                 names(l) <- slotNames(x)
@@ -34,7 +36,7 @@ setMethod("getData", "Pcp", function(x, n=NULL)
 #' @rdname mlp
 #' @export
 .Mlp <- setClass("Mlp", representation(
-    groups="character",
+    classes="character",
     points.orig="matrix",
     #points.norm="matrix",
     line="matrix",
@@ -42,13 +44,15 @@ setMethod("getData", "Pcp", function(x, n=NULL)
     dimnames="character",
     #Mlp specific
     points.origo="matrix",
-    group.color="matrix"
+    class.color="matrix"
 ))
 
 #' @rdname mlp
 #' @export
-setMethod("getData", "Mlp", function(x, n=NULL)
-    {
+setMethod("getData", "Mlp", function(
+    x,
+    n=NULL
+){
 
         if(is.null(n)){
             l <- lapply(slotNames(x),function(y,o){slot(o, y)},o=x)
@@ -68,13 +72,16 @@ setMethod("getData", "Mlp", function(x, n=NULL)
         scores.points="vector",
         scores.index="vector",
         ROC="list",
-        group.color="matrix"
+        AUC="numeric",
+        class.color="matrix"
 ))
 
 #' @rdname classify
 #' @export
-setMethod("getData", "ClassifiedPoints", function(x, n=NULL)
-    {
+setMethod("getData", "ClassifiedPoints", function(
+    x,
+    n=NULL
+){
 
         if(is.null(n)){
             l <- lapply(slotNames(x),function(y,o){slot(o, y)},o=x)
@@ -98,8 +105,10 @@ setMethod("getData", "ClassifiedPoints", function(x, n=NULL)
 
 #' @rdname permute
 #' @export
-setMethod("getData", "PermutationResults", function(x, n=NULL)
-    {
+setMethod("getData", "PermutationResults", function(
+    x,
+    n=NULL
+){
 
         if(is.null(n)){
             l <- lapply(slotNames(x),function(y,o){slot(o, y)},o=x)
@@ -113,8 +122,11 @@ setMethod("getData", "PermutationResults", function(x, n=NULL)
 
 #' @rdname permute
 #' @export
-setMethod("c", "PermutationResults", function(x, ..., recursive=FALSE)
-    {
+setMethod("c", "PermutationResults", function(
+    x,
+    ...,
+    recursive=FALSE
+){
 
         #check that scores real are the same in all objects
         scores.real=unlist(
@@ -149,21 +161,25 @@ setMethod("c", "PermutationResults", function(x, ..., recursive=FALSE)
 )
 
 #' @rdname permute
-setGeneric("pvalue", function(x, ...
-){ standardGeneric("pvalue")})
+setGeneric("pvalue", function(x, ...){
+    standardGeneric("pvalue")}
+)
 
 #' @rdname permute
 #' @export
-setMethod("pvalue", "PermutationResults", function(x,...)
-    {
+setMethod("pvalue", "PermutationResults", function(
+    x,
+    ...
+){
         scores.vec <- getData(x,"scores.vec")
         .calculateP(scores.vec, getData(x,"scores.real"))
-    }
-)
+})
 
-##calculate p-value
-.calculateP <- function(scores.vec, scores.real) {
-    #scores.vec <- list(scores.vec)
+##calculate CI
+.calculateP <- function(
+    scores.vec,
+    scores.real
+){
     p.value <- lapply(
         1:length(scores.vec),
             function(x, scores.vec)
@@ -180,3 +196,61 @@ setMethod("pvalue", "PermutationResults", function(x,...)
     names(p.value) <- names(scores.real)
     return(p.value)
 }
+
+#' @rdname permute
+setGeneric("conf.int", function(x, ...){
+    standardGeneric("conf.int")}
+)
+
+#' @rdname permute
+#' @export
+#' @importFrom stats binom.test
+setMethod("conf.int", "PermutationResults", function(
+    x,
+    conf.level = 0.99,
+    ...
+){
+    .calculateCI(
+        getData(x,"scores.vec"),
+        getData(x,"scores.real"),
+        conf.level
+    )
+})
+
+.calculateCI <- function(
+    scores.vec,
+    scores.real,
+    conf.level
+){
+    tPerm <- lapply(
+        1:length(scores.vec),
+            function(x, scores.vec)
+                ifelse(
+                    sum(scores.vec[[x]] >= scores.real[[x]])/
+                        length(scores.vec[[x]]) == 0,
+                    0,
+                    sum(scores.vec[[x]] >= scores.real[[x]])
+                ), scores.vec = scores.vec
+    )
+    
+    CI <- sapply(
+        1:length(tPerm),
+        function(x)
+            binom.test(
+                tPerm[[x]],
+                length(scores.vec[[x]]),
+                conf.level = conf.level
+            )$conf.int
+    )
+    
+    colnames(CI) <- names(scores.vec)
+    rownames(CI) <- c(
+        paste("CI", gsub(".([0-9]*)", "\\1", conf.level), "%-low", sep=""),
+        paste("CI", gsub(".([0-9]*)", "\\1", conf.level), "%-high", sep="")
+    )
+    return(CI)
+}
+
+
+
+
