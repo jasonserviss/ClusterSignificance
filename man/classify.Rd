@@ -27,11 +27,11 @@ classify(x, ...)
 \S4method{classify}{Mlp}(x, ...)
 
 \S4method{initialize}{ClassifiedPoints}(.Object, ..., scores,
-  scores.points = scores.points, scores.index = scores.index, ROC,
-  group.color)
+  scores.points = scores.points, scores.index = scores.index, ROC, AUC,
+  class.color)
 
 \S4method{plot}{ClassifiedPoints,missing}(x, y, comparison = "all",
-  group.color = NULL, ...)
+  class.color = NULL, ...)
 
 \S4method{show}{ClassifiedPoints}(object)
 }
@@ -53,7 +53,9 @@ ClassifiedPoints object}
 
 \item{ROC}{parameters (TN, TP, FN and FP)}
 
-\item{group.color}{user assigned group coloring scheme}
+\item{AUC}{area under the curve}
+
+\item{class.color}{user assigned group coloring scheme}
 
 \item{y}{default plot param, which should be set to NULL}
 
@@ -81,10 +83,10 @@ groups, and the height of the line marks the score for this separation.
 
 #use demo data
 data(pcpMatrix)
-groups <- rownames(pcpMatrix)
+classes <- rownames(pcpMatrix)
 
 #run function
-prj <- pcp(pcpMatrix, groups)
+prj <- pcp(pcpMatrix, classes)
 cl <- classify(prj)
 
 #getData accessor
@@ -101,4 +103,3 @@ plot(cl)
 Jesper R. Gadin and Jason T. Serviss
 }
 \keyword{classification}
-

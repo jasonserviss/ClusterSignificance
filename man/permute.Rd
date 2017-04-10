@@ -9,6 +9,8 @@
 \alias{c,PermutationResults-method}
 \alias{pvalue}
 \alias{pvalue,PermutationResults-method}
+\alias{conf.int}
+\alias{conf.int,PermutationResults-method}
 \alias{initialize,PermutationResults-method}
 \alias{permute}
 \alias{permute,matrix-method}
@@ -26,11 +28,15 @@ pvalue(x, ...)
 
 \S4method{pvalue}{PermutationResults}(x, ...)
 
+conf.int(x, ...)
+
+\S4method{conf.int}{PermutationResults}(x, conf.level = 0.99, ...)
+
 \S4method{initialize}{PermutationResults}(.Object, ..., scores.real, scores.vec)
 
 permute(mat, ...)
 
-\S4method{permute}{matrix}(mat, groups, projmethod = "pcp", iter = 100,
+\S4method{permute}{matrix}(mat, classes, projmethod = "pcp", iter = 100,
   user.permutations = NULL, seed = 3, df = NULL, verbose = TRUE, ...)
 
 \S4method{plot}{PermutationResults,missing}(x, y, comparison = "all", ...)
@@ -47,6 +53,8 @@ PermutationResults object}
 
 \item{recursive}{dont use (belongs to default generic of combine 'c()')}
 
+\item{conf.level}{confidence level for the returned confidence interval}
+
 \item{.Object}{internal object}
 
 \item{scores.real}{the real score}
@@ -56,7 +64,7 @@ PermutationResults object}
 \item{mat}{matrix with samples on rows, PCs in columns. 
 Ordered PCs, with PC1 to the left.}
 
-\item{groups}{vector in same order as rows in matrix}
+\item{classes}{vector in same order as rows in matrix}
 
 \item{projmethod}{'pcp' or 'mlp'}
 
@@ -94,23 +102,23 @@ will perform a sampling without replacement within each dimension.
 
 #use pcp method
 data(pcpMatrix)
-groups <- rownames(pcpMatrix)
+classes <- rownames(pcpMatrix)
 
 #run function
 iterations <- 10
 pe <- permute(
     mat=pcpMatrix,
-    groups=groups,
+    classes=classes,
     iter=iterations,
     projmethod="pcp"
 )
 
 #use mlp method
 data(mlpMatrix)
-groups <- rownames(mlpMatrix)
+classes <- rownames(mlpMatrix)
 pe <- permute(
     mat=mlpMatrix,
-    groups=groups,
+    classes=classes,
     iter=iterations,
     projmethod="mlp"
 )
@@ -136,4 +144,3 @@ pe2 <- c(pe, pe, pe)
 Jesper R. Gadin and Jason T. Serviss
 }
 \keyword{permutation}
-

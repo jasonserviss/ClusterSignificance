@@ -21,14 +21,14 @@ getData(x, ...)
 
 \S4method{getData}{Pcp}(x, n = NULL)
 
-\S4method{initialize}{Pcp}(.Object, ..., groups, points.orig, line,
-  points.onedim, index, group.color)
+\S4method{initialize}{Pcp}(.Object, ..., classes, points.orig, line,
+  points.onedim, index, class.color)
 
-\S4method{plot}{Pcp,missing}(x, y, steps = "all", group.color = NULL, ...)
+\S4method{plot}{Pcp,missing}(x, y, steps = "all", class.color = NULL, ...)
 
 pcp(mat, ...)
 
-\S4method{pcp}{matrix}(mat, groups, df = NULL, group.color = NULL, ...)
+\S4method{pcp}{matrix}(mat, classes, df = NULL, class.color = NULL, ...)
 
 \S4method{show}{Pcp}(object)
 }
@@ -41,7 +41,7 @@ pcp(mat, ...)
 
 \item{.Object}{internal object}
 
-\item{groups}{vector in same order as rows in matrix}
+\item{classes}{vector in same order as rows in matrix}
 
 \item{points.orig}{multidimensional points describing the original data}
 
@@ -51,7 +51,7 @@ pcp(mat, ...)
 
 \item{index}{internal index from the projection}
 
-\item{group.color}{user assigned group coloring scheme}
+\item{class.color}{user assigned group coloring scheme}
 
 \item{y}{default plot param, which should be set to NULL}
 
@@ -83,10 +83,10 @@ plot().
 
 #use demo data
 data(pcpMatrix)
-groups <- rownames(pcpMatrix)
+classes <- rownames(pcpMatrix)
 
 #run function
-prj <- pcp(pcpMatrix, groups)
+prj <- pcp(pcpMatrix, classes)
 
 #getData accessor
 getData(prj)
@@ -97,8 +97,8 @@ getData(prj, "line")
 #plot the result (if dim >2, then plot in 3d)
 plot(prj)
 
-#plot the result (if dim =2, then plot in 2d)
-prj2 <- pcp(pcpMatrix[,1:2], groups)
+#plot the result (if dim=2, then plot in 2d)
+prj2 <- pcp(pcpMatrix[,1:2], classes)
 plot(prj2)
 
 }
@@ -106,4 +106,3 @@ plot(prj2)
 Jesper R. Gadin and Jason T. Serviss
 }
 \keyword{projection}
-

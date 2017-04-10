@@ -18,14 +18,14 @@
 \usage{
 \S4method{getData}{Mlp}(x, n = NULL)
 
-\S4method{initialize}{Mlp}(.Object, ..., groups, points.orig, line,
-  points.onedim, group.color)
+\S4method{initialize}{Mlp}(.Object, ..., classes, points.orig, line,
+  points.onedim, class.color)
 
 \S4method{plot}{Mlp,missing}(x, y, steps = "all", ...)
 
 mlp(mat, ...)
 
-\S4method{mlp}{matrix}(mat, groups, group.color = NULL, ...)
+\S4method{mlp}{matrix}(mat, classes, class.color = NULL, ...)
 
 \S4method{show}{Mlp}(object)
 }
@@ -38,7 +38,7 @@ mlp(mat, ...)
 
 \item{...}{additional arguments to pass on}
 
-\item{groups}{vector in same order as rows in matrix}
+\item{classes}{vector in same order as rows in matrix}
 
 \item{points.orig}{multidimensional points describing the original data}
 
@@ -46,7 +46,7 @@ mlp(mat, ...)
 
 \item{points.onedim}{a vector of points}
 
-\item{group.color}{user assigned group coloring scheme}
+\item{class.color}{user assigned group coloring scheme}
 
 \item{y}{default plot param, which should be set to NULL(default: NULL)}
 
@@ -101,4 +101,3 @@ plot(prj)
 Jesper R. Gadin and Jason T. Serviss
 }
 \keyword{projection}
-
