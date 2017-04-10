@@ -18,7 +18,7 @@ NULL
 #' @aliases classify classify,Pcp-method classify,Mlp-method ClassifiedPoints 
 #' @param x Pcp or Mlp Object for the function classify otherwise it is a 
 #'  ClassifiedPoints object
-#' @param group.color user assigned group coloring scheme
+#' @param class.color user assigned group coloring scheme
 #' @param n data to extract from ClassifiedPoints (NULL gives all)
 #' @param y default plot param, which should be set to NULL
 #' @param .Object internal object 
@@ -27,6 +27,7 @@ NULL
 #' @param scores.points sorted points 
 #' @param scores.index index of sorted points
 #' @param ROC parameters (TN, TP, FN and FP)
+#' @param AUC area under the curve
 #' @param ... additional arguments to pass on
 #' @return The classify function returns an object of class ClassifiedPoints
 #' @author Jesper R. Gadin and Jason T. Serviss
@@ -35,10 +36,10 @@ NULL
 #' 
 #' #use demo data
 #' data(pcpMatrix)
-#' groups <- rownames(pcpMatrix)
+#' classes <- rownames(pcpMatrix)
 #'
 #' #run function
-#' prj <- pcp(pcpMatrix, groups)
+#' prj <- pcp(pcpMatrix, classes)
 #' cl <- classify(prj)
 #'
 #' #getData accessor
@@ -55,18 +56,17 @@ NULL
 NULL
 
 #' @rdname classify
-setGeneric("classify", function(x, ...
-    ){ standardGeneric("classify")})
+setGeneric("classify", function(x, ...){
+    standardGeneric("classify")
+})
 
 #' @rdname classify
-setMethod("classify", "Pcp", function(x, ...
-    ){
+setMethod("classify", "Pcp", function(x, ...){
         .classifyWrapper(x, ...)
 })                                    
 
 #' @rdname classify
-setMethod("classify", "Mlp", function(x, ...
-    ){
+setMethod("classify", "Mlp", function(x, ...){
         .classifyWrapper(x, ...)
 })                                    
 
@@ -78,13 +78,15 @@ setMethod("classify", "Mlp", function(x, ...
 
 .classifyWrapper <- function(
     x,
-    group.color=NULL,
+    class.color=NULL,
     ...
 ){
+    group.color <- class.color
+    
     ##import and order data
     #points <-    x["points.onedim"]
     points <-    getData(x, "points.onedim")
-    names(points) <- getData(x, "groups")
+    names(points) <- getData(x, "classes")
     sp <- sort(points,decreasing=FALSE, index.return=TRUE)
     order <- names(points)[sp$ix]
 
@@ -121,7 +123,7 @@ setMethod("classify", "Mlp", function(x, ...
     scores <- scores[order(names(scores))]
 
     #set color
-    if(is.null(group.color)) group.color <- getData(x,"group.color")
+    if(is.null(group.color)) group.color <- getData(x,"class.color")
     if(!is.null(group.color)) group.color
 
     #return ClassifiedPoints object
@@ -130,7 +132,8 @@ setMethod("classify", "Mlp", function(x, ...
         scores.points=sp$x,
         scores.index=sp$ix,
         ROC = list(TP=TP,FP=FP,FN=FN,TN=TN),
-        group.color=group.color
+        AUC=.AUC.calc(sp$x, allCombos),
+        class.color=group.color
     )
 
 }
@@ -302,4 +305,32 @@ setMethod("classify", "Mlp", function(x, ...
         )
     )
     return(distances)
+}
+
+#calculates AUC
+.AUC.calc <- function(scores.points, allCombos) {
+    p <- lapply(1:ncol(allCombos), function(y)
+        .AUC(
+            scores.points[names(scores.points) %in% allCombos[,y]],
+            names(scores.points)[names(scores.points) %in% allCombos[,y]]
+        )
+    )
+    names(p) <- unlist(lapply(1:ncol(allCombos), function(c)
+        paste(allCombos[,c], collapse=" vs. ")
+    ))
+    return(unlist(p))
+}
+
+.AUC <- function(x, group) {
+    group <- as.integer(factor(group))-1
+    y <- sort(x[group == 0])
+    x <- sort(x[group == 1])
+    nx <- length(x)
+    ny <- length(y)
+    AUC <- (nx*ny + nx*(nx+1)/2 - sum(rank(c(x,y))[1:nx]))/(nx*ny)
+    if(AUC < 0.5){
+        return(1-AUC)
+    } else {
+        return(AUC)
+    }
 }

@@ -18,10 +18,10 @@ NULL
 #' @aliases pcp pcp,matrix-method Pcp 
 #' @param mat matrix with samples on rows, PCs in columns. Ordered PCs, 
 #' with PC1 to the left.
-#' @param groups vector in same order as rows in matrix
+#' @param classes vector in same order as rows in matrix
 #' @param x matrix object for the function pcp otherwise it is a Pcp object
 #' @param df degrees of freedom, passed to smooth.spline
-#' @param group.color user assigned group coloring scheme
+#' @param class.color user assigned group coloring scheme
 #' @param n data to extract from Pcp (NULL gives all)
 #' @param y default plot param, which should be set to NULL
 #' @param .Object internal object 
@@ -39,10 +39,10 @@ NULL
 #'
 #' #use demo data
 #' data(pcpMatrix)
-#' groups <- rownames(pcpMatrix)
+#' classes <- rownames(pcpMatrix)
 #'
 #' #run function
-#' prj <- pcp(pcpMatrix, groups)
+#' prj <- pcp(pcpMatrix, classes)
 #'
 #' #getData accessor
 #' getData(prj)
@@ -53,8 +53,8 @@ NULL
 #' #plot the result (if dim >2, then plot in 3d)
 #' plot(prj)
 #'
-#' #plot the result (if dim =2, then plot in 2d)
-#' prj2 <- pcp(pcpMatrix[,1:2], groups)
+#' #plot the result (if dim=2, then plot in 2d)
+#' prj2 <- pcp(pcpMatrix[,1:2], classes)
 #' plot(prj2)
 #'
 #' @exportMethod pcp
@@ -65,13 +65,21 @@ NULL
 NULL
 
 #' @rdname pcp
-setGeneric("pcp", function(mat, ...
-){ standardGeneric("pcp")})
+setGeneric("pcp", function(mat, ...){
+    standardGeneric("pcp")
+})
 
 #' @rdname pcp
-setMethod("pcp", "matrix", function(mat, groups, df=NULL, group.color=NULL, ...
+setMethod("pcp", "matrix", function(
+    mat,
+    classes,
+    df=NULL,
+    class.color=NULL,
+    ...
 ){
-
+    groups <- classes
+    group.color <- class.color
+    
     #input checks
     .inputChecks(mat, groups)
 
@@ -116,13 +124,13 @@ setMethod("pcp", "matrix", function(mat, groups, df=NULL, group.color=NULL, ...
 
     #return Pcp-object
     new("Pcp",
-        groups=groups,
+        classes=groups,
         points.orig=mat,
         line=line,
         points.onedim=vec.onedim,
         dimnames=dimnames,
         index=index,
-        group.color=group.color
+        class.color=group.color
     )
 })
 
@@ -206,9 +214,9 @@ setMethod("pcp", "matrix", function(mat, groups, df=NULL, group.color=NULL, ...
 #' @aliases mlp mlp,matrix-method Mlp 
 #' @param mat matrix with samples on rows, PCs in columns. 
 #' Ordered PCs, with PC1 to the left.
-#' @param groups vector in same order as rows in matrix
+#' @param classes vector in same order as rows in matrix
 #' @param x matrix object for the function mlp otherwise it is a Mlp object
-#' @param group.color user assigned group coloring scheme
+#' @param class.color user assigned group coloring scheme
 #' @param n data to extract from Mlp (NULL gives all)
 #' @param y default plot param, which should be set to NULL(default: NULL)
 #' @param .Object internal object 
@@ -245,13 +253,20 @@ setMethod("pcp", "matrix", function(mat, groups, df=NULL, group.color=NULL, ...
 NULL
 
 #' @rdname mlp
-setGeneric("mlp", function(mat, ... 
-    ){ standardGeneric("mlp")})
+setGeneric("mlp", function(mat, ... ){
+    standardGeneric("mlp")
+})
 
 #' @rdname mlp
-setMethod("mlp", "matrix", function(mat, groups, group.color=NULL, ...
-    ){ 
-
+setMethod("mlp", "matrix", function(
+    mat,
+    classes,
+    class.color=NULL,
+    ...
+){
+    groups <- classes
+    group.color <- class.color
+    
     #check that there are only two groups
     if(!length(unique(groups))==2){
         stop("groups can only have two levels")
@@ -302,14 +317,14 @@ setMethod("mlp", "matrix", function(mat, groups, group.color=NULL, ...
 
     #return Mlp-object
     new("Mlp",
-        groups=groups,
+        classes=groups,
         points.orig=mat,
         line=mat.proj, 
         points.onedim=vec.onedim,
         dimnames=dimnames,
         #Mlp specific
         points.origo=mat.origo,
-        group.color=group.color
+        class.color=group.color
     )
 }
 )

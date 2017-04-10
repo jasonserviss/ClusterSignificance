@@ -20,23 +20,23 @@ setMethod(
         x,
         y,
         steps="all",
-        group.color=NULL,
+        class.color=NULL,
         ...
     )
 {
-
+    group.color <- class.color
     ellipsis <- list(...)
     dim <- length(getData(x,"dimnames"))
 
     #set color
-    if(is.null(group.color)) CM <- getData(x,"group.color")
+    if(is.null(group.color)) CM <- getData(x,"class.color")
     if(!is.null(group.color)) CM <- group.color
 
     if(dim==2) {
         .plotPcp2D(x, steps, CM, ellipsis)
     } else {
 
-        groups <- getData(x,"groups")
+        groups <- getData(x,"classes")
         oldparams <- par(no.readonly = TRUE)
 
         if("all" %in% steps){
@@ -527,10 +527,12 @@ setMethod(
         x,
         y,
         comparison="all",
-        group.color=NULL,
+        class.color=NULL,
         ...
     )
 {
+    group.color <- class.color
+    
     # plot the points and create lines as separators and show above each line
     # the score obtained using that line as classifier.
 
@@ -549,7 +551,7 @@ setMethod(
     }
     
     #set color
-    if(is.null(group.color)) CM <- getData(x,"group.color")
+    if(is.null(group.color)) CM <- getData(x,"class.color")
     if(!is.null(group.color)) CM <- group.color
     
     ##setup plot window
@@ -770,7 +772,7 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
         steps <- c(1,2,3,4,5,6)
     }
     
-    groups <- getData(x, "groups")
+    groups <- getData(x, "classes")
     
     ##set up color scheme for all groups
     CM <- .setColors(groups)
@@ -1208,7 +1210,7 @@ setMethod("plot",c("Mlp", "missing"), function(x, y, steps="all", ...)
     ...
 ){
     
-    groups <- getData(x, "groups")
+    groups <- getData(x, "classes")
     oldparams <- par(no.readonly = TRUE)
 
     if("all" %in% steps) {

@@ -6,22 +6,22 @@ NULL
 setMethod("initialize","Pcp", function(
     .Object,
     ...,
-    groups,
+    classes,
     points.orig,
     line,
     points.onedim,
     index,
-    group.color
+    class.color
 ){
     callNextMethod(
         .Object,
         ...,
-        groups = groups,
+        classes = classes,
         points.orig = points.orig,
         line = line,
         points.onedim = points.onedim,
         index = index,
-        group.color = group.color
+        class.color = class.color
     )
 })
 
@@ -30,20 +30,20 @@ setMethod("initialize","Pcp", function(
 setMethod("initialize","Mlp", function(
     .Object,
     ...,
-    groups,
+    classes,
     points.orig,
     line,
     points.onedim,
-    group.color
+    class.color
 ){
     callNextMethod(
         .Object,
         ...,
-        groups = groups,
+        classes = classes,
         points.orig = points.orig,
         line = line,
         points.onedim = points.onedim,
-        group.color = group.color
+        class.color = class.color
     )
 })
 
@@ -56,7 +56,8 @@ setMethod("initialize","ClassifiedPoints", function(
     scores.points=scores.points,
     scores.index=scores.index,
     ROC,
-    group.color
+    AUC,
+    class.color
 ){
     callNextMethod(
         .Object,
@@ -65,7 +66,8 @@ setMethod("initialize","ClassifiedPoints", function(
         scores.points=scores.points,
         scores.index=scores.index,
         ROC=ROC,
-        group.color=group.color
+        AUC=AUC,
+        class.color=class.color
     )
 })
 

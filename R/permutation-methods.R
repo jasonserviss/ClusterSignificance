@@ -17,7 +17,7 @@ NULL
 #' @param mat matrix with samples on rows, PCs in columns. 
 #' Ordered PCs, with PC1 to the left.
 #' @param iter integer number of iterations to be performed.
-#' @param groups vector in same order as rows in matrix
+#' @param classes vector in same order as rows in matrix
 #' @param df degrees of freedom, passed to smooth.spline
 #' @param verbose makes function more talkative
 #' @param projmethod 'pcp' or 'mlp'
@@ -31,6 +31,7 @@ NULL
 #' @param y default plot param, which should be set to NULL
 #' @param .Object internal object 
 #' @param object ClassifiedPoints Object
+#' @param conf.level confidence level for the returned confidence interval
 #' @param ... arguments to pass on
 #' @param recursive dont use (belongs to default generic of combine 'c()')
 #' @return The permute function returns an object of class PermutationResults
@@ -40,23 +41,23 @@ NULL
 #' 
 #' #use pcp method
 #' data(pcpMatrix)
-#' groups <- rownames(pcpMatrix)
+#' classes <- rownames(pcpMatrix)
 #'
 #' #run function
 #' iterations <- 10
 #' pe <- permute(
 #'     mat=pcpMatrix,
-#'     groups=groups,
+#'     classes=classes,
 #'     iter=iterations,
 #'     projmethod="pcp"
 #' )
 #' 
 #' #use mlp method
 #' data(mlpMatrix)
-#' groups <- rownames(mlpMatrix)
+#' classes <- rownames(mlpMatrix)
 #' pe <- permute(
 #'     mat=mlpMatrix,
-#'     groups=groups,
+#'     classes=classes,
 #'     iter=iterations,
 #'     projmethod="mlp"
 #' )
@@ -86,19 +87,19 @@ setGeneric("permute", function(mat, ...
 
 #' @rdname permute
 #' @export
-setMethod("permute", "matrix",
-    function(
-        mat,
-        groups,
-        projmethod="pcp",
-        iter=100,
-        user.permutations=NULL,
-        seed=3,
-        df=NULL,
-        verbose=TRUE,
-        ...
-    ){
-
+setMethod("permute", "matrix", function(
+    mat,
+    classes,
+    projmethod="pcp",
+    iter=100,
+    user.permutations=NULL,
+    seed=3,
+    df=NULL,
+    verbose=TRUE,
+    ...
+){
+    groups <- classes
+    
     if(verbose) message("initializing permutation analysis\n")
     
     if(iter == 0) {
@@ -256,7 +257,7 @@ setMethod("permute", "matrix",
     if( y%%500 == 0){message("iteration ", y, " for comparison ", x, "\n")}
 
     PcpOut <- tryCatch({projm(permats[[x]][[y]],
-        groups=groups[groups %in% uniq.groups[, x]], df=df)},
+        classes=groups[groups %in% uniq.groups[, x]], df=df)},
         warning=function(w) {return(NA)},
         error=function(w) {return(NA)}
     )
