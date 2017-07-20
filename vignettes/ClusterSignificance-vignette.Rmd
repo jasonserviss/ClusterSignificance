@@ -86,7 +86,7 @@ are moved into a single dimension.
 ## Seperation classification
 
 Now that all of the points are in one dimension, it allows us to easily
-define a perpendicular line that best separates the two groups. This is
+define a perpendicular line that best separates the two classes. This is
 accomplished by utilizing the user defined classes to calculate the 
 sensivitity and specificity at each possible seperation of the projected 
 data. The score for each possible separation is then calculated based on 
@@ -133,9 +133,9 @@ below together with the situations where each can be used.
 ## Pcp
 The Pcp method is suitable in situations where more than 2 dimensions need
 to be considered simultaneously (although Pcp works with only 2 dimensions)
-and/or more than 2 group separations should
+and/or more than 2 class separations should
 be analyzed. It is limited by the fact that, the Pcp method will not work
-for < 5 data points per group and must have > 5 unique values per dimension.
+for < 5 data points per class and must have > 5 unique values per dimension.
 The Pcp method utilizes the principal.curve method from the princurve package
 to fit a principal curve to the data points utilizing all the dimensions input
 by the user. A principal curve can be described as a "smooth curve that
@@ -145,14 +145,14 @@ one dimension for scoring.
 
 ## Mlp
 The Mlp method is suitable for comparing clusters in a maximum of 2 dimensions
-when the separation between a maximum of 2 groups will be evaluated at
+when the separation between a maximum of 2 classes will be evaluated at
 a time. Briefly, Mlp functions by drawing a regression line through the
-means of the two groups and then projects all points onto that line. To
+means of the two classes and then projects all points onto that line. To
 project the points into one dimension, the points are then rotated onto
 the x-axis. A detailed description and graphical representation of the
 individual steps can be seen in the Mlp example below. It should be noted that,
 despite the fact that the Mlp method will work with as low as 2 data points
-per group, it may not be advisable to perform an analysis with such a small
+per class, it may not be advisable to perform an analysis with such a small
 amount of data.
 
 # Examples
@@ -168,7 +168,7 @@ one used for demonstrating the Mlp method and one used for demonstrating
 the Pcp method. The Mlp demo matrix has 2 dimensions whereas, the Pcp demo 
 matrix has 4. In addition, the class variable has been added as the rownames 
 of each matrix, with the Mlp demo matrix having 2 classes and the Pcp demo 
-matrix having 3 classes Finally, colnames, indicating the dimension number, 
+matrix having 3 classes. Finally, colnames, indicating the dimension number, 
 were also added to each matrix. Neither colnames or rownames are needed for 
 the input matrix to ClusterSignificance functions and we have only added 
 them here only for clarity.
@@ -181,19 +181,19 @@ data(mlpMatrix)
 ##Mlp
 printMat <- mlpMatrix
 classes <- rownames(mlpMatrix)
-dimnames(printMat) <- list(classes, paste("dim", 1:2, sep=""))
+dimnames(printMat) <- list(classes, paste("dim", 1:2, sep = ""))
 knitr::kable(
     printMat[1:3,], 
     digits = 2, 
     caption = "Head; Mlp matrix.", 
-    align=c(rep('l', 2))
+    align = c(rep('l', 2))
 )
 
 gTable <- as.data.frame(table(classes))
 knitr::kable(
     gTable, 
     digits = 2, 
-    align=c(rep('l', 2)), 
+    align = c(rep('l', 2)), 
     caption = "Rownames table; Mlp matrix."
 )
 ```
@@ -211,14 +211,14 @@ knitr::kable(
     printMat[1:3,], 
     digits = 2, 
     caption = "Head; Pcp matrix.", 
-    align=c(rep('l', 2))
+    align = c(rep('l', 2))
 )
 
 gTable <- as.data.frame(table(classes))
 knitr::kable(
     gTable, 
     digits = 2, 
-    align=c(rep('l', 2)), 
+    align = c(rep('l', 2)), 
     caption = "Rownames table; Pcp matrix."
 )
 ```
@@ -257,9 +257,9 @@ The classification function works in the same manner for both the Mlp and
 Pcp methods and is previously described in the [Classification][] section.
 The lines perpendicular to the x-axis in the classification plot represent 
 the separation scores for all possible separations. The highest scoring 
-separation of the two groups is represented by the highest perpendicular line.
-Due to the fact that the Pcp method can perform several group comparisons
-at once, when > 2 groups are used all possible separations are automatically
+separation of the two classes is represented by the highest perpendicular line.
+Due to the fact that the Pcp method can perform several class comparisons
+at once, when > 2 classes are used all possible separations are automatically
 analyzed and plotted.
 
 ```{r classifyPcp, message=FALSE, fig.width=10, fig.height=7}
@@ -281,10 +281,10 @@ iterations <- 100 ## Set the number of iterations.
 
 ## Permute and plot.
 pe <- permute(
-    mat=pcpMatrix, 
-    iter=iterations, 
-    classes=classes, 
-    projmethod="pcp"
+    mat = pcpMatrix, 
+    iter = iterations, 
+    classes = classes, 
+    projmethod = "pcp"
 )
 
 plot(pe)
@@ -299,14 +299,14 @@ all permutations with the vertical red line representing the max score
 from the real data. The p-values can be obtained using `pvalue(pe)`. 
 The results from the permutation indicate that 
 ClusterSignificance performed as we would expect. The separation for 
-grp1 vs grp2 is not significant at alpha = 0.05, whereas the separations 
-for both grp1 vs grp3 and grp2 vs grp3 are significant.
+class1 vs class3 is not significant at alpha = 0.05, whereas the separations 
+for both class1 vs class2 and class2 vs class3 are significant.
 
 We can also calculate a confidence interval for the p-value estimates using the 
 following command:
 
 ```{r, confIntPcp, echo=TRUE, eval=TRUE, message=FALSE}
-conf.int(pe, conf.level=.99)
+conf.int(pe, conf.level = .99)
 ```
 
 If it is unclear why these are p-value estimates or why we would want 
@@ -317,9 +317,9 @@ a confidence interval for them, please refer to
 ### Projection
 
 The Mlp method is suitable for comparing clusters in a maximum of 2 dimensions
-when the separation between a maximum of 2 groups will be evaluated at
+when the separation between a maximum of 2 classes will be evaluated at
 a time. Briefly, Mlp functions by drawing a regression line through the
-means of the two groups and then projects all points onto that line. To
+means of the two classes and then projects all points onto that line. To
 project the points into one dimension, the points are then rotated onto
 the x-axis. A detailed description and graphical representation of the
 individual steps can be seen in the example below. It should be noted that,
@@ -343,9 +343,9 @@ The plot above shows the 6 steps Mlp takes to project the points into one
 dimension.
 
 1. The input matrix.
-2. Finding the mean of each group.
+2. Finding the mean of each class.
 3. Regression line and move to origo.
-    a. The regression line is drawn through the mean of each group.
+    a. The regression line is drawn through the mean of each class.
     b. Adjustment of the line and points so the line passes through origo.
         i. Arrows show the move from the original position to new position.
 4. Orthogonal projection onto the regression line.
@@ -371,10 +371,10 @@ iterations <- 500
 
 ## Permute and plot.
 pe <- permute(
-    mat=mlpMatrix, 
-    iter=iterations, 
-    classes=classes, 
-    projmethod="mlp"
+    mat = mlpMatrix, 
+    iter = iterations, 
+    classes = classes, 
+    projmethod = "mlp"
 )
 
 plot(pe)
@@ -387,7 +387,7 @@ conf.int(pe)
 ```
 
 From the permutation plot can see that when comparing the seperation
-of grp1 vs. grp2 the permuted data, using 100 iterations, never scores higher
+of class1 vs. class2 the permuted data, using 100 iterations, never scores higher
 than the real data. Thus, the separation thus has a p-value < 0.01. 
 
 # Principal Component Analysis
@@ -427,13 +427,13 @@ classes <- ifelse(leukemia$Y == 1, "ALL", "AML")
 gTable <- as.data.frame(table(classes))
 knitr::kable(gTable, 
     digits = 2, 
-    align=c(rep('l', 2)), 
+    align = c(rep('l', 2)), 
     caption = "Classes argument table."
 )
 ```
 
 ```{r ALLprojection, fig.align='center', fig.width=10, fig.height=10}
-ob <- pcp(mat, classes, normalize=TRUE)
+ob <- pcp(mat, classes, normalize = TRUE)
 plot(ob)
 ```
 
@@ -444,7 +444,7 @@ plot(cl)
 
 ```{r ALLpermutation, fig.align='center', message = FALSE}
 iterations <- 100
-pe <- permute(mat=mat, iter=iterations, classes=classes, projmethod="pcp")
+pe <- permute(mat = mat, iter = iterations, classes = classes, projmethod = "pcp")
 pvalue(pe)
 conf.int(pe)
 ```
