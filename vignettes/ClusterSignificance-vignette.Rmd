@@ -299,8 +299,8 @@ all permutations with the vertical red line representing the max score
 from the real data. The p-values can be obtained using `pvalue(pe)`. 
 The results from the permutation indicate that 
 ClusterSignificance performed as we would expect. The separation for 
-grp1 vs grp2 is not significant at alpha = 0.05, whereas the separations 
-for both grp1 vs grp3 and grp2 vs grp3 are significant.
+grp1 vs grp3 is not significant at alpha = 0.05, whereas the separations 
+for both grp1 vs grp2 and grp2 vs grp3 are significant.
 
 We can also calculate a confidence interval for the p-value estimates using the 
 following command:
