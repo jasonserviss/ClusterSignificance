@@ -62,12 +62,12 @@ setMethod("initialize","ClassifiedPoints", function(
     callNextMethod(
         .Object,
         ...,
-        scores=scores,
-        scores.points=scores.points,
-        scores.index=scores.index,
-        ROC=ROC,
-        AUC=AUC,
-        class.color=class.color
+        scores = scores,
+        scores.points = scores.points,
+        scores.index = scores.index,
+        ROC = ROC,
+        AUC = AUC,
+        class.color = class.color
     )
 })
 
@@ -82,7 +82,7 @@ setMethod("initialize","PermutationResults", function(
     callNextMethod(
         .Object,
         ...,
-        scores.real=scores.real,
-        scores.vec=scores.vec
+        scores.real = scores.real,
+        scores.vec = scores.vec
     )
 })

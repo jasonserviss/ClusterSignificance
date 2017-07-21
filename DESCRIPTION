@@ -3,7 +3,7 @@ Title: The ClusterSignificance package provides tools to assess
     if class clusters in dimensionality reduced data 
     representations have a separation different from permuted 
     data
-Version: 1.5.2
+Version: 1.5.3
 Author: Jason T. Serviss and Jesper R. Gadin
 Maintainer: Jason T Serviss <jason.serviss@ki.se>
 Description: The ClusterSignificance package provides tools 

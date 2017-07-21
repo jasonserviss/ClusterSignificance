@@ -78,20 +78,19 @@ setMethod("classify", "Mlp", function(x, ...){
 
 .classifyWrapper <- function(
     x,
-    class.color=NULL,
+    class.color = NULL,
     ...
 ){
     group.color <- class.color
     
     ##import and order data
-    #points <-    x["points.onedim"]
-    points <-    getData(x, "points.onedim")
+    points <- getData(x, "points.onedim")
     names(points) <- getData(x, "classes")
-    sp <- sort(points,decreasing=FALSE, index.return=TRUE)
+    sp <- sort(points, decreasing = FALSE, index.return = TRUE)
     order <- names(points)[sp$ix]
 
     #find all group comparisons to be made
-    allCombos <- combn(unique(order),2)
+    allCombos <- combn(unique(order), 2)
     allCombos <- apply(allCombos, 2, sort)
 
     ##make a list holding matrixes of all group positions coded as 0 or 1
@@ -123,17 +122,17 @@ setMethod("classify", "Mlp", function(x, ...){
     scores <- scores[order(names(scores))]
 
     #set color
-    if(is.null(group.color)) group.color <- getData(x,"class.color")
+    if(is.null(group.color)) group.color <- getData(x, "class.color")
     if(!is.null(group.color)) group.color
 
     #return ClassifiedPoints object
     new("ClassifiedPoints",
         scores = scores,
-        scores.points=sp$x,
-        scores.index=sp$ix,
-        ROC = list(TP=TP,FP=FP,FN=FN,TN=TN),
-        AUC=.AUC.calc(sp$x, allCombos),
-        class.color=group.color
+        scores.points = sp$x,
+        scores.index = sp$ix,
+        ROC = list(TP = TP, FP = FP, FN = FN, TN = TN),
+        AUC = .AUC.calc(sp$x, allCombos),
+        class.color = group.color
     )
 
 }
@@ -150,7 +149,7 @@ setMethod("classify", "Mlp", function(x, ...){
     ##repeated the same numer of times as there are points for each group.
     groupList <- lapply(1:ncol(allCombos),
         function(oo, order)
-            order[order %in% allCombos[, oo]], order=order)
+            order[order %in% allCombos[, oo]], order = order)
 
     ##Code each group name as 0 or 1
     codedList <- lapply(1:length(groupList),
@@ -159,7 +158,7 @@ setMethod("classify", "Mlp", function(x, ...){
                 groupList[[pp]] == unique(groupList[[pp]])[1],
                 as.integer(0),
                 as.integer(1)
-            ), groupList=groupList
+            ), groupList = groupList
     )
 
     ##Assemble a martix for each group comparison to be scored where all
@@ -167,8 +166,8 @@ setMethod("classify", "Mlp", function(x, ...){
     mat <- lapply(1:length(codedList),
         function(oo)
             matrix(codedList[[oo]],
-                ncol=length(codedList[[oo]]),
-                nrow=length(codedList[[oo]])))
+                ncol = length(codedList[[oo]]),
+                nrow = length(codedList[[oo]])))
                 
     #add names
     names(mat) <- sapply(1:length(mat),
@@ -183,7 +182,7 @@ setMethod("classify", "Mlp", function(x, ...){
     mat
 ){
     tfmat <- lapply(1:length(mat),
-        function(ee, mat) upper.tri(mat[[ee]]), mat=mat)
+        function(ee, mat) upper.tri(mat[[ee]]), mat = mat)
     grp1.mat <- mat
     grp2.mat <- mat
 
@@ -191,14 +190,14 @@ setMethod("classify", "Mlp", function(x, ...){
         function(x, grp1.mat){
             grp1.mat[[x]][!tfmat[[x]]] <- 2
             grp1.mat[[x]]
-        }, grp1.mat=grp1.mat
+        }, grp1.mat = grp1.mat
     )
         
     grp2.mat <- lapply(1:length(grp2.mat),
         function(x, grp2.mat){
             grp2.mat[[x]][tfmat[[x]]] <- 2
             grp2.mat[[x]]
-        }, grp2.mat=grp2.mat
+        }, grp2.mat = grp2.mat
     )
     
     names(grp1.mat) <- names(mat)
@@ -221,16 +220,16 @@ setMethod("classify", "Mlp", function(x, ...){
     grp2.mat
 ){
     TP <- lapply(1:length(grp1.mat),
-        function(x, y) apply(y[[x]][,-1] == 1,2,sum), y=grp1.mat
+        function(x, y) apply(y[[x]][,-1] == 1, 2, sum), y = grp1.mat
     )
     FP <- lapply(1:length(grp1.mat),
-        function(x, y) apply(y[[x]][,-1] == 0,2,sum), y=grp1.mat
+        function(x, y) apply(y[[x]][,-1] == 0, 2, sum), y = grp1.mat
     )
     FN <- lapply(1:length(grp2.mat),
-        function(x, y) apply(y[[x]][,-1] == 1,2,sum), y=grp2.mat
+        function(x, y) apply(y[[x]][,-1] == 1, 2, sum), y = grp2.mat
     )
     TN <- lapply(1:length(grp2.mat),
-        function(x, y) apply(y[[x]][,-1] == 0,2,sum), y=grp2.mat
+        function(x, y) apply(y[[x]][,-1] == 0, 2, sum), y = grp2.mat
     )
     
     names(TP) <- names(grp1.mat)
@@ -262,9 +261,9 @@ setMethod("classify", "Mlp", function(x, ...){
     
     pick <- lapply(1:length(tDistances), function(o)
         if(sum(tDistances[[o]]) < sum(fDistances[[o]])) {
-            1-tDistances[[o]]
+            1 - tDistances[[o]]
         } else {
-            1-fDistances[[o]]
+            1 - fDistances[[o]]
         }
     )
     
@@ -301,7 +300,7 @@ setMethod("classify", "Mlp", function(x, ...){
 ){
     distances <- lapply(1:length(sensitivity), function(x)
         sapply(1:length(sensitivity[[x]]), function(y)
-            sqrt(((1-sensitivity[[x]][y])^2) + ((1-specificity[[x]][y])^2))
+            sqrt(((1 - sensitivity[[x]][y])^2) + ((1 - specificity[[x]][y])^2))
         )
     )
     return(distances)
@@ -316,20 +315,20 @@ setMethod("classify", "Mlp", function(x, ...){
         )
     )
     names(p) <- unlist(lapply(1:ncol(allCombos), function(c)
-        paste(allCombos[,c], collapse=" vs. ")
+        paste(allCombos[,c], collapse = " vs. ")
     ))
     return(unlist(p))
 }
 
 .AUC <- function(x, group) {
-    group <- as.integer(factor(group))-1
+    group <- as.integer(factor(group)) - 1
     y <- sort(x[group == 0])
     x <- sort(x[group == 1])
     nx <- length(x)
     ny <- length(y)
-    AUC <- (nx*ny + nx*(nx+1)/2 - sum(rank(c(x,y))[1:nx]))/(nx*ny)
+    AUC <- (nx * ny + nx * (nx + 1) / 2 - sum(rank(c(x, y))[1:nx]))/(nx * ny)
     if(AUC < 0.5){
-        return(1-AUC)
+        return(1 - AUC)
     } else {
         return(AUC)
     }

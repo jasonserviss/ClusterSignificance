@@ -90,12 +90,12 @@ setGeneric("permute", function(mat, ...
 setMethod("permute", "matrix", function(
     mat,
     classes,
-    projmethod="pcp",
-    iter=100,
-    user.permutations=NULL,
-    seed=3,
-    df=NULL,
-    verbose=TRUE,
+    projmethod = "pcp",
+    iter = 100,
+    user.permutations = NULL,
+    seed = 3,
+    df = NULL,
+    verbose = TRUE,
     ...
 ){
     groups <- classes
@@ -107,9 +107,9 @@ setMethod("permute", "matrix", function(
     }
     
     #check which projectionmethod to use
-    if(projmethod=="pcp") {
+    if(projmethod == "pcp") {
         projm <- pcp
-    } else if(projmethod=="mlp") {
+    } else if(projmethod == "mlp") {
         projm <- mlp
     }
 
@@ -126,7 +126,7 @@ setMethod("permute", "matrix", function(
             iter
         )
         permats <- user.permutations
-    }else{
+    } else {
         set.seed(seed)
         permats <- .permMatrix(iter, groups, uniq.groups, mat)
     }
@@ -142,15 +142,15 @@ setMethod("permute", "matrix", function(
             length(scores.vec[[x]]),
             " iterations were sucessfully completed for comparison ",
             names(scores.real[x])
-        ), scores.real=scores.real
+        ), scores.real = scores.real
     ))
 
     #remove temporary projm
     rm(projm)
 
     new("PermutationResults",
-        scores.real=scores.real,
-        scores.vec=scores.vec
+        scores.real = scores.real,
+        scores.vec = scores.vec
     )
 
 })
@@ -172,7 +172,7 @@ setMethod("permute", "matrix", function(
         lapply(1:iterations, function(x)
             sapply(1:ncol(mat[groups %in% uniq.groups[, y], ]), function(i)
                 mat[groups %in% uniq.groups[, y], i] <-
-                sample(mat[groups %in% uniq.groups[, y], i], replace=FALSE)
+                sample(mat[groups %in% uniq.groups[, y], i], replace = FALSE)
             )
         )
     )
@@ -191,7 +191,7 @@ setMethod("permute", "matrix", function(
     projm,
     df
 ){
-    ob <- projm(mat, groups, df=df)
+    ob <- projm(mat, groups, df = df)
     cl <- classify(ob)
     scores.real <- lapply(
         getData(cl, "scores"),
@@ -229,7 +229,7 @@ setMethod("permute", "matrix", function(
                     df
                 )
             )
-        ), permats=permats
+        ), permats = permats
     )
     
     perm.scores <- lapply(1:length(perm.scores),
@@ -254,12 +254,12 @@ setMethod("permute", "matrix", function(
     projm,
     df
 ){
-    if( y%%500 == 0){message("iteration ", y, " for comparison ", x, "\n")}
+    if(y%%500 == 0){message("iteration ", y, " for comparison ", x, "\n")}
 
     PcpOut <- tryCatch({projm(permats[[x]][[y]],
-        classes=groups[groups %in% uniq.groups[, x]], df=df)},
-        warning=function(w) {return(NA)},
-        error=function(w) {return(NA)}
+        classes = groups[groups %in% uniq.groups[, x]], df = df)},
+        warning = function(w) {return(NA)},
+        error = function(w) {return(NA)}
     )
 
     if(class(PcpOut) == "Pcp" | class(PcpOut) == "Mlp") {
@@ -280,16 +280,16 @@ setMethod("permute", "matrix", function(
     if(!is.list(user.permutations) | !is.list(user.permutations[[1]])) {
         message("The permutation matrix you input is not a list.")
         stop(paste("Check the vignette for details concerning the ",
-            "structure of the user.permutations argument.",sep=""))
+            "structure of the user.permutations argument.",sep = ""))
     }
     
     if(length(user.permutations) != ncol(uniq.groups)) {
         stop(paste("All groups comparisons are not present",
-        "in your permutation matrix", sep=" "))
+        "in your permutation matrix", sep = " "))
     }
     if(exists("iterations") & length(user.permutations[[1]]) != iter) {
         message(paste("The number of iterations does not ",
-            "match the iterations in your permutation matrix.", sep=""))
+            "match the iterations in your permutation matrix.", sep = ""))
     warning("You may have made a mistake when producing the permutation")
     }
     if(is.null(names(user.permutations))) {

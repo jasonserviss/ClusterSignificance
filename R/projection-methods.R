@@ -73,8 +73,8 @@ setGeneric("pcp", function(mat, ...){
 setMethod("pcp", "matrix", function(
     mat,
     classes,
-    df=NULL,
-    class.color=NULL,
+    df = NULL,
+    class.color = NULL,
     ...
 ){
     groups <- classes
@@ -85,7 +85,7 @@ setMethod("pcp", "matrix", function(
 
     #check for column dimnames
     if(is.null(colnames(mat))){
-        dimnames <- paste("dim",1:ncol(mat), sep="")
+        dimnames <- paste("dim", 1:ncol(mat), sep = "")
     } else{
         dimnames <- colnames(mat)
     }
@@ -114,26 +114,27 @@ setMethod("pcp", "matrix", function(
     index <- prCurve[[5]]
 
     #possible to remove in the future (not important to store group info twice)
+    #do not remove! Better to name everything for easier correspondence between
+    #plots.
     rownames(mat) <- groups
     rownames(line) <- groups
-
+    names(vec.onedim) <- groups
+    
     #set color
     if(is.null(group.color)) group.color <- .setColors(groups)
     #if(!is.null(group.color)) group.color
     
-
     #return Pcp-object
     new("Pcp",
-        classes=groups,
-        points.orig=mat,
-        line=line,
-        points.onedim=vec.onedim,
-        dimnames=dimnames,
-        index=index,
-        class.color=group.color
+        classes = groups,
+        points.orig = mat,
+        line = line,
+        points.onedim = vec.onedim,
+        dimnames = dimnames,
+        index = index,
+        class.color = group.color
     )
 })
-
 
 #############################################################################
 #                                                                           #
@@ -155,7 +156,7 @@ setMethod("pcp", "matrix", function(
         function(x) length(split(mat, groups)[[x]])) > 4)
     if(any(unlist(checkList)) == FALSE) {
         stop(paste("There seems to be an error in your input, please refer to",
-            "the vignette for details concerning input format", sep=""))
+            "the vignette for details concerning input format", sep = ""))
     }
 }
 
@@ -163,7 +164,7 @@ setMethod("pcp", "matrix", function(
 .normalizeMatrix <- function(
     mat
 ){
-    (mat-min(mat))/(max(mat)-min(mat))
+    (mat - min(mat)) / (max(mat) - min(mat))
 }
 
 #run princurve, sort the output, and return
@@ -175,7 +176,7 @@ setMethod("pcp", "matrix", function(
 ){
 
     ##use princurve principal.curve to draw the principal curve
-    prCurve <- principal.curve(mat, maxit=1000, df=df)
+    prCurve <- principal.curve(mat, maxit = 1000, df = df)
 
     #use index so the output are sorted based on the curve
     index <- prCurve$tag
@@ -261,24 +262,24 @@ setGeneric("mlp", function(mat, ... ){
 setMethod("mlp", "matrix", function(
     mat,
     classes,
-    class.color=NULL,
+    class.color = NULL,
     ...
 ){
     groups <- classes
     group.color <- class.color
     
     #check that there are only two groups
-    if(!length(unique(groups))==2){
+    if(!length(unique(groups)) == 2){
         stop("groups can only have two levels")
     }
 
-    if(!(ncol(mat)==2)){
+    if(!(ncol(mat) == 2)){
         stop("ncol(mat) has to be 2; accepts only two dimensions")
     }
 
     #check for column dimnames
     if(is.null(colnames(mat))){
-        dimnames <- paste("dim",1:ncol(mat), sep="")
+        dimnames <- paste("dim", 1:ncol(mat), sep = "")
     } else{
         dimnames <- colnames(mat)
     }
@@ -317,14 +318,13 @@ setMethod("mlp", "matrix", function(
 
     #return Mlp-object
     new("Mlp",
-        classes=groups,
-        points.orig=mat,
-        line=mat.proj, 
-        points.onedim=vec.onedim,
-        dimnames=dimnames,
-        #Mlp specific
-        points.origo=mat.origo,
-        class.color=group.color
+        classes = groups,
+        points.orig = mat,
+        line = mat.proj,
+        points.onedim = vec.onedim,
+        dimnames = dimnames,
+        points.origo = mat.origo,
+        class.color = group.color
     )
 }
 )
@@ -341,7 +341,7 @@ setMethod("mlp", "matrix", function(
     mat
 ){
     
-    (mat-min(mat))/(max(mat)-min(mat))
+    (mat - min(mat)) / (max(mat) - min(mat))
 }
 
 #calculate group and dimensional means
@@ -353,12 +353,12 @@ setMethod("mlp", "matrix", function(
     
     matrix(
         unlist(
-            apply(mat,2,function(x){
-                lapply(split(x,groups), mean)
+            apply(mat, 2, function(x){
+                lapply(split(x, groups), mean)
             })
         ),
-        nrow=length(unique(groups)),
-        dimnames=list(unique(groups), paste("dim",1:ncol(mat),sep=""))
+        nrow = length(unique(groups)),
+        dimnames = list(unique(groups), paste("dim", 1:ncol(mat), sep = ""))
     )
 }
 
@@ -367,7 +367,6 @@ setMethod("mlp", "matrix", function(
 .regressionVectorFromGroupMeans <- function(
     mat
 ){
-    
     mat[1,] - mat[2,]
 }
 
@@ -377,9 +376,9 @@ setMethod("mlp", "matrix", function(
     vec
 ){
     
-    a <- mat%*%vec #matrix product operator
-    b <- drop(vec%*%vec)
-    return((a%*%vec) * (1/b))
+    a <- mat %*% vec #matrix product operator
+    b <- drop(vec %*% vec)
+    return((a %*% vec) * (1 / b))
 }
 
 #calculate the euclidean distance which will be the reduction to one dimension
@@ -392,19 +391,23 @@ setMethod("mlp", "matrix", function(
     #x-axis to know which the direction the euclidean distance is supposed
     #to be calculated
     reduced <- rep(NA, nrow(mat))
-    #group <- vector()
-    if(any(mat[,1]<0)){
-        reduced[mat[,1]<=0] <- -sqrt(apply(mat[mat[,1]<=0,,drop=FALSE]^2,1,sum))
-        #group <- rownames(mat[mat[,1]<0,,drop=FALSE])
+    if(any(mat[,1] < 0)){
+        reduced[mat[,1] <= 0] <- -sqrt(apply(
+            mat[mat[,1] <= 0,
+            ,
+            drop=FALSE]^2, 1, sum
+        ))
     }
     
     if(any(mat[,1]>0)){
-        reduced[mat[,1]>0] <- sqrt(apply(mat[mat[,1]>0,,drop=FALSE]^2,1,sum))
-        #group <- c(group,rownames(mat[mat[,1]>0,,drop=FALSE]))
+        reduced[mat[,1]>0] <- sqrt(apply(
+            mat[mat[,1]>0,
+            ,
+            drop=FALSE]^2, 1, sum
+        ))
 
     }
-    #group names and order must be preserved here
-    #names(reduced) <- group
+    
     return(reduced)
 }
 #move the points so their mean line passes through origin
@@ -433,11 +436,11 @@ setMethod("mlp", "matrix", function(
 
     #plot(c(xp1.mean,xp2.mean),c(yp1.mean, yp2.mean))
 
-    ydiff <- yp2.mean-yp1.mean
-    xdiff <- xp2.mean-xp1.mean
+    ydiff <- yp2.mean - yp1.mean
+    xdiff <- xp2.mean - xp1.mean
 
     if(xdiff == 0 & ydiff == 0){
-        # the means ffrom the two groups are the same
+        # the means from the two groups are the same
         # impossible to draw a line
         # no mean difference at all between groups.
         stop("the means of the groups are the same, impossible to draw line")
@@ -446,14 +449,14 @@ setMethod("mlp", "matrix", function(
     if ( xdiff == 0 | ydiff == 0 ){
         slope <- 0
     } else {
-        slope <- (ydiff/xdiff)
+        slope <- (ydiff / xdiff)
     }
 
-    ycept <- yp2.mean-(slope*xp2.mean)
-    xcept <- -ycept/slope
+    ycept <- yp2.mean - (slope * xp2.mean)
+    xcept <- -ycept / slope
 
-    ret <- c(xcept,ycept)
-    names(ret) <- c("xcept","ycept")
+    ret <- c(xcept, ycept)
+    names(ret) <- c("xcept", "ycept")
     ret
 }
 
@@ -478,7 +481,7 @@ setMethod("mlp", "matrix", function(
     #right
     P4 = c(-v[2], v[1]) / sqrt(v[1]^2 + v[2]^2) * -h
     
-    matrix(c(P4,P3), dimnames=list(NULL,c("right","left")), ncol=2)
+    matrix(c(P4, P3), dimnames = list(NULL, c("right", "left")), ncol = 2)
 }
 
 #calculates the distance from a line to a point (in this case origo)
@@ -491,20 +494,20 @@ setMethod("mlp", "matrix", function(
     means <- t(means)
     #library(pracma)
     l <- origoLineVec
-    lp <- means[,1]
+    lp <- means[, 1]
     
-    if(nrow(means)==2) {
-        o <- c(0,0)
-        lpo_vec <- o-lp
-        mat <- matrix(c(lpo_vec,l),byrow=TRUE,ncol=2)
-        cross <- lpo_vec[1]*l[2]-lpo_vec[2]*l[1]
-    } else if(nrow(means)==3) {
-        o <- c(0,0,0)
-        lpo_vec <- o-lp
-        mat <- matrix(c(lpo_vec,l),byrow=TRUE,ncol=3)
+    if(nrow(means) == 2) {
+        o <- c(0, 0)
+        lpo_vec <- o - lp
+        mat <- matrix(c(lpo_vec,l), byrow = TRUE, ncol = 2)
+        cross <- lpo_vec[1] * l[2] - lpo_vec[2] * l[1]
+    } else if(nrow(means) == 3) {
+        o <- c(0, 0, 0)
+        lpo_vec <- o - lp
+        mat <- matrix(c(lpo_vec, l),byrow = TRUE, ncol = 3)
         cross <- crossn(mat)
     }
     
-    dist <- sqrt(sum(cross^2))/sqrt(sum(l^2))
+    dist <- sqrt(sum(cross^2)) / sqrt(sum(l^2))
     dist
 }
