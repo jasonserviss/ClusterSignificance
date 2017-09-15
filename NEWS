@@ -1,7 +1,8 @@
 CHANGES IN VERSION 1.5.3
 -----------------------
 
-    o Fixed bug in pcp 2D projection plot where colors did not match classification plot.
+    o Fixed bug in pcp 2D projection plot where colors did not match
+        classification plot.
 
 CHANGES IN VERSION 1.5.2
 -----------------------
@@ -17,10 +18,19 @@ CHANGES IN VERSION 1.3.2
 CHANGES IN VERSION 1.3.1
 -----------------------
 
-    o Added plotting of individual comparisons in classification and permutation plots.
-    o Added df argument (degrees of freedom, passed to smooth.spline) to projection and permute function. This allows some degree of control over how linear or crooked the principal curve is drawn. NOTE: you must (!) give the same df value to the projection and permute functions for your results to be valid and, at the moment, there is no automated checking that this is the case.
-    o The classification step now uses a mew method for separation scoring and fixes a previous bug which could occur when group sizes were not equal. This change is reflected in the vignette.
-    o Fixed bug in concatenation c(), when some iterations fail for a specific comparison thus causing a error when concatenating permute results.
+    o Added plotting of individual comparisons in classification and permutation
+        plots.
+    o Added df argument (degrees of freedom, passed to smooth.spline) to
+        projection and permute function. This allows some degree of control over
+        how linear or crooked the principal curve is drawn. NOTE: you must (!)
+        give the same df value to the projection and permute functions for your
+        results to be valid and, at the moment, there is no automated checking
+        that this is the case.
+    o The classification step now uses a mew method for separation scoring and
+        fixes a previous bug which could occur when group sizes were not equal.
+        This change is reflected in the vignette.
+    o Fixed bug in concatenation c(), when some iterations fail for a specific
+        comparison thus causing a error when concatenating permute results.
  
 CHANGES IN VERSION 1.2.0
 -----------------------
