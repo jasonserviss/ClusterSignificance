@@ -3,8 +3,13 @@ Title: The ClusterSignificance package provides tools to assess
     if class clusters in dimensionality reduced data 
     representations have a separation different from permuted 
     data
-Version: 1.5.3
-Author: Jason T. Serviss and Jesper R. Gadin
+Version: 1.5.4
+Authors@R: c(
+    person("Jason T.", "Serviss", email = "Jason.serviss@ki.se", role = c("aut", "cre"), comment = c(ORCID = 0000-0002-5778-7014)),
+    person("Jesper R.", "Gadin", email = "Jesper.gadin@ki.se", role = c("aut"))
+    )
+Author: Jason T. Serviss [aut, cre],
+  Jesper R. Gadin [aut]
 Maintainer: Jason T Serviss <jason.serviss@ki.se>
 Description: The ClusterSignificance package provides tools 
     to assess if class clusters in dimensionality reduced 
@@ -20,6 +25,7 @@ Description: The ClusterSignificance package provides tools
     being due to chance is evaluated using a permutation method.
 Depends:
     R (>= 3.3.0)
+URL: https://github.com/jasonserviss/ClusterSignificance/issues
 BugReports: https://github.com/jasonserviss/ClusterSignificance/issues
 Imports:
     methods,

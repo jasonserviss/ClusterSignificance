@@ -1,0 +1,24 @@
+citHeader("To cite the 'ClusterSignificance' package in publications use::")
+citEntry(
+    entry = "Article",
+    title = "ClusterSignificance: a bioconductor package facilitating statistical analysis of class cluster separations in dimensionality reduced data", 
+    author = personList(
+	person(given = "Jason T.", family = "Serviss"), 
+        person(given = "Jesper R.", family = "Gadin"),
+	person(given = "Per", family = "Eriksson"), 
+	person(given = "Lasse", family = "Folkersen"), 
+	person(given = "Dan", family = "Grander")
+    ), 
+    journal = "Oxford Bioinformatics", 
+    year = "2017", 
+    volume = "33", 
+    issue = "19", 
+    pages = "3126--3128",
+    url = "https://doi.org/10.1093/bioinformatics/btx393", 
+    textVersion = paste(
+	"Serviss et al. (2017)", 
+        "ClusterSignificance: a bioconductor package facilitating statistical analysis of class cluster separations in dimensionality reduced data", 
+        "Bioinformatics. 33/19 p. 3126--3128"
+    )
+)
+citFooter("As ClusterSignificance is continually evolving, you may want to cite its version number. Find it with 'help(package = ClusterSignificance)'.")
