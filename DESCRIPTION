@@ -3,7 +3,7 @@ Title: The ClusterSignificance package provides tools to assess
     if class clusters in dimensionality reduced data 
     representations have a separation different from permuted 
     data
-Version: 1.5.4
+Version: 1.5.5
 Authors@R: c(
     person("Jason T.", "Serviss", email = "Jason.serviss@ki.se", role = c("aut", "cre"), comment = c(ORCID = 0000-0002-5778-7014)),
     person("Jesper R.", "Gadin", email = "Jesper.gadin@ki.se", role = c("aut"))
