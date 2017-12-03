@@ -108,6 +108,8 @@ The Bioconductor support site for the ClusterSignificance package is located [he
 
 ## Citation
 
+Jason T. Serviss, Jesper R. Gådin, Per Eriksson, Lasse Folkersen, Dan Grandér; ClusterSignificance: a bioconductor package facilitating statistical analysis of class cluster separations in dimensionality reduced data, Bioinformatics, Volume 33, Issue 19, 1 October 2017, Pages 3126–3128, [https://doi.org/10.1093/bioinformatics/btx393](https://doi.org/10.1093/bioinformatics/btx393)
+
 ```{r}
 library(ClusterSignificance)
 citation("ClusterSignificance")
