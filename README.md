@@ -85,10 +85,10 @@ iterations <- 100
 
 ## Permute and plot.
 pe <- permute(
-	mat=mat, 
-	iterations=iterations, 
-	groups=groups, 
-	projmethod="mlp"
+	mat = mat,
+	iter = iterations,
+	groups = groups,
+	projmethod = "mlp"
 )
 plot(pe)
 ```
@@ -104,11 +104,15 @@ pvalue(pe)
 
 ## Bug Reports and Issues
 
-The Bioconductor support site for the ClusterSignificance package is located [here](https://support.bioconductor.org/t/ClusterSignificance/). Issues and contact concerning the development version can be submitted via: [ClusterSignificance development](https://github.com/jasonserviss/ClusterSignificance)
+The Bioconductor support site for the ClusterSignificance package is located [here](https://support.bioconductor.org/t/ClusterSignificance/). Issues and bugs can be reported via Github at: [ClusterSignificance](https://github.com/jasonserviss/ClusterSignificance)
 
 ## Citation
 
-There is currently no publication linked to the ClusterSignificance package. This will be updated accordingly in the future.
+```{r}
+library(ClusterSignificance)
+citation("ClusterSignificance")
+```
+
 
 ## License
 [GPL-3](https://www.r-project.org/Licenses/GPL-3)
