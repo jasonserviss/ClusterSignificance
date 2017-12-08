@@ -25,7 +25,7 @@ Description: The ClusterSignificance package provides tools
     being due to chance is evaluated using a permutation method.
 Depends:
     R (>= 3.3.0)
-URL: https://github.com/jasonserviss/ClusterSignificance/issues
+URL: https://github.com/jasonserviss/ClusterSignificance/
 BugReports: https://github.com/jasonserviss/ClusterSignificance/issues
 Imports:
     methods,
