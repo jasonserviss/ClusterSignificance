@@ -1,7 +1,9 @@
 #Sample .travis.yml for R projects
 
 language: r
-r: 3.3.0
+r: 
+  - release
+  - devel
 package: cache
 bioc_required: true
 r_build_args: "--no-manual --no-resave-data"
