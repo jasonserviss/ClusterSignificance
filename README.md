@@ -17,6 +17,9 @@ Bioc-devel
 <a href="http://www.bioconductor.org/packages/devel/bioc/html/ClusterSignificance.html#archives"><img border="0" src="http://www.bioconductor.org/shields/availability/devel/ClusterSignificance.svg" title="Whether the package is available on all platforms; click for details."></a>
 <a href="http://bioconductor.org/checkResults/devel/bioc-LATEST/ClusterSignificance/"><img border="0" src="http://www.bioconductor.org/shields/build/devel/bioc/ClusterSignificance.svg" title="build results; click for full report"></a>
 
+Codecov
+[![codecov](https://codecov.io/gh/jasonserviss/ClusterSignificance/branch/master/graph/badge.svg)](https://codecov.io/gh/jasonserviss/ClusterSignificance)
+
 # ClusterSignificance
 
 The ClusterSignificance package is written in
