@@ -4,6 +4,8 @@ language: r
 r: 
   - release
   - devel
+r_packages:
+  - devtools
 package: cache
 bioc_required: true
 r_build_args: "--no-manual --no-resave-data"
@@ -11,3 +13,5 @@ r_check_args: "--no-build-vignettes --no-manual --timings"
 -os:
   - linux
   - osx
+after_success:
+    - Rscript -e 'covr::codecov()'
