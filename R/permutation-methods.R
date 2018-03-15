@@ -257,7 +257,7 @@ setMethod("permute", "matrix", function(
     if(y%%500 == 0){message("iteration ", y, " for comparison ", x, "\n")}
 
     PcpOut <- tryCatch({projm(permats[[x]][[y]],
-        classes = groups[groups %in% uniq.groups[, x]], df = df)},
+        classes = groups[groups %in% uniq.groups[, x]], df = df, warn = FALSE)},
         warning = function(w) {return(NA)},
         error = function(w) {return(NA)}
     )

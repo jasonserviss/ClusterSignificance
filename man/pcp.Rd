@@ -28,7 +28,8 @@ getData(x, ...)
 
 pcp(mat, ...)
 
-\S4method{pcp}{matrix}(mat, classes, df = NULL, class.color = NULL, ...)
+\S4method{pcp}{matrix}(mat, classes, df = NULL, warn = TRUE,
+  class.color = NULL, ...)
 
 \S4method{show}{Pcp}(object)
 }
@@ -61,6 +62,9 @@ pcp(mat, ...)
 with PC1 to the left.}
 
 \item{df}{degrees of freedom, passed to smooth.spline}
+
+\item{warn}{logical indicating if a change in the default df argument should
+generate a warning. mostly for internal use.}
 
 \item{object}{Pcp object}
 }

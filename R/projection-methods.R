@@ -21,6 +21,8 @@ NULL
 #' @param classes vector in same order as rows in matrix
 #' @param x matrix object for the function pcp otherwise it is a Pcp object
 #' @param df degrees of freedom, passed to smooth.spline
+#' @param warn logical indicating if a change in the default df argument should
+#' generate a warning. mostly for internal use.
 #' @param class.color user assigned group coloring scheme
 #' @param n data to extract from Pcp (NULL gives all)
 #' @param y default plot param, which should be set to NULL
@@ -74,6 +76,7 @@ setMethod("pcp", "matrix", function(
     mat,
     classes,
     df = NULL,
+    warn = TRUE,
     class.color = NULL,
     ...
 ){
@@ -98,7 +101,7 @@ setMethod("pcp", "matrix", function(
     ##run principal.curve, order and extract output
     if(is.null(df)) {
         df <- 5
-    } else {
+    } else if(!is.null(df) & warn){
         dfmessage <- c("\n\t\tYou changed the df argument from default.
         You MUST provide the same df argument to the permute
         function or your results will NOT be valid!\n")
