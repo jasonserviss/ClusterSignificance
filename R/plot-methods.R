@@ -129,7 +129,7 @@ setMethod(
 
     if(ncol(CM) > 5) {
         horiz = FALSE
-        ncol = 5
+        ncol = 10
     } else {
         horiz = TRUE
         ncol = 1
@@ -595,17 +595,28 @@ setMethod(
         grp1 <- strsplit(name, " vs ")[[1]][[1]]
         grp2 <- strsplit(name, " vs ")[[1]][[2]]
 
-        plot(
-            0,
-            xlim = c(min(p), max(p)),
-            ylim = yrange,
-            bty = 'n',
-            pch = '',
-            ylab = 'score',
-            xlab = '',
-            cex.lab = cex.lab,
-            cex.axis = cex.axis
-        )
+        basePlot <- function() {
+            plot(
+                0,
+                xlim = c(min(p), max(p)),
+                ylim = yrange,
+                bty = 'n',
+                pch = '',
+                ylab = 'score',
+                xlab = '',
+                cex.lab = cex.lab,
+                cex.axis = cex.axis
+            )
+        }
+        
+        tryCatch(
+            basePlot(), error = function(w) {
+              m1 <- "Adjusting plot margins."
+              m2 <- "Use the comparison arg to plot comparisons individually."
+              message(paste(m1, m2, sep = " "))
+              par(mar=rep(2, 4))
+              basePlot()
+        })
         
         title(main = name, cex.main = cex.main)
 
@@ -737,15 +748,28 @@ setMethod(
         name <- names(score)
         range <- range(score, scores.vec[yy])
         if(cex.hist != 1) {opar <- par(lwd = cex.hist)}
-        hist(
-            c(scores.vec[[yy]]),
-            xlim = range,
-            main = '',
-            xlab = "scores",
-            cex.axis = cex.axis,
-            cex.lab = cex.lab,
-            lwd = lwd
-        )
+        
+        basePlot <- function() {
+            hist(
+                c(scores.vec[[yy]]),
+                xlim = range,
+                main = '',
+                xlab = "scores",
+                cex.axis = cex.axis,
+                cex.lab = cex.lab,
+                lwd = lwd
+            )
+        }
+        
+        tryCatch(
+        basePlot(), error = function(w) {
+          m1 <- "Adjusting plot margins."
+          m2 <- "Use the comparison arg to plot comparisons individually."
+          message(paste(m1, m2, sep = " "))
+          par(mar=rep(2, 4))
+          basePlot()
+        })
+        
         if(cex.hist != 1) {par(opar)}
         title(main = name, cex.main = cex.main)
         

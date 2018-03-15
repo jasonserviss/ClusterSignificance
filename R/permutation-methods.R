@@ -219,14 +219,8 @@ setMethod("permute", "matrix", function(
         as.numeric(
             lapply(1:length(permats[[1]]), function(y)
                 .combinedFunction(
-                    y,
-                    x,
-                    groups,
-                    uniq.groups,
-                    permats,
-                    mat,
-                    projm,
-                    df
+                    y, x, groups, uniq.groups,
+                    permats, mat, projm, df
                 )
             )
         ), permats = permats
