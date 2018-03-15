@@ -40,6 +40,7 @@ setMethod(
         oldparams <- par(no.readonly = TRUE)
 
         if("all" %in% steps){
+            #par(mfrow = c(3, 2), mar = rep(0, 4))
             par(mfrow = c(3, 2), mar = c(5, 4, 5, 2) + 0.1)
             steps <- c(1, 2, 3, 4, 5, 6)
         }
@@ -106,10 +107,11 @@ setMethod(
     
     if(!is.null(oldparams)) {
         par(oldparams)
-        par(usr = c(0,1,0,100), xpd = NA)
-        inset <- -0.15
+        par(usr = c(0, 1, 0, 100), xpd = NA, mar = rep(2, 4), oma = c(2, rep(0.5, 3)))
+        #inset <- -0.15
+        inset <- -0.17
     } else {
-        par(usr = c(0,1,0,100), xpd = NA)
+        par(usr = c(0, 1, 0, 100), xpd = NA, mar = rep(2, 4), oma = c(2, rep(0.5, 3)))
         inset <- -0.05
     }
     
@@ -129,7 +131,9 @@ setMethod(
 
     if(ncol(CM) > 5) {
         horiz = FALSE
-        ncol = 10
+        Nfact = ncol(CM)
+        Nrows = 2
+        ncol = ceiling(Nfact / Nrows)
     } else {
         horiz = TRUE
         ncol = 1
