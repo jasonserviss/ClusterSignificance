@@ -1,16 +1,16 @@
-CHANGES IN VERSION 1.5.6
+CHANGES IN VERSION 1.7.3
 -----------------------
     o Adding warn argument to pcp. Mostly for internal use. Fixes the warning with non 		default df argument repeating each perumtation. 
     o Minor plotting improvments including providing a fix for the plot margin error. 
-    o Adding codecov badge to Readme
 
-CHANGES IN VERSION 1.5.5
+CHANGES IN VERSION 1.7.2
 -----------------------
 
     o Tidying and fixing bugs in README. README now from README.Rmd to
 	avoid similar problems in the future. 
+    o Adding codecov badge to Readme
 
-CHANGES IN VERSION 1.5.4
+CHANGES IN VERSION 1.7.1
 -----------------------
 
     o Updating author info and package URL.
