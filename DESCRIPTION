@@ -63,3 +63,5 @@ Collate:
     'projection-methods.R'
     'show-methods.R'
 RoxygenNote: 6.0.1
+Remotes:
+    dynverse/princurve@devel
