@@ -136,7 +136,7 @@ to be considered simultaneously (although Pcp works with only 2 dimensions)
 and/or more than 2 class separations should
 be analyzed. It is limited by the fact that, the Pcp method will not work
 for < 5 data points per class and must have > 5 unique values per dimension.
-The Pcp method utilizes the principal.curve method from the princurve package
+The Pcp method utilizes the principal_curve method from the princurve package
 to fit a principal curve to the data points utilizing all the dimensions input
 by the user. A principal curve can be described as a "smooth curve that
 passes through the middle of the data in an orthogonal sense". All data

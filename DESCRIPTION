@@ -30,7 +30,7 @@ BugReports: https://github.com/jasonserviss/ClusterSignificance/issues
 Imports:
     methods,
     pracma,
-    princurve,
+    princurve (>= 2.0.4),
     scatterplot3d,
     RColorBrewer,
     grDevices,

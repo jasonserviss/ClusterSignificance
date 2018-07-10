@@ -61,7 +61,7 @@ NULL
 #'
 #' @exportMethod pcp
 #'
-#' @importFrom princurve principal.curve
+#' @importFrom princurve principal_curve
 #'
 
 NULL
@@ -98,14 +98,14 @@ setMethod("pcp", "matrix", function(
         groups[is.na(groups)] <- "NA"
     }
 
-    ##run principal.curve, order and extract output
+    ##run principal_curve, order and extract output
     if(is.null(df)) {
         df <- 5
     } else if(!is.null(df) & warn){
         dfmessage <- c("\n\t\tYou changed the df argument from default.
         You MUST provide the same df argument to the permute
         function or your results will NOT be valid!\n")
-        
+
         message(dfmessage)
     }
 
@@ -178,11 +178,11 @@ setMethod("pcp", "matrix", function(
     ...
 ){
 
-    ##use princurve principal.curve to draw the principal curve
-    prCurve <- principal.curve(mat, maxit = 1000, df = df)
+    ##use princurve principal_curve to draw the principal curve
+    prCurve <- principal_curve(mat, maxit = 1000, df = df)
 
     #use index so the output are sorted based on the curve
-    index <- prCurve$tag
+    index <- prCurve$ord
     line <- prCurve$s[index, ]
     vec.onedim <- prCurve$lambda[index]
 
