@@ -470,7 +470,7 @@ high throughput experiments, will often contain features that cannot
 discriminate between the class seperations of interest. This is often 
 accompanied by "background noise" arising during the sample preperation. 
 Dimensionality reduction thus serves here as a feature selection method, 
-identifying sorces of large variation within the data. Despite this, there 
+identifying sources of large variation within the data. Despite this, there 
 are some potential pitfalls with dimensionality reduction which are 
 highlighted in the next question. 
 
