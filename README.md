@@ -76,14 +76,12 @@ We start by projecting the points into one dimension using the Pcp
 method. We are able to visualize each step in the projection by plotting
 the results as shown below.
 
-``` r
+```r
 library(ClusterSignificance)
 classes <- rownames(pcpMatrix)
 prj <- pcp(pcpMatrix, classes)
 plot(prj)
 ```
-
-![](README_files/figure-gfm/projection-1.png)<!-- -->
 
 <img src="man/figures/pcpPrj.png" align="center" />
 
@@ -100,8 +98,6 @@ possible seperation.
 cl <- classify(prj)
 plot(cl)
 ```
-
-![](README_files/figure-gfm/classifyMlp-1.png)<!-- -->
 
 <img src="man/figures/pcpCl.png" align="center" />
 
@@ -138,8 +134,6 @@ pe <- permute(
 ``` r
 plot(pe)
 ```
-
-![](README_files/figure-gfm/permuteMlp-1.png)<!-- -->
 
 <img src="man/figures/pcpPerm.png" align="center" />
 
