@@ -49,16 +49,15 @@ The release version of ClusterSignificance can be installed in R from
 [Bioconductor](https://www.bioconductor.org) as follows:
 
 ``` r
-source("https://bioconductor.org/biocLite.R")
-biocLite("ClusterSignificance")
+install.packages("BiocManager") 
+BiocManager::install("ClusterSignificance") 
 ```
 
 To install the development version use:
 
 ``` r
 install.packages("devtools")
-library(devtools)
-install_github("jasonserviss/ClusterSignificance")
+devtools::install_github("jasonserviss/ClusterSignificance")
 ```
 
 ## Quick Start
@@ -84,6 +83,8 @@ prj <- pcp(pcpMatrix, classes)
 plot(prj)
 ```
 
+![](README_files/figure-gfm/projection-1.png)<!-- -->
+
 <img src="man/figures/pcpPrj.png" align="center" />
 
 ### Classification
@@ -99,6 +100,8 @@ possible seperation.
 cl <- classify(prj)
 plot(cl)
 ```
+
+![](README_files/figure-gfm/classifyMlp-1.png)<!-- -->
 
 <img src="man/figures/pcpCl.png" align="center" />
 
@@ -136,12 +139,14 @@ pe <- permute(
 plot(pe)
 ```
 
+![](README_files/figure-gfm/permuteMlp-1.png)<!-- -->
+
 <img src="man/figures/pcpPerm.png" align="center" />
 
 To calculate the p-value we use the following command.
 
     ## class1 vs class2 class1 vs class3 class2 vs class3 
-    ##             0.01             0.16             0.01
+    ##             0.01             0.15             0.01
 
 ## Bug Reports and Issues
 
