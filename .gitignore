@@ -1,2 +1,6 @@
 .DS_Store
 *.history
+.Rproj.user
+.Rproj
+ClusterSignificance.Rproj
+
