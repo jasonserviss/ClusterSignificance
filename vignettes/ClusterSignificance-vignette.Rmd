@@ -93,7 +93,7 @@ data. The score for each possible separation is then calculated based on
 the formula below which measures the complement of the Euclidean distance 
 from each seperation to the ROC curves operating point:
 
-#### $$score = 1 - \sqrt{(1-specificity)^2 + (1-sensitivity)^2}$$
+$$score = 1 - \sqrt{(1-specificity)^2 + (1-sensitivity)^2}$$
 
 In addition to the seperation scores, the Seperation classification stage
 also outputs the area under the curve (AUC) for each class seperation under
@@ -111,12 +111,12 @@ classification steps are then run for the sampled matrix. The max separation
 score is recorded and the next permutation is performed. The p-value can 
 subsequently be calculated with the following formula:
 
-####$$p.value=\frac{count\ of\ permuted\ scores >= real\ score}{iterations}$$
+$$p.value=\frac{count\ of\ permuted\ scores >= real\ score}{iterations}$$
 
 If none of the permuted scores are greater that the real score the p-value
 is instead calculated as:
 
-#### $$p.value < 10^{-log10(iterations)}$$
+$$p.value < 10^{-log10(iterations)}$$
 
 Due to the fact that the score permutation stage will typically be a 
 monte carlo test, rather that a permutation test, the p-value is 
