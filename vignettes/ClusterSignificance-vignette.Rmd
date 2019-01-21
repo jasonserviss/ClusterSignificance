@@ -35,7 +35,7 @@ points representing known classes in the data. This is particularly
 useful to determine if a subset of the variables, e.g. genes in a
 specific pathway, alone can separate samples into these established 
 classes. Evaluation of this is accomplished in a three stage process 
-*Projection*, *Serparation classification*, and *Score permutation*. 
+*Projection*, *Separation classification*, and *Score permutation*. 
 To be able to compare class cluster separations, we give them a score
 based on this separation. First, all data points are projected 
 onto a line (*Projection*), after which the best separation for 
@@ -56,11 +56,11 @@ ClusterSignificance is used to examine the separation between 2 class
 clusters downsteam of a principal component analysis (PCA). 
 
 # Assumptions
-The ClusterSignificance package operates based on three simple assupmtions
+The ClusterSignificance package operates based on three simple assumptions
 shown below:
 
 1. The dimensionality reduction method was sufficiently capable of detecting
-the dissimilarities, characterized by features in high-dimensional space, that 
+the dissimilarities, characterised by features in high-dimensional space, that 
 correspond to the class separations under investigation.
 
 2. The obtained principal curve accurately depicts the data with respect to 
@@ -79,7 +79,7 @@ is not strictly necessary which is discussed further in
 constructed with data points (or samples) on the rows, and dimensions 
 (or principal components) in the columns. For the method to know which rows 
 are in the same class, the class argument must be specified. The class argument 
-should be a character vector without NA's. The projection step utilizes either 
+should be a character vector without NA's. The projection step utilises either 
 the Mlp or Pcp method to project all data points onto a line, after which they 
 are moved into a single dimension.
 
@@ -87,17 +87,17 @@ are moved into a single dimension.
 
 Now that all of the points are in one dimension, it allows us to easily
 define a perpendicular line that best separates the two classes. This is
-accomplished by utilizing the user defined classes to calculate the 
-sensivitity and specificity at each possible seperation of the projected 
+accomplished by utilising the user defined classes to calculate the 
+sensitivity and specificity at each possible separation of the projected 
 data. The score for each possible separation is then calculated based on 
 the formula below which measures the complement of the Euclidean distance 
 from each seperation to the ROC curves operating point:
 
 $$score = 1 - \sqrt{(1-specificity)^2 + (1-sensitivity)^2}$$
 
-In addition to the seperation scores, the Seperation classification stage
-also outputs the area under the curve (AUC) for each class seperation under
-investigation. AUC serves as an intuitave measure of the class seperation in 
+In addition to the separation scores, the Separation classification stage
+also outputs the area under the curve (AUC) for each class separation under
+investigation. AUC serves as an intuitive measure of the class separation in 
 the projected space.
 
 ## Score permutation
@@ -106,7 +106,7 @@ The null-hypothesis of the permutation stage is that the class labels are
 independent of the features and, thus rejection of the null indicates a 
 dependence of these variables and consequently, a separation between 
 classes. Permutation is performed by randomly sampling the input matrix, with
-replacment, and assigning the data points to the groups. The projection and 
+replacement, and assigning the data points to the groups. The projection and 
 classification steps are then run for the sampled matrix. The max separation 
 score is recorded and the next permutation is performed. The p-value can 
 subsequently be calculated with the following formula:
@@ -134,10 +134,10 @@ below together with the situations where each can be used.
 The Pcp method is suitable in situations where more than 2 dimensions need
 to be considered simultaneously (although Pcp works with only 2 dimensions)
 and/or more than 2 class separations should
-be analyzed. It is limited by the fact that, the Pcp method will not work
+be analysed. It is limited by the fact that, the Pcp method will not work
 for < 5 data points per class and must have > 5 unique values per dimension.
-The Pcp method utilizes the principal.curve method from the princurve package
-to fit a principal curve to the data points utilizing all the dimensions input
+The Pcp method utilises the principal_curve method from the princurve package
+to fit a principal curve to the data points utilising all the dimensions input
 by the user. A principal curve can be described as a "smooth curve that
 passes through the middle of the data in an orthogonal sense". All data
 points are then projected onto the principal curve and transferred into
@@ -227,7 +227,7 @@ knitr::kable(
 ### Projection
 
 To provide the readers with an easy to follow example, 
-we generated in silico data representative of output from
+we generated _in silico_ data representative of output from
 a dimensionality reduction algorithm. The demonstration data was simulated 
 so that one cluster has a visible separation from the two other clusters, 
 whereas two of the clusters are largely overlapping. Therefore, we can imagine
@@ -260,14 +260,14 @@ the separation scores for all possible separations. The highest scoring
 separation of the two classes is represented by the highest perpendicular line.
 Due to the fact that the Pcp method can perform several class comparisons
 at once, when > 2 classes are used all possible separations are automatically
-analyzed and plotted.
+analysed and plotted.
 
 ```{r classifyPcp, message=FALSE, fig.width=10, fig.height=7}
 cl <- classify(prj)
 plot(cl)
 ```
 
-Furthermore, as a measure of effect size we can examine the AUC for each seperation.
+Furthermore, as a measure of effect size we can examine the AUC for each separation.
 
 ```{r}
 getData(cl, "AUC")
@@ -352,7 +352,7 @@ dimension.
 5. Points shown after projection.
 6. The final rotation of points into one dimension.
 
-### Spereation classification
+### Separation classification
 
 ```{r classifyMlp, message=FALSE, fig.align='center', fig.width=8, fig.height=6}
 ## Classify and plot.
@@ -363,7 +363,7 @@ plot(cl)
 The classification function works in the same manner for both the Mlp and
 Pcp methods and is previously described in the [Classification][] section.
 
-### Score permuation
+### Score permutation
 
 ```{r permuteMlp, message=FALSE, fig.align='center', message = FALSE}
 ## Set the seed and number of iterations.
@@ -386,7 +386,7 @@ pvalue(pe)
 conf.int(pe)
 ```
 
-From the permutation plot can see that when comparing the seperation
+From the permutation plot can see that when comparing the separation
 of class1 vs. class2 the permuted data, using 100 iterations, never scores higher
 than the real data. Thus, the separation thus has a p-value < 0.01. 
 
@@ -399,7 +399,7 @@ plsgenomics package to demonstrate how this may be done. The dataset includes
 microarray study of Golub et al. (1999)". The tumor samples are from both
 acute lymphoblastic leukemia (ALL) and acute myeloid leukemia (AML) patients.
 Due to the inherent differences in the transcriptome of these two cancer
-types, we hypothesize that they would form seperate clusters post-PCA and
+types, we hypothesise that they would form separate clusters post-PCA and
 that we can use ClusterSignificance to examine if this separation is 
 significant.
 
@@ -450,7 +450,7 @@ conf.int(pe)
 ```
 
 As we can see from the results, at alpha 0.05, we would reject the null 
-hypothesis concluding that there is a seperation beteen the AML and ALL class
+hypothesis concluding that there is a separation between the AML and ALL class
 clusters. Despite this, by examining the confidence interval, we see that 
 the upper limit is greater than 0.05 which should give us pause before 
 rejecting the null at alpha = 0.05. Although not run here, 10000 iterations 
@@ -464,13 +464,13 @@ data as input to ClusterSignificance._**
 Well, technically no, although ClusterSignificance was designed to 
 function downstream of dimensionality reduction algorithms and we 
 see this being the most frequent use-case for ClusterSignificance. 
-One of the resons for this is, it is often the case that datasets 
+One of the reasons for this is, it is often the case that datasets 
 containing a large number of features, such as those originating from
 high throughput experiments, will often contain features that cannot 
-discriminate between the class seperations of interest. This is often 
-accompanied by "background noise" arising during the sample preperation. 
+discriminate between the class separations of interest. This is often 
+accompanied by "background noise" arising during the sample preparation 
 Dimensionality reduction thus serves here as a feature selection method, 
-identifying sorces of large variation within the data. Despite this, there 
+identifying sources of large variation within the data. Despite this, there 
 are some potential pitfalls with dimensionality reduction which are 
 highlighted in the next question. 
 
@@ -482,7 +482,7 @@ We believe the principal curve method to be a robust method that will perform
 well in the majority of situations we predict ClusterSignificance to be used 
 in. Despite this, the principal curve method is an unsupervised method and 
 therefore, it is not necessarily the case that it will be drawn in an optimal
-way to access the class seperations of interest. We currently have some 
+way to access the class separations of interest. We currently have some 
 functionality allowing the user to regulate the smoothness of the principal 
 curve. This can be accomplished using the `df` argument to the `pcp` function
 **BUT** you must supply the same argument to the `permute` function or your 
@@ -491,13 +491,13 @@ resort and to only be used under situations where no other alternative is
 available.
 
 **_What does the assumption "The dimensionality reduction method was 
-sufficiently capable of detecting the dissimilarities, characterized
+sufficiently capable of detecting the dissimilarities, characterised
 by features in high-dimensional space, that correspond to the class 
 separations under investigation" mean?_**
 
-Dimensionality reduction can be said to detect dissimilarities, characterized
-by features in high-dimensional space although, there is no garantee that the 
-dissimilarities it detects will be those discriminating the class seperations 
+Dimensionality reduction can be said to detect dissimilarities, characterised
+by features in high-dimensional space although, there is no guarantee that the 
+dissimilarities it detects will be those discriminating the class separations 
 you are interested in. In addition, linear dimensionality reduction methods, 
 such as PCA, may not provide a useful representation of the data when the 
 discriminatory features between classes under investigation vary in a 
@@ -513,17 +513,17 @@ exchangeability can be found
 _Extensions Of The Concept Of Exchangeability And Their Applications_
 Good (2012) provides a detailed discussion on this topic.
 
-**_Does ClusterSignificance actually perform a permutaiton test?_**
+**_Does ClusterSignificance actually perform a permutation test?_**
 
 Despite the name of one of ClusterSignificance's stages being _permutation_,
 strictly speaking, ClusterSignificance is not designed to perform
 a permutation test. Due to the fact that a real permutation test tests all
-possible combinations without replacment, which is often infeasible, most 
+possible combinations without replacement, which is often infeasible, most 
 users will actually be performing a monte carlo test. Instead of permuting 
 all possible combinations to form the null distribution (or permutation 
 distribution), a monte carlo test samples the permutation distribution 
 and uses this sample as the null distribution. For this reason, a p-value 
-from a monte carlo test is actually a esitmate of the true p-value. For 
+from a monte carlo test is actually a estimate of the true p-value. For 
 this reason we provide the `conf.int` function that will calculate the 
 confidence interval for the p-value estimate. It is theoretically, 
 possible to perform a permutation test with ClusterSignificance by 
@@ -538,9 +538,9 @@ We would recommend 10^4 permutations as a starting point. Ideally, the
 permutation test returns a exact p-value (i.e. not p-value < X), which 
 means that at least one permuted max score was greater than the max score
 for the real data, although this is not always possible. Furthermore, it 
-is unncessary to run more permutations than possible class combinations,
+is unnecessary to run more permutations than possible class combinations,
 which provides one concrete way to calculate the number of ideal 
-permutations. Despite this, it will often challange your computers
+permutations. Despite this, it will often challenge your computers
 memory to calculate this number if many combinations are possible.
 Under such circumstances, it is common that the permutation 
 distribution is randomly sampled and the more times this 
@@ -548,7 +548,7 @@ sampling occurs, the nearer your estimate of the p-value will
 come to the true p-value (see the question above). A confidence interval
 can be calculated for the reported p-value using the `conf.int` function.
 
-**_Why does the prncipal curve change shape between steps 3 and 4
+**_Why does the principal curve change shape between steps 3 and 4
 of the projection phase?_**
 
 The line is actually the same shape, it is the scale of the X-axis 

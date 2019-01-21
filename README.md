@@ -49,16 +49,15 @@ The release version of ClusterSignificance can be installed in R from
 [Bioconductor](https://www.bioconductor.org) as follows:
 
 ``` r
-source("https://bioconductor.org/biocLite.R")
-biocLite("ClusterSignificance")
+install.packages("BiocManager") 
+BiocManager::install("ClusterSignificance") 
 ```
 
 To install the development version use:
 
 ``` r
 install.packages("devtools")
-library(devtools)
-install_github("jasonserviss/ClusterSignificance")
+devtools::install_github("jasonserviss/ClusterSignificance")
 ```
 
 ## Quick Start
@@ -77,7 +76,7 @@ We start by projecting the points into one dimension using the Pcp
 method. We are able to visualize each step in the projection by plotting
 the results as shown below.
 
-``` r
+```r
 library(ClusterSignificance)
 classes <- rownames(pcpMatrix)
 prj <- pcp(pcpMatrix, classes)
@@ -141,7 +140,7 @@ plot(pe)
 To calculate the p-value we use the following command.
 
     ## class1 vs class2 class1 vs class3 class2 vs class3 
-    ##             0.01             0.16             0.01
+    ##             0.01             0.15             0.01
 
 ## Bug Reports and Issues
 
